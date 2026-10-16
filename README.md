@@ -10,8 +10,10 @@
 | 서버 상태 / 클라이언트 상태 | TanStack Query / Zustand                         |
 | API 연동                    | Orval (Swagger → 타입·Query 훅·MSW 목 생성)      |
 | 목 서버                     | MSW                                              |
+| 폼                          | React Hook Form + Zod                            |
 | 스타일                      | Tailwind CSS                                     |
 | 코드 품질                   | ESLint, Prettier, Husky, lint-staged, commitlint |
+| 커밋 작성                   | commitizen + cz-git (`npm run commit`)           |
 
 ## 시작하기
 
@@ -33,6 +35,7 @@ Node.js 20.9 이상이 필요합니다(`.nvmrc` 기준 24).
 | `npm run format` / `format:check` | Prettier 적용 / 검사                 |
 | `npm run typecheck`               | 타입 검사                            |
 | `npm run api:generate`            | `OPENAPI_URL`의 명세로 API 코드 생성 |
+| `npm run commit`                  | 커밋 메시지를 선택형으로 작성        |
 
 ## 폴더 구조
 
@@ -58,6 +61,13 @@ src/
 ### 커밋 메시지
 
 [Conventional Commits](https://www.conventionalcommits.org/ko/v1.0.0/)를 따르며, 커밋할 때 commitlint가 자동으로 검사합니다.
+
+형식을 외울 필요 없이 `git commit` 대신 아래 명령을 쓰면 종류·범위·제목·연결 이슈를 차례로 골라 작성할 수 있습니다.
+
+```bash
+git add .
+npm run commit
+```
 
 ```
 <type>(<scope>): <제목>
