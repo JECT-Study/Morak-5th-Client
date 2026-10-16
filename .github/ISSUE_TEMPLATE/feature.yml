@@ -1,0 +1,32 @@
+name: 기능 개발
+description: 새 기능이나 화면을 개발합니다.
+title: "[Feat] "
+labels: ["feat"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 개요
+      description: 어떤 기능인지, PRD의 어느 항목(F01~F05)과 연결되는지 적어주세요.
+      placeholder: "예) F03 인증 피드 - 인증 사진 업로드"
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: 할 일
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: 참고 자료
+      description: 디자인 링크, API 명세, 관련 문서
+  - type: input
+    id: due
+    attributes:
+      label: 목표 일정
+      placeholder: "예) 2026-10-31"
