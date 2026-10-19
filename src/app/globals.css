@@ -1,26 +1,90 @@
+/*
+ * 레이어 순서: Tailwind preflight(base) → JDS → Tailwind utilities
+ * JDS CSS를 jds 레이어에 넣어야 Tailwind 유틸리티로 JDS 컴포넌트 스타일을 덮어쓸 수 있다.
+ * (레이어 밖 CSS는 레이어 안 CSS보다 항상 우선하기 때문)
+ */
+@layer theme, base, jds, components, utilities;
+
 @import "tailwindcss";
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+@import "@jects/jds/styles" layer(jds);
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* JDS 다크 테마는 [data-theme="dark"] 기준이라 Tailwind dark: 변형도 같은 기준으로 맞춘다. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/*
+ * JDS 시맨틱 토큰을 Tailwind 유틸리티로 노출한다.
+ * 예) bg-surface-standard, text-object-normal, border-stroke-subtle, bg-accent-normal, rounded-8
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Pretendard Variable", Pretendard, sans-serif;
+  --font-mono: D2Coding, ui-monospace, monospace;
+
+  --color-surface-standard: var(--color-semantic-surface-standard);
+  --color-surface-shallow: var(--color-semantic-surface-shallow);
+  --color-surface-shallower: var(--color-semantic-surface-shallower);
+  --color-surface-shallowest: var(--color-semantic-surface-shallowest);
+  --color-surface-deep: var(--color-semantic-surface-deep);
+  --color-surface-deeper: var(--color-semantic-surface-deeper);
+  --color-surface-deepest: var(--color-semantic-surface-deepest);
+
+  --color-object-boldest: var(--color-semantic-object-boldest);
+  --color-object-bolder: var(--color-semantic-object-bolder);
+  --color-object-bold: var(--color-semantic-object-bold);
+  --color-object-normal: var(--color-semantic-object-normal);
+  --color-object-neutral: var(--color-semantic-object-neutral);
+  --color-object-alternative: var(--color-semantic-object-alternative);
+  --color-object-assistive: var(--color-semantic-object-assistive);
+  --color-object-subtle: var(--color-semantic-object-subtle);
+  --color-object-subtler: var(--color-semantic-object-subtler);
+  --color-object-subtlest: var(--color-semantic-object-subtlest);
+
+  --color-stroke-bold: var(--color-semantic-stroke-bold);
+  --color-stroke-normal: var(--color-semantic-stroke-normal);
+  --color-stroke-neutral: var(--color-semantic-stroke-neutral);
+  --color-stroke-alternative: var(--color-semantic-stroke-alternative);
+  --color-stroke-assistive: var(--color-semantic-stroke-assistive);
+  --color-stroke-subtle: var(--color-semantic-stroke-subtle);
+  --color-stroke-subtler: var(--color-semantic-stroke-subtler);
+  --color-stroke-subtlest: var(--color-semantic-stroke-subtlest);
+
+  --color-fill-bold: var(--color-semantic-fill-bold);
+  --color-fill-normal: var(--color-semantic-fill-normal);
+  --color-fill-neutral: var(--color-semantic-fill-neutral);
+  --color-fill-alternative: var(--color-semantic-fill-alternative);
+  --color-fill-assistive: var(--color-semantic-fill-assistive);
+  --color-fill-subtle: var(--color-semantic-fill-subtle);
+  --color-fill-subtler: var(--color-semantic-fill-subtler);
+  --color-fill-subtlest: var(--color-semantic-fill-subtlest);
+
+  --color-accent-bolder: var(--color-semantic-accent-bolder);
+  --color-accent-bold: var(--color-semantic-accent-bold);
+  --color-accent-normal: var(--color-semantic-accent-normal);
+  --color-accent-neutral: var(--color-semantic-accent-neutral);
+  --color-accent-alternative: var(--color-semantic-accent-alternative);
+  --color-accent-assistive: var(--color-semantic-accent-assistive);
+  --color-accent-subtle: var(--color-semantic-accent-subtle);
+  --color-accent-subtler: var(--color-semantic-accent-subtler);
+  --color-accent-subtlest: var(--color-semantic-accent-subtlest);
+
+  --color-feedback-destructive: var(--color-semantic-feedback-destructive);
+  --color-feedback-positive: var(--color-semantic-feedback-positive);
+  --color-feedback-notifying: var(--color-semantic-feedback-notifying);
+
+  --radius-2: var(--scheme-semantic-radius-2);
+  --radius-4: var(--scheme-semantic-radius-4);
+  --radius-6: var(--scheme-semantic-radius-6);
+  --radius-8: var(--scheme-semantic-radius-8);
+  --radius-10: var(--scheme-semantic-radius-10);
+  --radius-12: var(--scheme-semantic-radius-12);
+  --radius-16: var(--scheme-semantic-radius-16);
+  --radius-24: var(--scheme-semantic-radius-24);
+  --radius-max: var(--scheme-semantic-radius-max);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: var(--color-semantic-surface-standard);
+    color: var(--color-semantic-object-normal);
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
