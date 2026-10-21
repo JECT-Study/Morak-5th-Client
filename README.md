@@ -56,6 +56,10 @@ src/
 2. `npm run api:generate`로 타입, TanStack Query 훅, MSW 목을 생성합니다.
 3. 백엔드 구현 전에는 `NEXT_PUBLIC_API_MOCKING=enabled`로 두고, 생성된 목 핸들러를 `src/mocks/handlers.ts`에 등록해 화면을 개발합니다.
 
+## 문서
+
+- [웹뷰 앱 가이드](docs/webview-app-guide.md): 앱 껍데기(Expo) 구조, 웹뷰 주의사항, 브릿지, 딥링크
+
 ## 협업 규칙
 
 ### 커밋 메시지
