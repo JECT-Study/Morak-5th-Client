@@ -1,59 +1,90 @@
 # 모락 (Morak) — Client
 
-모두 모이면 즐겁다. 같은 목표를 가진 사람들이 챌린지를 만들고 함께 인증하는 자기계발 웹앱입니다.
+모두 모이면 즐겁다. 같은 목표를 가진 사람들이 챌린지를 만들고 함께 인증하는 자기계발 서비스입니다.
+화면은 Next.js 웹으로 만들고, Expo 앱이 이 웹을 WebView로 띄워 스토어에 배포합니다.
+
+## 레포 구조
+
+pnpm 워크스페이스 + Turborepo 모노레포입니다.
+
+```
+apps/
+├── web/        # @morak/web  — Next.js 웹 (모든 화면, BFF)
+└── app/        # @morak/app  — Expo 앱 껍데기 (WebView + 네이티브 기능)
+packages/
+└── bridge/     # @morak/bridge — 웹 ↔ 앱 브릿지 메시지 타입 (양쪽이 함께 import)
+docs/           # 설계·가이드 문서
+```
 
 ## 기술 스택
 
 | 영역                        | 기술                                             |
 | --------------------------- | ------------------------------------------------ |
-| 프레임워크                  | Next.js (App Router) + TypeScript                |
+| 웹                          | Next.js (App Router) + TypeScript                |
+| 앱                          | Expo + react-native-webview                      |
 | 서버 상태 / 클라이언트 상태 | TanStack Query / Zustand                         |
 | API 연동                    | Orval (Swagger → 타입·Query 훅·MSW 목 생성)      |
 | 목 서버                     | MSW                                              |
 | 폼                          | React Hook Form + Zod                            |
-| 스타일                      | Tailwind CSS                                     |
+| 디자인 시스템 / 스타일      | JDS (`@jects/jds`) + Tailwind CSS                |
+| 모노레포                    | pnpm workspace + Turborepo                       |
 | 코드 품질                   | ESLint, Prettier, Husky, lint-staged, commitlint |
-| 커밋 작성                   | commitizen + cz-git (`npm run commit`)           |
+| 커밋 작성                   | commitizen + cz-git (`pnpm commit`)              |
 
 ## 시작하기
 
+Node.js 22.13 이상(`.nvmrc` 기준 24)과 pnpm이 필요합니다. pnpm 버전은 루트 `package.json`의 `packageManager`를 따릅니다.
+
 ```bash
-npm install
-cp .env.example .env.local
-npm run dev
+corepack enable          # pnpm 사용 준비 (최초 1회)
+pnpm install
+cp apps/web/.env.example apps/web/.env.local
+pnpm dev:web             # 웹 개발 서버 (localhost:3000)
 ```
 
-Node.js 20.9 이상이 필요합니다(`.nvmrc` 기준 24).
+앱 껍데기를 실기기에서 띄우려면:
 
-## 스크립트
+```bash
+cp apps/app/.env.example apps/app/.env.local   # EXPO_PUBLIC_WEB_URL에 PC의 LAN IP 입력
+pnpm dev:app
+```
 
-| 명령                              | 설명                                 |
-| --------------------------------- | ------------------------------------ |
-| `npm run dev`                     | 개발 서버                            |
-| `npm run build`                   | 프로덕션 빌드                        |
-| `npm run lint` / `lint:fix`       | ESLint 검사 / 자동 수정              |
-| `npm run format` / `format:check` | Prettier 적용 / 검사                 |
-| `npm run typecheck`               | 타입 검사                            |
-| `npm run api:generate`            | `OPENAPI_URL`의 명세로 API 코드 생성 |
-| `npm run commit`                  | 커밋 메시지를 선택형으로 작성        |
+## 스크립트 (루트에서 실행)
 
-## 폴더 구조
+| 명령                                | 설명                                    |
+| ----------------------------------- | --------------------------------------- |
+| `pnpm dev:web` / `pnpm dev:app`     | 웹 개발 서버 / Expo 개발 서버           |
+| `pnpm build`                        | 웹 프로덕션 빌드                        |
+| `pnpm lint`                         | 전체 패키지 ESLint                      |
+| `pnpm typecheck`                    | 전체 패키지 타입 검사                   |
+| `pnpm format` / `pnpm format:check` | Prettier 적용 / 검사                    |
+| `pnpm api:generate`                 | `OPENAPI_URL`의 명세로 웹 API 코드 생성 |
+| `pnpm commit`                       | 커밋 메시지를 선택형으로 작성           |
+
+패키지를 추가할 때는 대상 앱을 지정합니다. 앱(Expo)에는 SDK와 맞는 버전을 고르는 `expo install`을 씁니다.
+
+```bash
+pnpm --filter @morak/web add <패키지>
+cd apps/app && npx expo install <패키지>
+```
+
+## 웹 폴더 구조 (`apps/web/src`)
 
 ```
-src/
-├── app/                  # 라우트, 레이아웃, Providers
-├── mocks/                # MSW 핸들러와 워커
-└── shared/
-    └── api/
-        ├── fetcher.ts    # 모든 API 호출이 거치는 fetch 래퍼 (Next /api BFF로 요청)
-        ├── query-client.ts
-        └── generated/    # Orval 생성 코드 (직접 수정 금지)
+app/                  # 라우트, 레이아웃, Providers
+mocks/                # MSW 핸들러와 워커
+shared/
+├── api/
+│   ├── fetcher.ts    # 모든 API 호출이 거치는 fetch 래퍼 (Next /api BFF로 요청)
+│   ├── query-client.ts
+│   └── generated/    # Orval 생성 코드 (직접 수정 금지)
+└── native/           # 앱 껍데기와 통신하는 브릿지 (isApp, sendToApp, onAppMessage)
 ```
 
 ## API 연동 흐름
 
-1. 백엔드 Swagger가 나오면 `.env.local`의 `OPENAPI_URL`을 설정합니다.
-2. `npm run api:generate`로 타입, TanStack Query 훅, MSW 목을 생성합니다.
+1. 백엔드 Swagger가 나오면 `apps/web/.env.local`의 `OPENAPI_URL`을 설정합니다.
+2. `pnpm api:generate`로 타입, TanStack Query 훅, MSW 목을 생성합니다.
 3. 백엔드 구현 전에는 `NEXT_PUBLIC_API_MOCKING=enabled`로 두고, 생성된 목 핸들러를 `src/mocks/handlers.ts`에 등록해 화면을 개발합니다.
 
 ## 문서
@@ -70,7 +101,7 @@ src/
 
 ```bash
 git add .
-npm run commit
+pnpm commit
 ```
 
 ```
@@ -102,6 +133,6 @@ fix(feed): 인증 사진 업로드 실패 시 재시도 버튼 표시
 
 ### 자동 검사
 
-- **커밋 전**: 변경된 파일에 ESLint, Prettier 자동 적용 (lint-staged)
+- **커밋 전**: 변경된 파일에 ESLint(웹), Prettier 자동 적용 (lint-staged)
 - **커밋 메시지**: commitlint 검사
-- **PR**: GitHub Actions에서 포맷, 린트, 타입, 빌드, 커밋 메시지, PR 제목 검사
+- **PR**: GitHub Actions에서 포맷, 린트, 타입(웹·앱·브릿지), 웹 빌드, 커밋 메시지, PR 제목 검사. 통과해야 main에 머지됩니다.

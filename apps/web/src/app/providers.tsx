@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 import { getQueryClient } from "@/shared/api/query-client";
+import AppBridgeListener from "@/shared/native/app-bridge-listener";
 
 const shouldMock = process.env.NEXT_PUBLIC_API_MOCKING === "enabled";
 
@@ -18,6 +19,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       {shouldMock ? <MswProvider>{children}</MswProvider> : children}
+      <AppBridgeListener />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
