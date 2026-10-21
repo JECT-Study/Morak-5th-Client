@@ -1,7 +1,7 @@
 name: 작업
 description: 설정, 리팩터링, 문서 등 기능 외 작업입니다.
 title: "[Chore] "
-labels: ["chore"]
+labels: ["⚙️chore"]
 body:
   - type: textarea
     id: summary

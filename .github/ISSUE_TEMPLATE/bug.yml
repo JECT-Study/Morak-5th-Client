@@ -1,7 +1,7 @@
 name: 버그 제보
 description: 잘못 동작하는 부분을 제보합니다.
 title: "[Fix] "
-labels: ["fix"]
+labels: ["🐛bug"]
 body:
   - type: textarea
     id: description
