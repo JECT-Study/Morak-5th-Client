@@ -102,7 +102,8 @@ type AppToWeb =
 - 응답이 필요한 요청은 `id`로 짝을 맞추고 웹에서 Promise로 감싼다(`pending` Map).
 - 웹에서 RN 메시지를 듣는 컴포넌트가 여러 개일 수 있으므로 구독자 함수를 `Set`으로 관리한다(중복 등록 방지, 해제 용이).
 - 브라우저에서는 `window.ReactNativeWebView`가 없으므로 `isApp()`으로 확인하고 대체 동작을 한다(공유 → 링크 복사 등).
-- 타입 정의는 웹과 RN이 같아야 한다. 레포가 다르면 파일을 복사해 맞춘다.
+- 타입 정의는 `packages/bridge`(`@morak/bridge`)에 두고 웹(`apps/web/src/shared/native`)과 앱(`apps/app/App.tsx`)이 함께 import한다. 메시지 검증(`parseWebToApp`, `parseAppToWeb`)과 주입 코드 생성(`toInjectedScript`)도 이 패키지에 있다.
+- 브릿지 메시지 구조를 바꾸면 `BRIDGE_VERSION`을 올린다. 사용자 폰의 예전 앱은 이전 버전을 보낸다.
 
 ## 4. 딥링크
 

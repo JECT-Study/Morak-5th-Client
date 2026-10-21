@@ -1,0 +1,12 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# 설치 스크립트 실행을 허용할 패키지 (pnpm은 기본적으로 막는다)
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true
+
+overrides:
+  # @hookform/resolvers의 옵셔널 피어(@typeschema/zod)가 zod 3을 요구해 프로젝트의 zod 4로 맞춘다.
+  "@typeschema/zod>zod": "^4.6.7"
