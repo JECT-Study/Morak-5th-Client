@@ -20,6 +20,9 @@
   --font-sans: "Pretendard Variable", Pretendard, sans-serif;
   --font-mono: D2Coding, ui-monospace, monospace;
 
+  /* 모바일 화면 최대 너비. max-w-app */
+  --container-app: 480px;
+
   --color-surface-standard: var(--color-semantic-surface-standard);
   --color-surface-shallow: var(--color-semantic-surface-shallow);
   --color-surface-shallower: var(--color-semantic-surface-shallower);
