@@ -1,7 +1,8 @@
 name: 기능 개발
 description: 새 기능이나 화면을 개발합니다.
 title: "[Feat] "
-labels: ["✨feature"]
+labels: ["✨feature", "👩🏻‍💻frontend"]
+projects: ["JECT-Study/29"]
 body:
   - type: textarea
     id: summary

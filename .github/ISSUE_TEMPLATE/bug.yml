@@ -1,7 +1,8 @@
 name: 버그 제보
 description: 잘못 동작하는 부분을 제보합니다.
 title: "[Fix] "
-labels: ["🐛bug"]
+labels: ["🐛bug", "👩🏻‍💻frontend"]
+projects: ["JECT-Study/29"]
 body:
   - type: textarea
     id: description
