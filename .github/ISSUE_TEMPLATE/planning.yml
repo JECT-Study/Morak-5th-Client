@@ -1,54 +1,30 @@
 name: 기획
-description: 기능 정의, 정책, 화면 흐름, 일정 등 PM 작업입니다.
+description: PM 작업 일정 공유용입니다. 만든 뒤 보드에서 Start date·Target date를 입력해주세요.
 title: "[Plan] "
 labels: ["📋planning"]
 projects: ["JECT-Study/29"]
 body:
   - type: dropdown
-    id: kind
+    id: feature
     attributes:
-      label: 작업 종류
+      label: 기능
       options:
-        - 기능 정의
-        - 정책 (규칙·예외 상황)
-        - 화면 흐름
-        - 일정·회의
-        - QA (기획대로 동작하는지 검수)
+        - F01 그룹 개설·신청·참여
+        - F02 그룹 운영·채팅
+        - F03 인증 피드·판정·달성률·참여 관리
+        - F04 무료 포인트 획득·사용·정산
+        - F05 프로필·모락이 캐릭터·완주 메달
+        - 공통 (일정, 회의 등)
     validations:
       required: true
-  - type: textarea
-    id: background
-    attributes:
-      label: 배경
-      description: 왜 필요한지, PRD의 어느 항목(F01~F05)과 연결되는지 적어주세요.
-    validations:
-      required: true
-  - type: textarea
-    id: decisions
-    attributes:
-      label: 정해야 할 것
-      description: 이 이슈에서 결정할 내용을 적어주세요. 결정되면 결과를 댓글로 남겨주세요.
-      value: |
-        - [ ]
-        - [ ]
-    validations:
-      required: true
-  - type: checkboxes
-    id: parts
-    attributes:
-      label: 영향 받는 파트
-      description: 결정되면 해당 파트에 알려주세요.
-      options:
-        - label: FE
-        - label: BE
-        - label: PD
   - type: input
     id: doc
     attributes:
-      label: 문서 링크
-      description: 노션 등 결과물 문서
-  - type: input
-    id: due
+      label: 노션 링크
+    validations:
+      required: true
+  - type: textarea
+    id: note
     attributes:
-      label: 목표 일정
-      placeholder: "예) 2026-10-31"
+      label: 메모
+      description: 개발에 미리 알려줄 내용이 있으면 적어주세요.
