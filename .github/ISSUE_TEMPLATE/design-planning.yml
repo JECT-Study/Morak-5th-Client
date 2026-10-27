@@ -2,6 +2,7 @@ name: 디자인·기획
 description: PD·PM 일정 공유용입니다. 오른쪽 Labels에서 🎨design(PD) 또는 📋planning(PM)을 고르고, 만든 뒤 보드에서 Start date·Target date를 입력해주세요.
 title: "[PD·PM] "
 projects: ["JECT-Study/29"]
+type: Feature
 body:
   - type: dropdown
     id: feature
