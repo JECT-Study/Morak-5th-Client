@@ -1,0 +1,30 @@
+name: 디자인·기획
+description: PD·PM 일정 공유용입니다. 오른쪽 Labels에서 🎨design(PD) 또는 📋planning(PM)을 고르고, 만든 뒤 보드에서 Start date·Target date를 입력해주세요.
+title: ""
+projects: ["JECT-Study/29"]
+body:
+  - type: dropdown
+    id: feature
+    attributes:
+      label: 기능
+      options:
+        - F01 그룹 개설·신청·참여
+        - F02 그룹 운영·채팅
+        - F03 인증 피드·판정·달성률·참여 관리
+        - F04 무료 포인트 획득·사용·정산
+        - F05 프로필·모락이 캐릭터·완주 메달
+        - 공통
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: 링크
+      description: 피그마 또는 노션 링크
+    validations:
+      required: true
+  - type: textarea
+    id: note
+    attributes:
+      label: 메모
+      description: 개발에 미리 알려줄 내용이 있으면 적어주세요.
