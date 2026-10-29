@@ -23,6 +23,9 @@
   /* 모바일 화면 최대 너비. max-w-app */
   --container-app: 480px;
 
+  /* 모락 토큰(Figma "모락모락 토큰" surface/page). 대부분의 화면 배경. bg-page */
+  --color-page: #f5f6f8;
+
   --color-surface-standard: var(--color-semantic-surface-standard);
   --color-surface-shallow: var(--color-semantic-surface-shallow);
   --color-surface-shallower: var(--color-semantic-surface-shallower);
