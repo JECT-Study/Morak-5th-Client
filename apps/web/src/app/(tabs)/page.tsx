@@ -1,8 +1,9 @@
 import { DotBadge, IconButton } from "@jects/jds";
 import Link from "next/link";
 
+import ChallengeCardCarousel from "@/features/challenge/components/challenge-card-carousel";
+import { myChallengesMock } from "@/mocks/data/my-challenges";
 import AppHeader from "@/shared/layout/app-header";
-import ScreenPlaceholder from "@/shared/layout/screen-placeholder";
 import BookKeyIcon from "@/shared/ui/icons/book-key-icon";
 import SvgIconButton from "@/shared/ui/svg-icon-button";
 
@@ -30,11 +31,14 @@ export default function MyChallengesPage() {
           </div>
         }
       />
-      {/* TODO: 남은 인증 수는 내 참가 목록 API 연결 후 계산한다. */}
-      <p className="text-object-normal px-6 pt-0.5 text-sm leading-5 font-[440]">
-        오늘의 인증 · 1개 남음
-      </p>
-      <ScreenPlaceholder name="내 챌린지" />
+      <main className="flex flex-col gap-5 pt-0.5 pb-5">
+        {/* TODO: 남은 인증 수는 내 참가 목록 API 연결 후 계산한다. */}
+        <p className="text-label-md font-label-subtle text-object-normal px-6">
+          오늘의 인증 · 1개 남음
+        </p>
+        {/* TODO: GET /users/me/participations 연결 후 목 데이터를 바꾼다. */}
+        <ChallengeCardCarousel challenges={myChallengesMock} />
+      </main>
     </>
   );
 }
