@@ -13,7 +13,12 @@ type AppHeaderProps = {
   suffixAction?: ReactNode;
 };
 
-/** 화면 상단 헤더(JDS LocalNavigation). 좌우 여백은 JDS 기본값(margin-lg)을 쓰고, 노치 영역만큼 내려서 상단에 고정한다. */
+/**
+ * 화면 상단 헤더(JDS LocalNavigation). 상단에 고정한다.
+ * - 위쪽은 노치(상태바) 영역 + 26px을 띄운다. Figma 모든 화면에서 상태바와 헤더 사이가 26px이다.
+ * - Figma처럼 화면 좌우 여백(24px)을 바깥에서 주고 LocalNavigation은 stretched로 둔다.
+ * - 배경은 부모(화면) 배경을 이어받아, 스크롤할 때 뒤 내용이 비치지 않게 한다.
+ */
 export default function AppHeader({ title, nested = false, suffixAction }: AppHeaderProps) {
   const router = useRouter();
 
@@ -21,17 +26,18 @@ export default function AppHeader({ title, nested = false, suffixAction }: AppHe
   const handleBack = () => (canGoBackInApp() ? router.back() : router.replace("/"));
 
   return (
-    <header className="bg-surface-standard sticky top-0 z-10 pt-[env(safe-area-inset-top)]">
+    <header className="sticky top-0 z-10 bg-inherit px-6 pt-[calc(env(safe-area-inset-top)+26px)]">
       {nested ? (
         <LocalNavigation
           nested
+          stretched
           title={title}
           titleAs="h1"
           onBackClick={handleBack}
           suffixAction={suffixAction}
         />
       ) : (
-        <LocalNavigation title={title} titleAs="h1" suffixAction={suffixAction} />
+        <LocalNavigation stretched title={title} titleAs="h1" suffixAction={suffixAction} />
       )}
     </header>
   );

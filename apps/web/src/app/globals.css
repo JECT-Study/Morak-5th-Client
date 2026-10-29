@@ -23,6 +23,9 @@
   /* 모바일 화면 최대 너비. max-w-app */
   --container-app: 480px;
 
+  /* 모락 토큰(Figma "모락모락 토큰" surface/page). 대부분의 화면 배경. bg-page */
+  --color-page: #f5f6f8;
+
   --color-surface-standard: var(--color-semantic-surface-standard);
   --color-surface-shallow: var(--color-semantic-surface-shallow);
   --color-surface-shallower: var(--color-semantic-surface-shallower);
@@ -83,6 +86,41 @@
   --radius-16: var(--scheme-semantic-radius-16);
   --radius-24: var(--scheme-semantic-radius-24);
   --radius-max: var(--scheme-semantic-radius-max);
+
+  /* 챌린지 진행 강조색(Figma theme/lime) */
+  --color-lime-assistive: var(--color-semantic-theme-lime-assistive);
+  --color-lime-subtler: var(--color-semantic-theme-lime-subtler);
+
+  /*
+   * JDS 텍스트 스타일. Figma 텍스트 스타일 이름과 맞춘다.
+   * 크기·줄 높이·자간은 text-*, 굵기는 font-*로 나눠 쓴다.
+   * 예) label/lg/normal → text-label-lg font-label-normal, title/1 → text-title-1 font-title-subtle
+   */
+  --text-label-lg: var(--typo-primitive-fontSize-label-lg);
+  --text-label-lg--line-height: var(--typo-primitive-font-lineHeight-label-lg);
+  --text-label-lg--letter-spacing: var(--typo-primitive-font-letterSpacing-label-lg);
+  --text-label-md: var(--typo-primitive-fontSize-label-md);
+  --text-label-md--line-height: var(--typo-primitive-font-lineHeight-label-md);
+  --text-label-md--letter-spacing: var(--typo-primitive-font-letterSpacing-label-md);
+  --text-label-sm: var(--typo-primitive-fontSize-label-sm);
+  --text-label-sm--line-height: var(--typo-primitive-font-lineHeight-label-sm);
+  --text-label-sm--letter-spacing: var(--typo-primitive-font-letterSpacing-label-sm);
+  --text-label-xs: var(--typo-primitive-fontSize-label-xs);
+  --text-label-xs--line-height: var(--typo-primitive-font-lineHeight-label-xs);
+  --text-label-xs--letter-spacing: var(--typo-primitive-font-letterSpacing-label-xs);
+  --text-title-1: var(--typo-primitive-fontSize-title-1);
+  --text-title-1--line-height: var(--typo-primitive-font-lineHeight-title-1);
+  --text-title-1--letter-spacing: var(--typo-primitive-font-letterSpacing-title-1);
+  --text-title-5: var(--typo-primitive-fontSize-title-5);
+  --text-title-5--line-height: var(--typo-primitive-font-lineHeight-title-5);
+  --text-title-5--letter-spacing: var(--typo-primitive-font-letterSpacing-title-5);
+
+  --font-weight-label-bold: var(--typo-primitive-fontWeight-label-bold);
+  --font-weight-label-normal: var(--typo-primitive-fontWeight-label-normal);
+  --font-weight-label-subtle: var(--typo-primitive-fontWeight-label-subtle);
+  --font-weight-title-bold: var(--typo-primitive-fontWeight-title-bold);
+  --font-weight-title-normal: var(--typo-primitive-fontWeight-title-normal);
+  --font-weight-title-subtle: var(--typo-primitive-fontWeight-title-subtle);
 }
 
 @layer base {

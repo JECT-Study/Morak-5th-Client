@@ -71,15 +71,34 @@ cd apps/app && npx expo install <패키지>
 ## 웹 폴더 구조 (`apps/web/src`)
 
 ```
-app/                  # 라우트, 레이아웃, Providers
-mocks/                # MSW 핸들러와 워커
-shared/
+app/                      # 라우트만. page.tsx는 화면을 조립하고 얇게 둔다
+├── (tabs)/               # 하단 탭바가 붙는 화면 (내 챌린지, 모집 중, 채팅, 마이페이지)
+└── challenges/ …         # 탭바 없는 하위 화면
+features/                 # 도메인별 코드. 도메인 개념(챌린지·인증·채팅 등)을 아는 코드
+└── challenge/
+    ├── components/       # 예) challenge-card.tsx
+    ├── hooks/            # 도메인 API 훅 (생성 코드를 감싸거나 조합할 때)
+    └── types.ts
+mocks/                    # MSW 핸들러와 워커
+shared/                   # 도메인과 상관없는 공통 코드
 ├── api/
-│   ├── fetcher.ts    # 모든 API 호출이 거치는 fetch 래퍼 (Next /api BFF로 요청)
+│   ├── fetcher.ts        # 모든 API 호출이 거치는 fetch 래퍼 (Next /api BFF로 요청)
 │   ├── query-client.ts
-│   └── generated/    # Orval 생성 코드 (직접 수정 금지)
-└── native/           # 앱 껍데기와 통신하는 브릿지 (isApp, sendToApp, onAppMessage)
+│   └── generated/        # Orval 생성 코드 (직접 수정 금지)
+├── layout/               # 앱 뼈대: AppHeader, TabBar
+├── native/               # 앱 껍데기와 통신하는 브릿지 (isApp, sendToApp, onAppMessage)
+├── navigation/           # 앱 안 이동 기록 (헤더 뒤로가기 판단)
+└── ui/                   # 범용 UI: SvgIconButton, icons/
 ```
+
+어디에 둘지 헷갈리면 이 순서로 판단합니다.
+
+1. 라우트 파일(page, layout)이면 `app/`
+2. 챌린지·인증처럼 도메인 개념을 다루면 `features/<도메인>/` — 한 화면에서만 써도 여기에 둔다
+3. 도메인을 모르는 UI·유틸이면 `shared/`
+
+헤더는 화면마다 제목·뒤로가기·오른쪽 버튼이 달라서 레이아웃이 아니라 각 `page.tsx`에서 `<AppHeader />`로 렌더합니다.
+JDS에 없는 아이콘은 Figma에서 SVG를 가져와 `shared/ui/icons/`에 두고, 버튼이 필요하면 `SvgIconButton`(JDS IconButton과 같은 스타일)에 넣습니다.
 
 ## API 연동 흐름
 
