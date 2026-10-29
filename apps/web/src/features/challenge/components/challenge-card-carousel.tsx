@@ -29,7 +29,7 @@ export default function ChallengeCardCarousel({ challenges }: ChallengeCardCarou
     <section aria-label="내 챌린지" className="flex flex-col gap-5">
       <ul
         onScroll={handleScroll}
-        className="scorll-bar-none flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 [&::-webkit-scrollbar]:hidden"
+        className="scorllbar-none flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 [&::-webkit-scrollbar]:hidden"
       >
         {challenges.map((challenge) => (
           <li key={challenge.id} className="w-full shrink-0 snap-start">
