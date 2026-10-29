@@ -17,7 +17,7 @@ export default function MyChallengesPage() {
           <div className="flex gap-2">
             <span className="flex size-10 items-center justify-center">
               {/* book-key는 JDS 패키지에 없어 Figma SVG를 쓴다. TODO: 이동할 화면 미정 */}
-              <SvgIconButton aria-label="챌린지 목록">
+              <SvgIconButton aria-label="초대코드 입력">
                 <BookKeyIcon />
               </SvgIconButton>
             </span>
