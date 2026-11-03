@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 const PROVIDERS = {
   kakao: {
     authorizeUrl: "https://kauth.kakao.com/oauth/authorize",
-    clientId: process.env.KAKAO_CLIENT_ID,
+    clientId: process.env.KAKAO_REST_API_KEY,
     redirectUri: process.env.KAKAO_REDIRECT_URI,
   },
 } as const;
@@ -24,13 +24,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ provide
   }
 
   if (provider === "kakao") {
+    const state = crypto.randomUUID();
     const url = new URL(PROVIDERS[provider].authorizeUrl);
     url.searchParams.set("client_id", PROVIDERS[provider].clientId!);
     url.searchParams.set("redirect_uri", PROVIDERS[provider].redirectUri!);
     url.searchParams.set("response_type", "code");
-    url.searchParams.set("state", crypto.randomUUID());
+    url.searchParams.set("state", state);
     const response = NextResponse.redirect(url);
-    response.cookies.set("oauth_state", crypto.randomUUID(), {
+    response.cookies.set("oauth_state", state, {
       httpOnly: true,
       sameSite: "lax",
       path: "/",
