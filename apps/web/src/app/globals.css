@@ -111,10 +111,18 @@
   --text-title-1: var(--typo-primitive-fontSize-title-1);
   --text-title-1--line-height: var(--typo-primitive-font-lineHeight-title-1);
   --text-title-1--letter-spacing: var(--typo-primitive-font-letterSpacing-title-1);
+  --text-title-3: var(--typo-primitive-fontSize-title-3);
+  --text-title-3--line-height: var(--typo-primitive-font-lineHeight-title-3);
+  --text-title-3--letter-spacing: var(--typo-primitive-font-letterSpacing-title-3);
   --text-title-5: var(--typo-primitive-fontSize-title-5);
   --text-title-5--line-height: var(--typo-primitive-font-lineHeight-title-5);
   --text-title-5--letter-spacing: var(--typo-primitive-font-letterSpacing-title-5);
+  --text-body-md: var(--typo-primitive-fontSize-body-md);
+  --text-body-md--line-height: var(--typo-primitive-font-lineHeight-body-md);
+  --text-body-md--letter-spacing: var(--typo-primitive-font-letterSpacing-body-md);
 
+  --font-weight-body-bold: var(--typo-primitive-fontWeight-body-bold);
+  --font-weight-body-normal: var(--typo-primitive-fontWeight-body-normal);
   --font-weight-label-bold: var(--typo-primitive-fontWeight-label-bold);
   --font-weight-label-normal: var(--typo-primitive-fontWeight-label-normal);
   --font-weight-label-subtle: var(--typo-primitive-fontWeight-label-subtle);
