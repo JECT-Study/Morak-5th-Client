@@ -12,7 +12,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ provide
   const { provider } = await params;
 
   // PROVIDERS에 설정이 있는 제공자만 허용한다. (구글은 백엔드 지원 후 추가)
-  if (!(provider in PROVIDERS)) {
+  if (!Object.hasOwn(PROVIDERS, provider)) {
     return NextResponse.json(
       {
         error: {
