@@ -3,9 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 import SocialLoginButton from "@/features/auth/components/social-login-button";
+import { Suspense } from "react";
+import LoginError from "@/features/auth/components/login-error";
 
 /** 로그인(Figma "로그인"). 헤더 없이 상태바 아래 48px부터 시작하고, 버튼 묶음은 아래쪽에 붙인다. */
-export default function LoginPage() {
+export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <main className="flex flex-1 flex-col items-center gap-6 px-6 pt-[calc(env(safe-area-inset-top)+48px)] pb-[calc(env(safe-area-inset-bottom)+24px)] text-center">
       <Image src="/images/morak-character.svg" alt="" width={128} height={123} priority />
@@ -21,6 +23,9 @@ export default function LoginPage() {
       <div className="flex-1" />
 
       <div className="flex w-full flex-col gap-2">
+        <Suspense>
+          <LoginError searchParams={searchParams} />
+        </Suspense>
         <SocialLoginButton provider="kakao" />
         {/* TODO: 백엔드가 구글 로그인을 지원하면 활성화한다. */}
         <SocialLoginButton provider="google" disabled />

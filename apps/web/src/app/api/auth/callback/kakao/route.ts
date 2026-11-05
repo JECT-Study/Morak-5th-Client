@@ -12,16 +12,22 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login?error=invalid_state", request.url));
   }
 
-  const res = await fetch(`${process.env.API_BASE_URL}/auth/login/kakao`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code } satisfies SocialLoginRequest),
-  });
-  const body = (await res.json()) as ApiResponse<LoginResponse>;
+  let res: Response;
+  let body: ApiResponse<LoginResponse>;
+
+  try {
+    res = await fetch(`${process.env.API_BASE_URL}/auth/login/kakao`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code } satisfies SocialLoginRequest),
+    });
+    body = (await res.json()) as ApiResponse<LoginResponse>;
+  } catch {
+    return NextResponse.redirect(new URL("/login?error=login_failed", request.url));
+  }
   if (!res.ok || !body.success) {
     return NextResponse.redirect(new URL("/login?error=login_failed", request.url));
   }
-
   const { accessToken, refreshToken, accessTokenExpiresIn, onboarded } = body.data;
 
   const response = NextResponse.redirect(new URL(onboarded ? "/" : "/onboarding", request.url));
