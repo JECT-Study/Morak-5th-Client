@@ -2,10 +2,16 @@ import { DotBadge, IconButton } from "@jects/jds";
 import Link from "next/link";
 
 import ChallengeCardCarousel from "@/features/challenge/components/challenge-card-carousel";
+import MyChallengesEmpty from "@/features/challenge/components/my-challenges-empty";
+import type { MyChallengeCardData } from "@/features/challenge/types";
 import { myChallengesMock } from "@/mocks/data/my-challenges";
 import AppHeader from "@/shared/layout/app-header";
 import BookKeyIcon from "@/shared/ui/icons/book-key-icon";
 import SvgIconButton from "@/shared/ui/svg-icon-button";
+
+// TODO: GET /users/me/participations 연결 전까지는 목 모드에서만 목 데이터를 쓰고, 그 외에는 빈 목록으로 둔다.
+const challenges: MyChallengeCardData[] =
+  process.env.NEXT_PUBLIC_API_MOCKING === "enabled" ? myChallengesMock : [];
 
 export default function MyChallengesPage() {
   return (
@@ -32,12 +38,17 @@ export default function MyChallengesPage() {
         }
       />
       <main className="flex flex-col gap-5 pt-0.5 pb-5">
-        {/* TODO: 남은 인증 수는 내 참가 목록 API 연결 후 계산한다. */}
-        <p className="text-label-md font-label-subtle text-object-normal px-6">
-          오늘의 인증 · 1개 남음
-        </p>
-        {/* TODO: GET /users/me/participations 연결 후 목 데이터를 바꾼다. */}
-        <ChallengeCardCarousel challenges={myChallengesMock} />
+        {challenges.length === 0 ? (
+          <MyChallengesEmpty />
+        ) : (
+          <>
+            {/* TODO: 남은 인증 수는 내 참가 목록 API 연결 후 계산한다. */}
+            <p className="text-label-md font-label-subtle text-object-normal px-6">
+              오늘의 인증 · 1개 남음
+            </p>
+            <ChallengeCardCarousel challenges={challenges} />
+          </>
+        )}
       </main>
     </>
   );
