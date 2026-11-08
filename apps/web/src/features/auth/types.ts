@@ -33,3 +33,30 @@ export type MyUserInfo = {
   marketingAgreed: boolean;
   onboarded: boolean;
 };
+
+/** POST /users/me/terms-agreements 요청. 필수 4개가 모두 true여야 한다. */
+export type TermsAgreementsRequest = {
+  age14OrOlder: boolean;
+  serviceTermsAgreed: boolean;
+  privacyAgreed: boolean;
+  photoCollectionAgreed: boolean;
+  marketingAgreed: boolean;
+};
+
+/** 관심 분야 (백엔드 Interest enum) */
+export type Interest = "STUDY" | "EXERCISE" | "CAREER" | "LIFESTYLE" | "READING";
+
+/** POST /users/me/onboarding 요청. 약관 동의 후에만 호출할 수 있다. */
+export type OnboardingRequest = {
+  /** 한글·영문·숫자 2~12자 */
+  nickname: string;
+  /** 255자 이하 */
+  bio: string | null;
+  /** http(s)로 시작하는 URL, 255자 이하 */
+  profileLinkUrl: string | null;
+  /** 1개 이상 */
+  interests: Interest[];
+};
+
+/** GET /users/nickname-check 응답 data */
+export type NicknameCheckResponse = { available: boolean };
