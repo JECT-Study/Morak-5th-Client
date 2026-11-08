@@ -5,6 +5,12 @@ import Link from "next/link";
 import SocialLoginButton from "@/features/auth/components/social-login-button";
 import { Suspense } from "react";
 import LoginError from "@/features/auth/components/login-error";
+import TermsSheet from "@/features/auth/components/terms-sheet";
+
+async function TermsStep({ searchParams }: Pick<PageProps<"/login">, "searchParams">) {
+  const { step } = await searchParams;
+  return step === "terms" ? <TermsSheet /> : null;
+}
 
 /** 로그인(Figma "로그인"). 헤더 없이 상태바 아래 48px부터 시작하고, 버튼 묶음은 아래쪽에 붙인다. */
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
@@ -39,6 +45,11 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
         <br />
         계속하면 이용약관 및 개인정보처리방침에 동의하게 됩니다.
       </p>
+
+      {/* 가입 후 약관 동의 전이면 온보딩이 /login?step=terms로 보낸다. */}
+      <Suspense>
+        <TermsStep searchParams={searchParams} />
+      </Suspense>
     </main>
   );
 }
