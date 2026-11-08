@@ -60,3 +60,33 @@ describe("createChatSocket", () => {
     await client.deactivate({ force: true });
   });
 });
+
+describe("createChatSocket 에러 처리", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    FakeWebSocket.instances = [];
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("ERROR 프레임의 code·message 헤더를 onError로 넘긴다", async () => {
+    const onError = vi.fn();
+    const client = createChatSocket({
+      brokerURL: "ws://test",
+      webSocketFactory: () => new FakeWebSocket() as unknown as WebSocket,
+      getConnectHeaders: async () => ({ ticket: "abc" }),
+      onConnect: vi.fn(),
+      onError,
+    });
+    client.activate();
+    await vi.advanceTimersByTimeAsync(0);
+    const socket = FakeWebSocket.instances[0];
+    socket.open();
+
+    socket.receive("ERROR\ncode:CHAT_008\nmessage:만료된 티켓\n\n\0");
+
+    expect(onError).toHaveBeenCalledWith({ code: "CHAT_008", message: "만료된 티켓" }, client);
+    await client.deactivate({ force: true });
+  });
+});
