@@ -1,11 +1,5 @@
-import AppHeader from "@/shared/layout/app-header";
-import ScreenPlaceholder from "@/shared/layout/screen-placeholder";
+import OnboardingFlow from "@/features/onboarding/components/onboarding-flow";
 
 export default function OnboardingPage() {
-  return (
-    <>
-      <AppHeader title="프로필 설정" />
-      <ScreenPlaceholder name="온보딩" />
-    </>
-  );
+  return <OnboardingFlow />;
 }
