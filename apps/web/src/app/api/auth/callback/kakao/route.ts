@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import type { LoginResponse, SocialLoginRequest } from "@/features/auth/types";
-import type { ApiResponse } from "@/shared/api/types";
+import { ACCESS_TOKEN_COOKIE, backendFetch } from "@/shared/api/backend";
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
@@ -12,28 +12,21 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login?error=invalid_state", request.url));
   }
 
-  let res: Response;
-  let body: ApiResponse<LoginResponse>;
-
-  try {
-    res = await fetch(`${process.env.API_BASE_URL}/auth/login/kakao`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code } satisfies SocialLoginRequest),
-    });
-    body = (await res.json()) as ApiResponse<LoginResponse>;
-  } catch {
+  // 로그인 전이라 토큰이 없으므로 auth: false
+  const result = await backendFetch<LoginResponse>("/auth/login/kakao", {
+    method: "POST",
+    auth: false,
+    json: { code } satisfies SocialLoginRequest,
+  });
+  if (!result.ok) {
     return NextResponse.redirect(new URL("/login?error=login_failed", request.url));
   }
-  if (!res.ok || !body.success) {
-    return NextResponse.redirect(new URL("/login?error=login_failed", request.url));
-  }
-  const { accessToken, refreshToken, accessTokenExpiresIn, onboarded } = body.data;
+  const { accessToken, refreshToken, accessTokenExpiresIn, onboarded } = result.data;
 
   const response = NextResponse.redirect(new URL(onboarded ? "/" : "/onboarding", request.url));
 
   const secure = process.env.NODE_ENV === "production";
-  response.cookies.set("access_token", accessToken, {
+  response.cookies.set(ACCESS_TOKEN_COOKIE, accessToken, {
     httpOnly: true,
     secure,
     sameSite: "lax",
