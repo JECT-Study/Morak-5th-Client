@@ -22,3 +22,14 @@ export type LoginResponse = {
   /** 온보딩 완료 여부. false이면 온보딩 화면으로 이동한다. */
   onboarded: boolean;
 };
+
+/** GET /users/me 응답 data (백엔드 MyUserInfo) */
+export type MyUserInfo = {
+  userId: number;
+  email: string | null;
+  nickname: string | null;
+  profileImageUrl: string | null;
+  termsAgreed: boolean;
+  marketingAgreed: boolean;
+  onboarded: boolean;
+};
