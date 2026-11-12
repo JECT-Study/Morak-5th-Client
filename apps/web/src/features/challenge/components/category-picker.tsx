@@ -1,4 +1,5 @@
 import { CHALLENGE_CATEGORIES } from "@/features/challenge/create-schema";
+import RequiredMark from "@/shared/ui/required-mark";
 
 type ChallengeCategory = (typeof CHALLENGE_CATEGORIES)[number];
 
@@ -42,14 +43,7 @@ export default function CategoryPicker({
     >
       <legend className="text-label-sm font-label-normal text-object-neutral mb-2 flex items-start gap-0.5">
         카테고리
-        {required && (
-          <span
-            aria-hidden
-            className="text-(--color-semantic-feedback-notifying-static-inverse-bold)"
-          >
-            *
-          </span>
-        )}
+        {required && <RequiredMark />}
       </legend>
 
       <div className="flex items-start justify-between">

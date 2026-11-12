@@ -9,7 +9,9 @@ import {
   challengeCreateSchema,
 } from "@/features/challenge/create-schema";
 import FormTextField from "@/shared/ui/form-text-field";
+import FormTextarea from "@/shared/ui/form-textarea";
 import CategoryPicker from "../category-picker";
+import RecruitmentSection from "../recruitment/recruitment-section";
 import ScheduleSection from "../schedule-section";
 
 export default function DailyChallengeForm() {
@@ -30,7 +32,8 @@ export default function DailyChallengeForm() {
       startDate: "",
       visibility: "PUBLIC",
       capacity: 3,
-      pointAmount: 0,
+      usePoint: false,
+      pointAmount: 1000,
     },
   });
 
@@ -102,6 +105,16 @@ export default function DailyChallengeForm() {
       {/* 직접 만든 입력이라 register 대신 Controller로 RHF 값과 연결한다. */}
 
       <ScheduleSection control={control} />
+      <RecruitmentSection control={control} />
+
+      <FormTextarea
+        label="함께할 사람들에게 한 마디 (선택)"
+        error={errors.message?.message}
+        maxLength={30}
+        rows={3}
+        placeholder="예: 아침형 인간이 되고 싶은 기획자"
+        {...register("message")}
+      />
       <BlockButton type="submit" size="lg" hierarchy="accent">
         챌린지 생성하기
       </BlockButton>

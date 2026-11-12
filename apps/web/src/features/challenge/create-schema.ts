@@ -28,7 +28,10 @@ export const challengeCreateSchema = z
     durationWeeks: z.number("기간을 선택해 주세요").int().min(1),
     visibility: z.enum(["PUBLIC", "PRIVATE"]),
     capacity: z.number().int().max(10, "최대 10명까지 모집할 수 있어요."),
-    pointAmount: z.number().int().min(0).max(5000).multipleOf(500, "500P단위로 입력해 주세요"),
+    /** 참여 포인트를 걸지 여부. 공개 챌린지에서만 걸 수 있다. */
+    usePoint: z.boolean(),
+    /** 1인당 참여 포인트. usePoint가 true일 때만 쓴다(1,000~5,000P, 500P 단위). */
+    pointAmount: z.number().int().multipleOf(500, "500P 단위로 입력해 주세요"),
     message: z.string().trim().max(30, "30자 이내로 입력해 주세요"),
   })
   .superRefine((value, ctx) => {
@@ -40,11 +43,18 @@ export const challengeCreateSchema = z
         message: `방장 포함 최소 ${minCapacity}명이에요`,
       });
     }
-    if (value.visibility === "PRIVATE" && value.pointAmount > 0) {
+    if (value.visibility === "PRIVATE" && value.usePoint) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["usePoint"],
+        message: "비공개 챌린지는 포인트를 걸 수 없어요",
+      });
+    }
+    if (value.usePoint && (value.pointAmount < 1000 || value.pointAmount > 5000)) {
       ctx.addIssue({
         code: "custom",
         path: ["pointAmount"],
-        message: "비공개 챌린지는 포인트를 걸 수 없어요",
+        message: "1,000~5,000P 사이로 정해 주세요",
       });
     }
   });
