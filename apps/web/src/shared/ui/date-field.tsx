@@ -43,7 +43,11 @@ export default function DateField({
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <TextField required={required} status={error ? "error" : "default"}>
+      <TextField
+        required={required}
+        status={error ? "error" : "default"}
+        className="min-w-0 flex-1"
+      >
         <TextField.Label>{label}</TextField.Label>
         <TextField.Input
           value={value.replaceAll("-", ".")}
