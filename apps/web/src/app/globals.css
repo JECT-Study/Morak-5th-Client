@@ -25,6 +25,8 @@
 
   /* 모락 토큰(Figma "모락모락 토큰" surface/page). 대부분의 화면 배경. bg-page */
   --color-page: #f5f6f8;
+  /* 모락 토큰(Figma surface/photo). 사진이 없을 때 표지 영역 배경. bg-photo */
+  --color-photo: #f5f4f1;
 
   --color-surface-standard: var(--color-semantic-surface-standard);
   --color-surface-shallow: var(--color-semantic-surface-shallow);
@@ -117,6 +119,9 @@
   --text-title-5: var(--typo-primitive-fontSize-title-5);
   --text-title-5--line-height: var(--typo-primitive-font-lineHeight-title-5);
   --text-title-5--letter-spacing: var(--typo-primitive-font-letterSpacing-title-5);
+  --text-body-sm: var(--typo-primitive-fontSize-body-sm);
+  --text-body-sm--line-height: var(--typo-primitive-font-lineHeight-body-sm);
+  --text-body-sm--letter-spacing: var(--typo-primitive-font-letterSpacing-body-sm);
   --text-body-md: var(--typo-primitive-fontSize-body-md);
   --text-body-md--line-height: var(--typo-primitive-font-lineHeight-body-md);
   --text-body-md--letter-spacing: var(--typo-primitive-font-letterSpacing-body-md);
