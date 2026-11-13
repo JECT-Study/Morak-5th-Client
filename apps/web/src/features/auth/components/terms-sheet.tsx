@@ -3,10 +3,10 @@
 import { BlockButton, Checkbox } from "@jects/jds";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Dialog } from "radix-ui";
 import { useState } from "react";
 
 import { ApiError } from "@/shared/api/client";
+import BottomSheet from "@/shared/ui/bottom-sheet";
 
 import { agreeToTerms } from "../onboarding-api";
 import type { TermsAgreementsRequest } from "../types";
@@ -80,71 +80,58 @@ export default function TermsSheet() {
   };
 
   return (
-    <Dialog.Root open>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-black/60" />
-        <Dialog.Content
-          onEscapeKeyDown={(event) => event.preventDefault()}
-          onInteractOutside={(event) => event.preventDefault()}
-          aria-describedby={undefined}
-          className="bg-surface-shallow border-stroke-subtle rounded-t-16 fixed inset-x-0 bottom-0 z-50 mx-auto flex w-full max-w-[767px] flex-col gap-4 border-t px-6 pt-2 pb-[calc(env(safe-area-inset-bottom)+12px)] shadow-[0_0_4px_rgba(27,28,33,0.08),0_3px_8px_rgba(27,28,33,0.12),0_8px_16px_rgba(27,28,33,0.16)]"
-        >
-          <div aria-hidden className="mx-auto h-1 w-20 rounded-[2px] bg-[#bab9bf]" />
-          <Dialog.Title className="text-title-1 font-title-subtle text-object-bolder">
-            시작하기 전에 동의해 주세요
-          </Dialog.Title>
+    // 동의해야 넘어갈 수 있으므로 바깥 누르기·Esc·끌어내리기로 닫히지 않게 한다.
+    <BottomSheet open dismissible={false} title="시작하기 전에 동의해 주세요">
+      {/* Checkbox가 inline 요소라 flex로 감싸야 체크 여부에 따라 줄 높이가 1px씩 바뀌지 않는다. */}
+      <div className="border-stroke-subtle rounded-6 flex border px-3 py-2.5">
+        <Checkbox
+          size="lg"
+          label="전체동의"
+          checked={allAgreed ? true : someAgreed ? "indeterminate" : false}
+          onCheckedChange={(checked) => toggleAll(checked === true)}
+        />
+      </div>
 
-          <div className="border-stroke-subtle rounded-6 border px-3 py-2.5">
-            <Checkbox
-              size="lg"
-              label="전체동의"
-              checked={allAgreed ? true : someAgreed ? "indeterminate" : false}
-              onCheckedChange={(checked) => toggleAll(checked === true)}
-            />
-          </div>
+      <ul className="flex flex-col gap-4 px-3 py-1">
+        {TERMS.map(({ key, label, viewable }) => (
+          <li key={key} className="flex items-center gap-3">
+            <div className="flex min-w-0 flex-1">
+              <Checkbox
+                size="md"
+                label={label}
+                checked={agreed[key]}
+                onCheckedChange={(checked) =>
+                  setAgreed((prev) => ({ ...prev, [key]: checked === true }))
+                }
+              />
+            </div>
+            {viewable && (
+              // TODO: 약관 본문이 확정되면 해당 약관 문서로 이동한다.
+              <button
+                type="button"
+                className="text-label-sm text-object-alternative shrink-0 underline"
+              >
+                보기
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
 
-          <ul className="flex flex-col gap-4 px-3 py-1">
-            {TERMS.map(({ key, label, viewable }) => (
-              <li key={key} className="flex items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <Checkbox
-                    size="md"
-                    label={label}
-                    checked={agreed[key]}
-                    onCheckedChange={(checked) =>
-                      setAgreed((prev) => ({ ...prev, [key]: checked === true }))
-                    }
-                  />
-                </div>
-                {viewable && (
-                  // TODO: 약관 본문이 확정되면 해당 약관 문서로 이동한다.
-                  <button
-                    type="button"
-                    className="text-label-sm text-object-alternative shrink-0 underline"
-                  >
-                    보기
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
+      {error && (
+        <p role="alert" className="text-label-sm text-(--color-semantic-feedback-destructive)">
+          {error}
+        </p>
+      )}
 
-          {error && (
-            <p role="alert" className="text-label-sm text-(--color-semantic-feedback-destructive)">
-              {error}
-            </p>
-          )}
-
-          <BlockButton
-            size="lg"
-            hierarchy="accent"
-            disabled={!requiredAgreed || submitting}
-            onClick={() => void handleSubmit()}
-          >
-            동의하고 계속하기
-          </BlockButton>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+      <BlockButton
+        size="lg"
+        hierarchy="accent"
+        disabled={!requiredAgreed || submitting}
+        onClick={() => void handleSubmit()}
+      >
+        동의하고 계속하기
+      </BlockButton>
+    </BottomSheet>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import { DatePicker, Icon, TextField } from "@jects/jds";
-import { Dialog } from "radix-ui";
 import { useRef, useState, type KeyboardEvent, type RefCallback } from "react";
 
 import { addDays, fromDateString, toDateString, todayKst } from "@/shared/lib/date";
+import BottomSheet from "@/shared/ui/bottom-sheet";
 
 type DateFieldProps = {
   label: string;
@@ -54,7 +54,7 @@ export default function DateField({
   };
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
+    <>
       <TextField
         required={required}
         status={error ? "error" : "default"}
@@ -81,33 +81,27 @@ export default function DateField({
         )}
       </TextField>
 
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-black/60" />
-        <Dialog.Content
-          aria-describedby={undefined}
-          // Dialog.Trigger 없이 setOpen으로 열어서, 닫을 때 돌아갈 곳을 직접 정한다(Escape·날짜 선택 모두).
-          onCloseAutoFocus={(event) => {
-            event.preventDefault();
-            inputRef.current?.focus();
+      <BottomSheet
+        open={open}
+        onOpenChange={setOpen}
+        title={label}
+        // 트리거 없이 setOpen으로 열어서, 닫을 때 돌아갈 곳을 직접 정한다(Esc·끌어내리기·날짜 선택 모두).
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          inputRef.current?.focus();
+        }}
+      >
+        <Calendar
+          value={value}
+          minDaysFromToday={minDaysFromToday}
+          minDate={minDate}
+          onSelect={(next) => {
+            onChange(next);
+            setOpen(false);
           }}
-          className="bg-surface-shallow rounded-t-16 fixed inset-x-0 bottom-0 z-50 mx-auto flex w-full max-w-[767px] flex-col gap-4 px-6 pt-2 pb-[calc(env(safe-area-inset-bottom)+16px)]"
-        >
-          <div aria-hidden className="mx-auto h-1 w-20 rounded-[2px] bg-[#bab9bf]" />
-          <Dialog.Title className="text-title-1 font-title-subtle text-object-bolder">
-            {label}
-          </Dialog.Title>
-          <Calendar
-            value={value}
-            minDaysFromToday={minDaysFromToday}
-            minDate={minDate}
-            onSelect={(next) => {
-              onChange(next);
-              setOpen(false);
-            }}
-          />
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        />
+      </BottomSheet>
+    </>
   );
 }
 
