@@ -12,6 +12,16 @@ export const formatShortDate = (date: string) => {
 export const formatPeriod = (startDate: string, endDate: string) =>
   `${formatShortDate(startDate)} ~ ${formatShortDate(endDate)}`;
 
+/** "2026-10-20" → "10월 20일" */
+const formatMonthDay = (date: string) => {
+  const [, month, day] = date.split("-").map(Number);
+  return `${month}월 ${day}일`;
+};
+
+/** "10월 20일 ~ 11월 16일 (4주)" */
+export const formatPeriodWithWeeks = (startDate: string, endDate: string, weeks: number) =>
+  `${formatMonthDay(startDate)} ~ ${formatMonthDay(endDate)} (${weeks}주)`;
+
 /** 남은 일수. 마지막 날이면 0("D-Day") */
 export const getRemainingDays = (currentDay: number, totalDays: number) =>
   Math.max(totalDays - currentDay, 0);
