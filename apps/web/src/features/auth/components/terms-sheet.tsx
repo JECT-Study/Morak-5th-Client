@@ -1,15 +1,12 @@
 "use client";
 
 import { BlockButton, Checkbox } from "@jects/jds";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { ApiError } from "@/shared/api/client";
 import BottomSheet from "@/shared/ui/bottom-sheet";
 
-import { agreeToTerms } from "../onboarding-api";
 import type { TermsAgreementsRequest } from "../types";
+import { useAgreeTerms } from "../use-agree-terms";
 
 type TermKey = keyof TermsAgreementsRequest;
 
@@ -44,11 +41,8 @@ const NONE_AGREED: TermsAgreementsRequest = {
  * 동의해야 다음으로 갈 수 있으므로 바깥을 누르거나 Esc를 눌러도 닫히지 않는다.
  */
 export default function TermsSheet() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
   const [agreed, setAgreed] = useState<TermsAgreementsRequest>(NONE_AGREED);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { agree, isPending, errorMessage } = useAgreeTerms();
 
   const allAgreed = TERMS.every(({ key }) => agreed[key]);
   const someAgreed = TERMS.some(({ key }) => agreed[key]);
@@ -56,28 +50,6 @@ export default function TermsSheet() {
 
   const toggleAll = (checked: boolean) =>
     setAgreed(Object.fromEntries(TERMS.map(({ key }) => [key, checked])) as TermsAgreementsRequest);
-
-  const goToOnboarding = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["users", "me"] });
-    router.replace("/onboarding");
-  };
-
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    setError(null);
-    try {
-      await agreeToTerms(agreed);
-      await goToOnboarding();
-    } catch (cause) {
-      // 다른 탭 등에서 이미 동의했다면 그대로 온보딩으로 넘어간다.
-      if (cause instanceof ApiError && cause.code === "USER_001") {
-        await goToOnboarding();
-        return;
-      }
-      setError("동의를 저장하지 못했어요. 다시 시도해 주세요.");
-      setSubmitting(false);
-    }
-  };
 
   return (
     // 동의해야 넘어갈 수 있으므로 바깥 누르기·Esc·끌어내리기로 닫히지 않게 한다.
@@ -118,17 +90,17 @@ export default function TermsSheet() {
         ))}
       </ul>
 
-      {error && (
+      {errorMessage && (
         <p role="alert" className="text-label-sm text-(--color-semantic-feedback-destructive)">
-          {error}
+          {errorMessage}
         </p>
       )}
 
       <BlockButton
         size="lg"
         hierarchy="accent"
-        disabled={!requiredAgreed || submitting}
-        onClick={() => void handleSubmit()}
+        disabled={!requiredAgreed || isPending}
+        onClick={() => agree(agreed)}
       >
         동의하고 계속하기
       </BlockButton>
