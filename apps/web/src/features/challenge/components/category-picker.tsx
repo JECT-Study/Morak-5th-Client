@@ -1,4 +1,6 @@
 import { CHALLENGE_CATEGORIES } from "@/features/challenge/create-schema";
+import type { Ref } from "react";
+
 import RequiredMark from "@/shared/ui/required-mark";
 
 type ChallengeCategory = (typeof CHALLENGE_CATEGORIES)[number];
@@ -19,6 +21,8 @@ type CategoryPickerProps = {
   name: string;
   required?: boolean;
   error?: string;
+  /** RHF Controller의 field.ref. 검증 실패 시 이 라디오 묶음으로 포커스가 간다. */
+  ref?: Ref<HTMLInputElement>;
 };
 
 /**
@@ -32,8 +36,11 @@ export default function CategoryPicker({
   name,
   required,
   error,
+  ref,
 }: CategoryPickerProps) {
   const errorId = `${name}-error`;
+  // Tab으로 들어올 때 포커스를 받는 라디오(선택된 것, 없으면 첫 번째)에 ref를 단다.
+  const focusTarget = value ?? CHALLENGE_CATEGORIES[0];
 
   return (
     <fieldset
@@ -58,6 +65,7 @@ export default function CategoryPicker({
               }`}
             >
               <input
+                ref={category === focusTarget ? ref : undefined}
                 type="radio"
                 name={name}
                 value={category}

@@ -22,6 +22,7 @@ export default function ScheduleSection({ control }: { control: Control<Challeng
           control={control}
           render={({ field, fieldState }) => (
             <DateField
+              ref={field.ref}
               label="시작일"
               required
               value={field.value}
@@ -42,6 +43,7 @@ export default function ScheduleSection({ control }: { control: Control<Challeng
             >
               <SelectField.Label>기간</SelectField.Label>
               <SelectField.Input
+                ref={field.ref}
                 options={DURATION_OPTIONS}
                 // SelectField 값은 문자열이고 폼 값(durationWeeks)은 숫자라 서로 바꿔 준다.
                 value={field.value ? String(field.value) : null}

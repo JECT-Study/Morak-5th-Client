@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BlockButton } from "@jects/jds";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, type FieldErrors, type FieldPath } from "react-hook-form";
 
 import {
   type ChallengeCreateForm,
@@ -14,14 +14,37 @@ import CategoryPicker from "../category-picker";
 import RecruitmentSection from "../recruitment/recruitment-section";
 import ScheduleSection from "../schedule-section";
 
+/**
+ * 화면에 보이는 순서. 검증에 실패하면 이 순서로 첫 에러 칸에 포커스를 준다.
+ * RHF 기본 포커스는 등록 순서를 따르는데, Controller 필드는 register 필드보다 늦게 등록돼
+ * 화면 위쪽의 카테고리보다 아래 입력칸으로 먼저 가 버린다.
+ */
+const FIELD_ORDER: FieldPath<ChallengeCreateForm>[] = [
+  "title",
+  "category",
+  "description",
+  "mission",
+  "verificationMethod",
+  "purpose",
+  "startDate",
+  "durationWeeks",
+  "visibility",
+  "capacity",
+  "usePoint",
+  "pointAmount",
+  "message",
+];
+
 export default function DailyChallengeForm() {
   const {
     register,
     control,
     handleSubmit,
+    setFocus,
     formState: { errors },
   } = useForm<ChallengeCreateForm>({
     resolver: zodResolver(challengeCreateSchema),
+    shouldFocusError: false,
     defaultValues: {
       title: "",
       description: "",
@@ -42,8 +65,17 @@ export default function DailyChallengeForm() {
     console.info("챌린지 만들기", values);
   };
 
+  const focusFirstError = (fieldErrors: FieldErrors<ChallengeCreateForm>) => {
+    const first = FIELD_ORDER.find((name) => fieldErrors[name]);
+    if (first) setFocus(first);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSubmit(onSubmit, focusFirstError)}
+      noValidate
+      className="flex flex-col gap-4"
+    >
       <FormTextField
         label="챌린지 제목"
         required
@@ -58,6 +90,7 @@ export default function DailyChallengeForm() {
         control={control}
         render={({ field, fieldState }) => (
           <CategoryPicker
+            ref={field.ref}
             name={field.name}
             required
             value={field.value}

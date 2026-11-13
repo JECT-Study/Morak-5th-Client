@@ -2,7 +2,7 @@
 
 import { DatePicker, Icon, TextField } from "@jects/jds";
 import { Dialog } from "radix-ui";
-import { useState, type KeyboardEvent } from "react";
+import { useRef, useState, type KeyboardEvent, type RefCallback } from "react";
 
 import { fromDateString, toDateString, todayKst } from "@/shared/lib/date";
 
@@ -16,6 +16,8 @@ type DateFieldProps = {
   required?: boolean;
   error?: string;
   placeholder?: string;
+  /** 입력칸 ref. RHF Controller의 field.ref를 넘기면 검증 실패 시 이 칸으로 포커스가 간다. */
+  ref?: RefCallback<HTMLInputElement>;
 };
 
 /**
@@ -31,8 +33,15 @@ export default function DateField({
   required,
   error,
   placeholder = "YYYY.MM.DD",
+  ref,
 }: DateFieldProps) {
   const [open, setOpen] = useState(false);
+  // 시트를 닫으면 포커스를 이 입력칸으로 돌려준다. 바깥에서 받은 ref(RHF field.ref)에도 같이 넘긴다.
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const setInputRef = (node: HTMLInputElement | null) => {
+    inputRef.current = node;
+    ref?.(node);
+  };
 
   // 글자 입력은 막고, Enter·Space로는 달력을 연다. Tab 이동은 그대로 둔다.
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -50,6 +59,7 @@ export default function DateField({
       >
         <TextField.Label>{label}</TextField.Label>
         <TextField.Input
+          ref={setInputRef}
           value={value.replaceAll("-", ".")}
           onChange={() => undefined}
           onClick={() => setOpen(true)}
@@ -72,6 +82,11 @@ export default function DateField({
         <Dialog.Overlay className="fixed inset-0 z-40 bg-black/60" />
         <Dialog.Content
           aria-describedby={undefined}
+          // Dialog.Trigger 없이 setOpen으로 열어서, 닫을 때 돌아갈 곳을 직접 정한다(Escape·날짜 선택 모두).
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            inputRef.current?.focus();
+          }}
           className="bg-surface-shallow rounded-t-16 fixed inset-x-0 bottom-0 z-50 mx-auto flex w-full max-w-[767px] flex-col gap-4 px-6 pt-2 pb-[calc(env(safe-area-inset-bottom)+16px)]"
         >
           <div aria-hidden className="mx-auto h-1 w-20 rounded-[2px] bg-[#bab9bf]" />
