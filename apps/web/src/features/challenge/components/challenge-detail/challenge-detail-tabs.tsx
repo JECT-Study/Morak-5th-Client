@@ -3,6 +3,7 @@
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "@jects/jds";
 
 import IntroTab, { type ChallengeIntroData } from "./intro-tab";
+import MembersTab, { type ChallengeMember } from "./members-tab";
 
 const TABS = [
   { value: "certification", label: "인증" },
@@ -12,13 +13,14 @@ const TABS = [
 
 type ChallengeDetailTabsProps = {
   intro: ChallengeIntroData;
+  members: ChallengeMember[];
 };
 
 /**
  * 챌린지 상세 하단 탭(Figma "Tabs": 인증 · 팀원 · 소개). 탭을 누르면 아래 내용이 바뀐다.
  * JDS Tabs(radix 기반)라 방향키 이동·스크린리더 탭 안내가 기본으로 된다.
  */
-export default function ChallengeDetailTabs({ intro }: ChallengeDetailTabsProps) {
+export default function ChallengeDetailTabs({ intro, members }: ChallengeDetailTabsProps) {
   return (
     <TabsRoot defaultValue="certification" variant="header" isItemStretched>
       <TabsList>
@@ -29,12 +31,12 @@ export default function ChallengeDetailTabs({ intro }: ChallengeDetailTabsProps)
         ))}
       </TabsList>
 
-      {/* TODO: 인증·팀원 탭 시안이 나오면 내용을 만든다. */}
+      {/* TODO: 인증 탭 시안이 나오면 내용을 만든다. */}
       <TabsContent value="certification">
         <TabPlaceholder name="인증" />
       </TabsContent>
       <TabsContent value="members">
-        <TabPlaceholder name="팀원" />
+        <MembersTab members={members} memberCount={intro.memberCount} capacity={intro.capacity} />
       </TabsContent>
       <TabsContent value="intro">
         <IntroTab {...intro} />

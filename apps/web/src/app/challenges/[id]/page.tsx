@@ -1,4 +1,5 @@
 import ChallengeDetailTabs from "@/features/challenge/components/challenge-detail/challenge-detail-tabs";
+import type { ChallengeMember } from "@/features/challenge/components/challenge-detail/members-tab";
 import ChallengeInfo from "@/features/challenge/components/challenge-detail/challenge-info";
 import AppHeader from "@/shared/layout/app-header";
 
@@ -41,12 +42,22 @@ const introMock = {
   ],
 };
 
+const membersMock: ChallengeMember[] = [
+  { id: 1, nickname: "현희", role: "owner" },
+  { id: 2, nickname: "다연", role: "subOwner", isMe: true },
+  { id: 3, nickname: "지아", role: "member" },
+  { id: 4, nickname: "준호", role: "member" },
+  { id: 5, nickname: "서연", role: "member" },
+  { id: 6, nickname: "민지", role: "member" },
+  { id: 7, nickname: "수빈", role: "member" },
+];
+
 export default function ChallengeDetailPage() {
   return (
     <>
       <AppHeader nested title="챌린지 상세" />
       <ChallengeInfo {...challengeMock} />
-      <ChallengeDetailTabs intro={introMock} />
+      <ChallengeDetailTabs intro={introMock} members={membersMock} />
     </>
   );
 }
