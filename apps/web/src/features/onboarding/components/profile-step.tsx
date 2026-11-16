@@ -18,10 +18,8 @@ export default function ProfileStep({ form, errors, onChange }: ProfileStepProps
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 text-center">
         <Image src="/images/morak-character.svg" alt="" width={96} height={92} priority />
-        <h2 className="text-title-1 font-title-subtle text-object-boldest">
-          모락에 오신 것을 환영해요!
-        </h2>
-        <p className="text-label-md font-label-subtle text-object-neutral">
+        <h2 className="text-title-1 font-title text-fg-primary">모락에 오신 것을 환영해요!</h2>
+        <p className="text-label-md font-label-normal text-fg-secondary">
           함께 도전할 준비를 해볼까요?
         </p>
       </div>
@@ -75,13 +73,13 @@ export default function ProfileStep({ form, errors, onChange }: ProfileStepProps
       </TextField>
 
       <fieldset className="flex flex-col gap-2">
-        <legend className="text-label-md font-label-bold text-object-bolder">
+        <legend className="text-label-md font-label-strong text-fg-primary">
           관심 분야
-          <span className="text-label-sm font-label-subtle text-object-alternative ml-1">
+          <span className="text-label-sm font-label-normal text-fg-tertiary ml-1">
             최소 1개 / 복수 선택
           </span>
         </legend>
-        <p className="text-label-sm font-label-subtle text-object-alternative">
+        <p className="text-label-sm font-label-normal text-fg-tertiary">
           관심 있는 도전 주제를 골라 주세요.
         </p>
         <CheckboxGroup<Interest>

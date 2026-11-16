@@ -28,14 +28,14 @@ export default function TeamStats({ memberCount, successRate, depositAmount }: T
   ];
 
   return (
-    <div className="bg-surface-deep rounded-10 flex py-4">
+    <div className="bg-surface-secondary rounded-10 flex py-4">
       {stats.map(({ icon, value, label }, index) => (
         <Fragment key={label}>
           {index > 0 && <Separator orientation="vertical" />}
           <div className="flex flex-1 flex-col items-center gap-0.5">
-            <span className="text-object-alternative flex">{icon}</span>
-            <p className="text-label-lg font-label-bold text-object-boldest">{value}</p>
-            <p className="text-label-sm font-label-subtle text-object-alternative">{label}</p>
+            <span className="text-fg-tertiary flex">{icon}</span>
+            <p className="text-label-lg font-label-strong text-fg-primary">{value}</p>
+            <p className="text-label-sm font-label-normal text-fg-tertiary">{label}</p>
           </div>
         </Fragment>
       ))}

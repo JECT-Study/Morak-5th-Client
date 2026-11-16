@@ -20,12 +20,12 @@ export default function ChallengeProgress({
     <div className="flex flex-col gap-1">
       <div className="flex items-end justify-between px-1">
         <p className="flex items-end gap-1">
-          <span className="text-title-5 font-title-bold text-lime-assistive">{currentDay}</span>
-          <span className="text-label-lg font-label-normal text-object-neutral pb-2">
+          <span className="text-title-5 font-title text-lime-assistive">{currentDay}</span>
+          <span className="text-label-lg font-label-normal text-fg-secondary pb-2">
             일차 / {totalDays}일
           </span>
         </p>
-        <p className="text-label-xs font-label-normal text-object-alternative flex flex-col items-end pb-1">
+        <p className="text-label-xs font-label-normal text-fg-tertiary flex flex-col items-end pb-1">
           <span>{formatPeriod(startDate, endDate)}</span>
           <span>{formatDDay(getRemainingDays(currentDay, totalDays))}</span>
         </p>
@@ -37,7 +37,7 @@ export default function ChallengeProgress({
         aria-valuemin={0}
         aria-valuemax={totalDays}
         aria-valuenow={currentDay}
-        className="bg-surface-deeper h-3 overflow-hidden rounded-full"
+        className="bg-surface-tertiary h-3 overflow-hidden rounded-full"
       >
         <div
           className="bg-lime-subtler h-full rounded-full"

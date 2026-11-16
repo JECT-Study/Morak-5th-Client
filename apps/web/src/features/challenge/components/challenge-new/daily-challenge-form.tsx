@@ -150,10 +150,7 @@ export default function DailyChallengeForm() {
         {...register("message")}
       />
       {errorMessage && (
-        <p
-          role="alert"
-          className="text-label-sm text-(--color-semantic-feedback-destructive-normal)"
-        >
+        <p role="alert" className="text-label-sm text-danger">
           {errorMessage}
         </p>
       )}

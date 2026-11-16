@@ -11,7 +11,7 @@ export default async function LoginError({ searchParams }: Props) {
   if (!message) return null;
 
   return (
-    <p role="alert" className="text-label-sm text-(--color-semantic-feedback-destructive)">
+    <p role="alert" className="text-label-sm text-danger">
       {message}
     </p>
   );

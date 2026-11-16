@@ -86,9 +86,9 @@ export default function OnboardingFlow() {
         {step === "guide" && <GuideStep />}
         {step === "done" && <DoneStep />}
       </main>
-      <div className="bg-page border-stroke-subtler sticky bottom-0 flex flex-col gap-2 border-t px-6 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
+      <div className="bg-background-secondary border-line-subtle sticky bottom-0 flex flex-col gap-2 border-t px-6 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
         {onboarding.errorMessage && (
-          <p role="alert" className="text-label-sm text-(--color-semantic-feedback-destructive)">
+          <p role="alert" className="text-label-sm text-danger">
             {onboarding.errorMessage}
           </p>
         )}

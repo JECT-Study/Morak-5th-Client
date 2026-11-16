@@ -9,21 +9,19 @@ export default function DoneStep() {
     <div className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
       <Image src="/images/morak-character.svg" alt="" width={128} height={123} priority />
       <div className="flex flex-col gap-2">
-        <h2 className="text-title-1 font-title-subtle text-object-boldest">
-          모락을 시작할 준비가 되었어요!
-        </h2>
-        <p className="text-label-lg font-label-subtle text-object-neutral">
+        <h2 className="text-title-1 font-title text-fg-primary">모락을 시작할 준비가 되었어요!</h2>
+        <p className="text-label-lg font-label-normal text-fg-secondary">
           이제 함께 도전할 챌린지를 찾아보세요.
         </p>
       </div>
-      <div className="bg-surface-shallow rounded-12 flex w-full flex-col gap-1 px-5 py-6">
-        <p className="text-label-md font-label-subtle text-object-neutral">첫 가입 포인트</p>
-        <p className="text-title-3 font-title-normal text-object-boldest">
+      <div className="bg-surface-primary rounded-12 flex w-full flex-col gap-1 px-5 py-6">
+        <p className="text-label-md font-label-normal text-fg-secondary">첫 가입 포인트</p>
+        <p className="text-title-3 font-title text-fg-primary">
           {SIGN_UP_POINT.toLocaleString("ko-KR")}P
         </p>
-        <p className="text-label-md font-label-subtle text-object-neutral">지급되었어요.</p>
+        <p className="text-label-md font-label-normal text-fg-secondary">지급되었어요.</p>
       </div>
-      <p className="text-label-sm font-label-subtle text-object-alternative">
+      <p className="text-label-sm font-label-normal text-fg-tertiary">
         포인트를 거는 공개 챌린지에 사용할 수 있어요.
       </p>
     </div>

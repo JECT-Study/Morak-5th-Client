@@ -28,14 +28,14 @@ export default function ConditionRow({
         <div className="flex min-w-0 flex-col">
           <span
             id={`${id}-label`}
-            className="text-label-sm font-label-normal text-object-neutral flex items-start gap-0.5"
+            className="text-label-sm font-label-normal text-fg-secondary flex items-start gap-0.5"
           >
             {label}
             {required && <RequiredMark />}
           </span>
           <span
             id={`${id}-description`}
-            className="text-label-xs font-label-subtle text-object-alternative break-keep"
+            className="text-label-xs font-label-normal text-fg-tertiary break-keep"
           >
             {description}
           </span>
@@ -43,10 +43,7 @@ export default function ConditionRow({
         <div className="shrink-0">{children}</div>
       </div>
       {error && (
-        <p
-          role="alert"
-          className="text-label-sm text-(--color-semantic-feedback-destructive-normal)"
-        >
+        <p role="alert" className="text-label-sm text-danger">
           {error}
         </p>
       )}

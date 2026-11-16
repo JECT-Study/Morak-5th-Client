@@ -47,7 +47,7 @@ export default function ChallengeDetailTabs({ intro, members }: ChallengeDetailT
 
 function TabPlaceholder({ name }: { name: string }) {
   return (
-    <p className="text-label-md font-label-subtle text-object-assistive py-16 text-center">
+    <p className="text-label-md font-label-normal text-fg-quaternary py-16 text-center">
       {name} 탭은 준비 중이에요.
     </p>
   );

@@ -33,16 +33,16 @@ const ROLE_BADGE: Record<
 /** 챌린지 상세 "팀원" 탭(Figma "팀원" + "member list"). 인원 수와 팀원 목록을 보여준다. */
 export default function MembersTab({ members, memberCount, capacity }: MembersTabProps) {
   return (
-    <div className="bg-surface-deep flex flex-col">
-      <p className="bg-surface-standard text-label-lg flex items-center gap-2 px-6 py-4">
-        <span className="font-label-bold text-object-boldest">팀원</span>
-        <span className="font-label-subtle text-object-alternative">
+    <div className="bg-surface-secondary flex flex-col">
+      <p className="bg-surface-primary text-label-lg flex items-center gap-2 px-6 py-4">
+        <span className="font-label-strong text-fg-primary">팀원</span>
+        <span className="font-label-normal text-fg-tertiary">
           {memberCount}/{capacity}명
         </span>
       </p>
 
       <div className="p-4">
-        <ul className="bg-surface-standard rounded-12 flex flex-col px-3 py-1">
+        <ul className="bg-surface-primary rounded-12 flex flex-col px-3 py-1">
           {members.map((member, index) => (
             <Fragment key={member.id}>
               {index > 0 && <Separator />}
@@ -68,7 +68,7 @@ function MemberRow({ nickname, role, isMe }: ChallengeMember) {
           {nickname.charAt(0)}
         </span>
         <div className="flex min-w-0 items-center gap-2">
-          <span className="text-label-lg font-label-normal text-object-boldest truncate">
+          <span className="text-label-lg font-label-normal text-fg-primary truncate">
             {nickname}
             {isMe && " (나)"}
           </span>

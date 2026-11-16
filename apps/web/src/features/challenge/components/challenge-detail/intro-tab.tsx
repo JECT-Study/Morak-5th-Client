@@ -39,9 +39,9 @@ export default function IntroTab({
   notices,
 }: ChallengeIntroData) {
   return (
-    <div className="bg-surface-deep flex flex-col gap-3 p-4">
+    <div className="bg-surface-secondary flex flex-col gap-3 p-4">
       <IntroCard title="챌린지 소개">
-        <p className="text-body-sm font-body-normal text-object-bold break-keep">{description}</p>
+        <p className="text-body-sm font-body-normal text-fg-primary break-keep">{description}</p>
       </IntroCard>
 
       <IntroCard title="기본 정보">
@@ -71,7 +71,7 @@ export default function IntroTab({
         <BulletList
           items={rules}
           icon={<CircleCheck className="size-5" />}
-          iconClassName="text-(--color-semantic-feedback-positive-alternative)"
+          iconClassName="text-success"
         />
       </IntroCard>
 
@@ -79,7 +79,7 @@ export default function IntroTab({
         <BulletList
           items={notices}
           icon={<Info className="size-5" />}
-          iconClassName="text-object-alternative"
+          iconClassName="text-fg-tertiary"
         />
       </IntroCard>
     </div>
@@ -89,8 +89,8 @@ export default function IntroTab({
 /** 흰 카드 + 제목 */
 function IntroCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="bg-surface-standard rounded-12 flex flex-col gap-3 p-4">
-      <h3 className="text-label-lg font-label-bold text-object-boldest">{title}</h3>
+    <section className="bg-surface-primary rounded-12 flex flex-col gap-3 p-4">
+      <h3 className="text-label-lg font-label-strong text-fg-primary">{title}</h3>
       {children}
     </section>
   );
@@ -110,13 +110,13 @@ function InfoRow({
     <div className="flex items-start gap-3">
       <span
         aria-hidden
-        className="text-object-alternative flex size-5 shrink-0 items-center justify-center"
+        className="text-fg-tertiary flex size-5 shrink-0 items-center justify-center"
       >
         {icon}
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <dt className="text-label-sm font-label-subtle text-object-alternative">{title}</dt>
-        <dd className="text-body-sm font-body-normal text-object-boldest">{children}</dd>
+        <dt className="text-label-sm font-label-normal text-fg-tertiary">{title}</dt>
+        <dd className="text-body-sm font-body-normal text-fg-primary">{children}</dd>
       </div>
     </div>
   );
@@ -142,7 +142,7 @@ function BulletList({
           >
             {icon}
           </span>
-          <span className="text-body-sm font-body-normal text-object-bold min-w-0 flex-1">
+          <span className="text-body-sm font-body-normal text-fg-primary min-w-0 flex-1">
             {item}
           </span>
         </li>

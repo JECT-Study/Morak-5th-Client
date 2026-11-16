@@ -39,13 +39,11 @@ export default function BottomSheet({
         <Drawer.Content
           aria-describedby={undefined}
           onCloseAutoFocus={onCloseAutoFocus}
-          className="bg-surface-shallow border-stroke-subtle rounded-t-16 fixed inset-x-0 bottom-0 z-50 mx-auto flex w-full max-w-[767px] flex-col gap-4 border-t px-6 pt-2 pb-[calc(env(safe-area-inset-bottom)+16px)] shadow-[0_0_4px_rgba(27,28,33,0.08),0_3px_8px_rgba(27,28,33,0.12),0_8px_16px_rgba(27,28,33,0.16)] outline-none"
+          className="bg-surface-primary border-line-subtle rounded-t-16 fixed inset-x-0 bottom-0 z-50 mx-auto flex w-full max-w-[767px] flex-col gap-4 border-t px-6 pt-2 pb-[calc(env(safe-area-inset-bottom)+16px)] shadow-[0_0_4px_rgba(27,28,33,0.08),0_3px_8px_rgba(27,28,33,0.12),0_8px_16px_rgba(27,28,33,0.16)] outline-none"
         >
           {/* Figma 손잡이(80×4). vaul은 시트 전체를 끌 수 있어 손잡이는 모양만 둔다. */}
           <div aria-hidden className="mx-auto h-1 w-20 shrink-0 rounded-[2px] bg-[#bab9bf]" />
-          <Drawer.Title className="text-title-1 font-title-subtle text-object-bolder">
-            {title}
-          </Drawer.Title>
+          <Drawer.Title className="text-title-1 font-title text-fg-primary">{title}</Drawer.Title>
           {children}
         </Drawer.Content>
       </Drawer.Portal>

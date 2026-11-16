@@ -33,7 +33,7 @@ export default function ChatRoomTest() {
   const { id } = useParams<{ id: string }>();
   const challengeId = Number(id);
   if (!Number.isInteger(challengeId) || challengeId <= 0) {
-    return <p className="text-label-md text-object-alternative p-6">잘못된 챌린지 번호예요.</p>;
+    return <p className="text-label-md text-fg-tertiary p-6">잘못된 챌린지 번호예요.</p>;
   }
   return <ChatRoom challengeId={challengeId} />;
 }
@@ -66,14 +66,14 @@ function ChatRoom({ challengeId }: { challengeId: number }) {
               type="button"
               onClick={() => void room.loadOlder()}
               disabled={room.loadingOlder}
-              className="text-label-sm text-object-alternative underline"
+              className="text-label-sm text-fg-tertiary underline"
             >
               {room.loadingOlder ? "불러오는 중…" : "이전 메시지 더 보기"}
             </button>
           </li>
         )}
         {room.messages.length === 0 && room.status === "connected" && (
-          <li className="text-label-sm text-object-assistive py-10 text-center">
+          <li className="text-label-sm text-fg-quaternary py-10 text-center">
             아직 메시지가 없어요.
           </li>
         )}
@@ -97,7 +97,7 @@ function ChatRoom({ challengeId }: { challengeId: number }) {
 
       <form
         onSubmit={handleSubmit}
-        className="bg-page border-stroke-subtler sticky bottom-0 flex gap-2 border-t px-6 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]"
+        className="bg-background-secondary border-line-subtle sticky bottom-0 flex gap-2 border-t px-6 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]"
       >
         <input
           value={text}
@@ -105,7 +105,7 @@ function ChatRoom({ challengeId }: { challengeId: number }) {
           maxLength={1000}
           placeholder={room.status === "connected" ? "메시지 입력" : "연결되면 보낼 수 있어요"}
           aria-label="메시지 입력"
-          className="rounded-8 border-stroke-subtle bg-surface-standard text-label-md flex-1 border px-3"
+          className="rounded-8 border-line-subtle bg-surface-primary text-label-md flex-1 border px-3"
         />
         <Button type="submit" size="md" disabled={room.status !== "connected" || !text.trim()}>
           보내기
@@ -124,15 +124,15 @@ function StatusBar({
 }) {
   const color =
     status === "connected"
-      ? "text-feedback-positive"
+      ? "text-success"
       : status === "error"
-        ? "text-feedback-destructive"
-        : "text-object-alternative";
+        ? "text-danger"
+        : "text-fg-tertiary";
   return (
-    <div className="bg-surface-standard border-stroke-subtler flex items-center justify-between border-b px-6 py-2">
-      <span className={`text-label-sm font-label-bold ${color}`}>● {STATUS_LABEL[status]}</span>
+    <div className="bg-surface-primary border-line-subtle flex items-center justify-between border-b px-6 py-2">
+      <span className={`text-label-sm font-label-strong ${color}`}>● {STATUS_LABEL[status]}</span>
       {error && (
-        <span className="text-label-xs text-feedback-destructive">
+        <span className="text-label-xs text-danger">
           {error.code} · {error.message}
           {error.code === "UNAUTHENTICATED" && (
             <Link href="/login" className="ml-1 underline">
@@ -148,7 +148,7 @@ function StatusBar({
 function MessageItem({ message, isMine }: { message: ChatMessage; isMine: boolean }) {
   if (message.type === "SYSTEM") {
     return (
-      <li className="text-label-xs text-object-alternative text-center">
+      <li className="text-label-xs text-fg-tertiary text-center">
         {message.content} · {formatTime(message.createdAt)}
       </li>
     );
@@ -156,13 +156,13 @@ function MessageItem({ message, isMine }: { message: ChatMessage; isMine: boolea
   return (
     <li className={`flex flex-col gap-1 ${isMine ? "items-end" : "items-start"}`}>
       {!isMine && (
-        <span className="text-label-xs font-label-bold text-object-neutral">
+        <span className="text-label-xs font-label-strong text-fg-secondary">
           {message.sender?.nickname ?? "알 수 없음"}
           {message.sender?.role === "HOST" && " · 방장"}
         </span>
       )}
       {message.reply && (
-        <span className="text-label-xs text-object-assistive">
+        <span className="text-label-xs text-fg-quaternary">
           ↩ {message.reply.authorNickname ?? "삭제된 인증"} · {message.reply.certDate ?? "-"} 인증에
           답글
         </span>
@@ -172,15 +172,15 @@ function MessageItem({ message, isMine }: { message: ChatMessage; isMine: boolea
         <p
           className={`rounded-12 text-label-md max-w-60 px-3 py-2 break-all whitespace-pre-wrap ${
             isMine
-              ? "bg-accent-subtlest text-object-boldest"
-              : "bg-surface-standard text-object-boldest"
+              ? "bg-surface-brand-subtle text-fg-primary"
+              : "bg-surface-primary text-fg-primary"
           }`}
         >
-          {message.content ?? <span className="text-object-assistive">삭제된 메시지예요.</span>}
+          {message.content ?? <span className="text-fg-quaternary">삭제된 메시지예요.</span>}
         </p>
         {!isMine && <Time createdAt={message.createdAt} />}
       </div>
-      <span className="text-object-subtle font-mono text-[10px]">
+      <span className="text-fg-disabled font-mono text-[10px]">
         #{message.id} · {message.clientMessageId?.slice(0, 8) ?? "-"}
       </span>
     </li>
@@ -200,14 +200,14 @@ function PendingItem({
   return (
     <li className="flex flex-col items-end gap-1">
       <p
-        className={`rounded-12 text-label-md bg-accent-subtlest text-object-boldest max-w-60 px-3 py-2 break-all whitespace-pre-wrap ${
+        className={`rounded-12 text-label-md bg-surface-brand-subtle text-fg-primary max-w-60 px-3 py-2 break-all whitespace-pre-wrap ${
           failed ? "" : "opacity-50"
         }`}
       >
         {item.content}
       </p>
       {failed ? (
-        <span className="text-label-xs text-feedback-destructive flex gap-2">
+        <span className="text-label-xs text-danger flex gap-2">
           {item.errorMessage ?? "보내지 못했어요."}
           <button type="button" onClick={onRetry} className="underline">
             다시 보내기
@@ -217,9 +217,9 @@ function PendingItem({
           </button>
         </span>
       ) : (
-        <span className="text-label-xs text-object-assistive">보내는 중…</span>
+        <span className="text-label-xs text-fg-quaternary">보내는 중…</span>
       )}
-      <span className="text-object-subtle font-mono text-[10px]">
+      <span className="text-fg-disabled font-mono text-[10px]">
         {item.clientMessageId.slice(0, 8)}
       </span>
     </li>
@@ -228,7 +228,7 @@ function PendingItem({
 
 function Time({ createdAt }: { createdAt: string }) {
   return (
-    <time dateTime={createdAt} className="text-label-xs text-object-assistive shrink-0">
+    <time dateTime={createdAt} className="text-label-xs text-fg-quaternary shrink-0">
       {formatTime(createdAt)}
     </time>
   );

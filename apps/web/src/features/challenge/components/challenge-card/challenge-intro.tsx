@@ -34,11 +34,11 @@ export default function ChallengeIntro({
       </div>
 
       <div className="flex flex-col gap-1">
-        <h2 className="text-title-1 font-title-subtle text-object-boldest">{title}</h2>
-        <p className="text-label-lg font-label-subtle text-object-normal">{description}</p>
+        <h2 className="text-title-1 font-title text-fg-primary">{title}</h2>
+        <p className="text-label-lg font-label-normal text-fg-secondary">{description}</p>
         <Link
           href={`/challenges/${id}`}
-          className="text-label-xs font-label-subtle text-object-alternative flex items-center justify-end gap-1"
+          className="text-label-xs font-label-normal text-fg-tertiary flex items-center justify-end gap-1"
         >
           챌린지 상세보기
           <ChevronRight aria-hidden className="size-4" />

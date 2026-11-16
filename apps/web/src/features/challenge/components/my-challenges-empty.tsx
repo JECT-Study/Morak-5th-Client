@@ -12,10 +12,8 @@ export default function MyChallengesEmpty() {
   return (
     <section className="mx-auto mt-[42px] flex w-full max-w-[327px] flex-col items-center gap-6 p-5 text-center">
       <Image src="/images/morak-character.svg" alt="" width={128} height={123} priority />
-      <h2 className="text-title-1 font-title-subtle text-object-boldest">
-        아직 참여중인 챌린지가 없어요
-      </h2>
-      <p className="text-label-lg font-label-subtle text-object-neutral">
+      <h2 className="text-title-1 font-title text-fg-primary">아직 참여중인 챌린지가 없어요</h2>
+      <p className="text-label-lg font-label-normal text-fg-secondary">
         지금 관심 있는 챌린지를 찾아보거나
         <br />
         직접 만들어보세요.

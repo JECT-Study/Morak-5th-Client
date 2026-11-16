@@ -19,7 +19,7 @@ type ChallengeCardProps = {
 export default function ChallengeCard({ challenge, className }: ChallengeCardProps) {
   return (
     <article
-      className={`bg-surface-standard border-stroke-subtle rounded-12 flex flex-col gap-3 border p-5 ${className ?? ""}`}
+      className={`bg-surface-primary border-line-subtle rounded-12 flex flex-col gap-3 border p-5 ${className ?? ""}`}
     >
       <ChallengeIntro
         id={challenge.id}

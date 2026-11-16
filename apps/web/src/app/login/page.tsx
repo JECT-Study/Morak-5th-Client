@@ -18,10 +18,8 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <main className="flex flex-1 flex-col items-center gap-6 px-6 pt-[calc(env(safe-area-inset-top)+48px)] pb-[calc(env(safe-area-inset-bottom)+24px)] text-center">
       <Image src="/images/morak-character.svg" alt="" width={128} height={123} priority />
-      <h1 className="text-title-3 font-title-normal text-object-boldest">
-        함께하니까, 포기하지 않게
-      </h1>
-      <p className="text-body-md font-body-normal text-object-neutral break-keep">
+      <h1 className="text-title-3 font-title text-fg-primary">함께하니까, 포기하지 않게</h1>
+      <p className="text-body-md font-body-normal text-fg-secondary break-keep">
         목표를 함께하고, 보증금으로 실천 의지를 더해
         <br />
         끝까지 완주해 보세요.
@@ -44,7 +42,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
         </Button>
       </div>
 
-      <p className="text-label-sm font-label-subtle text-object-alternative">
+      <p className="text-label-sm font-label-normal text-fg-tertiary">
         처음이면 가입 후 간단한 설정으로 이어져요.
         <br />
         계속하면 이용약관 및 개인정보처리방침에 동의하게 됩니다.

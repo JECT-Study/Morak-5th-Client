@@ -44,7 +44,7 @@ export default function ChallengeCardCarousel({ challenges }: ChallengeCardCarou
             <span
               key={challenge.id}
               className={`h-2 rounded-full transition-[width] ${
-                index === activeIndex ? "bg-object-boldest w-3.75" : "bg-object-subtler w-2"
+                index === activeIndex ? "bg-fg-primary w-3.75" : "bg-fg-disabled w-2"
               }`}
             />
           ))}

@@ -56,7 +56,7 @@ export default function TermsSheet() {
     // 동의해야 넘어갈 수 있으므로 바깥 누르기·Esc·끌어내리기로 닫히지 않게 한다.
     <BottomSheet open dismissible={false} title="시작하기 전에 동의해 주세요">
       {/* Checkbox가 inline 요소라 flex로 감싸야 체크 여부에 따라 줄 높이가 1px씩 바뀌지 않는다. */}
-      <div className="border-stroke-subtle rounded-6 flex border px-3 py-2.5">
+      <div className="border-line-subtle rounded-6 flex border px-3 py-2.5">
         <Checkbox
           label="전체동의"
           checked={allAgreed ? true : someAgreed ? "indeterminate" : false}
@@ -78,10 +78,7 @@ export default function TermsSheet() {
             </div>
             {viewable && (
               // TODO: 약관 본문이 확정되면 해당 약관 문서로 이동한다.
-              <button
-                type="button"
-                className="text-label-sm text-object-alternative shrink-0 underline"
-              >
+              <button type="button" className="text-label-sm text-fg-tertiary shrink-0 underline">
                 보기
               </button>
             )}
@@ -90,7 +87,7 @@ export default function TermsSheet() {
       </ul>
 
       {errorMessage && (
-        <p role="alert" className="text-label-sm text-(--color-semantic-feedback-destructive)">
+        <p role="alert" className="text-label-sm text-danger">
           {errorMessage}
         </p>
       )}

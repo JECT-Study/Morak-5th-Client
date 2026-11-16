@@ -50,7 +50,7 @@ export default function ChallengeInfo({
   pointAmount,
 }: ChallengeInfoProps) {
   return (
-    <article className="bg-surface-standard rounded-12 flex flex-col overflow-hidden">
+    <article className="bg-surface-primary rounded-12 flex flex-col overflow-hidden">
       <div className="bg-photo relative flex h-[281px] items-end justify-between px-6 py-3">
         {coverImageUrl ? (
           // TODO: 이미지 저장소 도메인이 정해지면 next.config의 images.remotePatterns에 등록하고 최적화를 켠다.
@@ -63,7 +63,7 @@ export default function ChallengeInfo({
             className="object-cover"
           />
         ) : (
-          <span className="text-object-subtle absolute inset-0 flex items-center justify-center">
+          <span className="text-fg-disabled absolute inset-0 flex items-center justify-center">
             <ImageIcon aria-hidden className="size-8" />
           </span>
         )}
@@ -76,7 +76,7 @@ export default function ChallengeInfo({
       </div>
 
       <div className="flex flex-col gap-3 px-6 py-4">
-        <h2 className="text-title-1 font-title-subtle text-object-boldest">{title}</h2>
+        <h2 className="text-title-1 font-title text-fg-primary">{title}</h2>
 
         <ul className="flex gap-2" aria-label="챌린지 특징">
           <li>
@@ -99,7 +99,7 @@ export default function ChallengeInfo({
           </li>
         </ul>
 
-        <dl className="text-object-alternative flex flex-col gap-1">
+        <dl className="text-fg-tertiary flex flex-col gap-1">
           <InfoItem
             label="기간"
             icon={<CalendarDays aria-hidden className="size-4" />}

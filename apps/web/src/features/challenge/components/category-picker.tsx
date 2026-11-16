@@ -48,7 +48,7 @@ export default function CategoryPicker({
       aria-invalid={error ? true : undefined}
       aria-describedby={error ? errorId : undefined}
     >
-      <legend className="text-label-sm font-label-normal text-object-neutral mb-2 flex items-start gap-0.5">
+      <legend className="text-label-sm font-label-normal text-fg-secondary mb-2 flex items-start gap-0.5">
         카테고리
         {required && <RequiredMark />}
       </legend>
@@ -61,7 +61,7 @@ export default function CategoryPicker({
             <label
               key={category}
               className={`flex cursor-pointer flex-col items-center gap-1 px-0.5 pt-0.5 ${
-                checked ? "text-accent-neutral" : "text-object-normal"
+                checked ? "text-fg-brand-strong" : "text-fg-secondary"
               }`}
             >
               <input
@@ -76,8 +76,8 @@ export default function CategoryPicker({
               />
               {/* TODO: 선택 상태 시안이 없어 강조색으로 임시 표시한다. 시안이 나오면 맞춘다. */}
               <span
-                className={`rounded-8 flex size-10 items-center justify-center peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--color-semantic-accent-alpha-alternative) ${
-                  checked ? "bg-accent-subtlest" : "bg-(--color-semantic-system-white)"
+                className={`rounded-8 peer-focus-visible:outline-line-focus flex size-10 items-center justify-center peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 ${
+                  checked ? "bg-surface-brand-subtle" : "bg-surface-primary"
                 }`}
               >
                 <span
@@ -95,7 +95,7 @@ export default function CategoryPicker({
               </span>
               <span
                 className={`text-label-sm font-label-normal ${
-                  checked ? "text-accent-neutral" : "text-object-neutral"
+                  checked ? "text-fg-brand-strong" : "text-fg-secondary"
                 }`}
               >
                 {label}
@@ -106,11 +106,7 @@ export default function CategoryPicker({
       </div>
 
       {error && (
-        <p
-          id={errorId}
-          role="alert"
-          className="text-label-sm text-(--color-semantic-feedback-destructive-normal)"
-        >
+        <p id={errorId} role="alert" className="text-label-sm text-danger">
           {error}
         </p>
       )}

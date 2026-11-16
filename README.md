@@ -26,7 +26,7 @@ docs/           # 설계·가이드 문서
 | API 연동                    | Orval (Swagger → 타입·Query 훅·MSW 목 생성)      |
 | 목 서버                     | MSW                                              |
 | 폼                          | React Hook Form + Zod                            |
-| 디자인 시스템 / 스타일      | JDS (`@jects/jds`) + Tailwind CSS                |
+| 디자인 시스템 / 스타일      | 모락 디자인 시스템 + shadcn/ui(radix) + Tailwind |
 | 모노레포                    | pnpm workspace + Turborepo                       |
 | 코드 품질                   | ESLint, Prettier, Husky, lint-staged, commitlint |
 | 커밋 작성                   | commitizen + cz-git (`pnpm commit`)              |
@@ -88,7 +88,7 @@ shared/                   # 도메인과 상관없는 공통 코드
 ├── layout/               # 앱 뼈대: AppHeader, TabBar
 ├── native/               # 앱 껍데기와 통신하는 브릿지 (isApp, sendToApp, onAppMessage)
 ├── navigation/           # 앱 안 이동 기록 (헤더 뒤로가기 판단)
-└── ui/                   # 범용 UI: SvgIconButton, icons/
+└── ui/                   # 범용 UI(shadcn 방식): Button, Badge, TextField, BottomSheet …
 ```
 
 어디에 둘지 헷갈리면 이 순서로 판단합니다.
@@ -98,7 +98,7 @@ shared/                   # 도메인과 상관없는 공통 코드
 3. 도메인을 모르는 UI·유틸이면 `shared/`
 
 헤더는 화면마다 제목·뒤로가기·오른쪽 버튼이 달라서 레이아웃이 아니라 각 `page.tsx`에서 `<AppHeader />`로 렌더합니다.
-JDS에 없는 아이콘은 Figma에서 SVG를 가져와 `shared/ui/icons/`에 두고, 버튼이 필요하면 `SvgIconButton`(JDS IconButton과 같은 스타일)에 넣습니다.
+아이콘은 `lucide-react`를 씁니다(Figma 아이콘 이름과 같음). 색·글자는 `globals.css`의 모락 토큰(`text-fg-*`, `bg-surface-*`, `border-line*`, `text-label-*` 등)만 쓰고, 컴포넌트는 개발 중 `/dev/ui`에서 상태별로 확인할 수 있습니다.
 
 ## API 연동 흐름
 
