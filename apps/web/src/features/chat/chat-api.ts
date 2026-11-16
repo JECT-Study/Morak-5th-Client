@@ -1,25 +1,6 @@
-import type { ApiResponse } from "@/shared/api/types";
+import { request } from "@/shared/api/client";
 
 import type { ChatMessage, ChatTicket } from "./type";
-
-/** BFF 응답을 풀어서 data만 돌려준다. 실패하면 백엔드 에러 코드를 담아 던진다. */
-async function request<T>(input: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(input, { ...init, credentials: "same-origin" });
-  const body = (await response.json()) as ApiResponse<T>;
-  if (!body.success) throw new ChatApiError(response.status, body.error.code, body.error.message);
-  return body.data;
-}
-
-export class ChatApiError extends Error {
-  constructor(
-    public readonly status: number,
-    public readonly code: string,
-    message: string,
-  ) {
-    super(message);
-    this.name = "ChatApiError";
-  }
-}
 
 /** 웹소켓 연결용 1회용 티켓(30초). 연결·재연결 직전에 매번 새로 받는다. */
 export const fetchChatTicket = () => request<ChatTicket>("/api/chat/ws-ticket", { method: "POST" });

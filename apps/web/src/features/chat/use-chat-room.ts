@@ -1,7 +1,9 @@
 import type { Client } from "@stomp/stompjs";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ChatApiError, fetchChatMessages, fetchChatTicket } from "./chat-api";
+import { ApiError } from "@/shared/api/client";
+
+import { fetchChatMessages, fetchChatTicket } from "./chat-api";
 import { createChatSocket } from "./chat-socket";
 import { mergeMessages } from "./merge-messages";
 import type { ChatMessage, ChatSendError, PendingMessage, SendChatMessage } from "./type";
@@ -126,7 +128,7 @@ export function useChatRoom(challengeId: number) {
           return { ticket };
         } catch (cause) {
           // 로그인이 풀렸거나(401) 온보딩 전이면(403) 다시 연결해도 실패하므로 멈춘다
-          if (cause instanceof ChatApiError && (cause.status === 401 || cause.status === 403)) {
+          if (cause instanceof ApiError && (cause.status === 401 || cause.status === 403)) {
             setError({ code: cause.code, message: cause.message });
             setStatus("error");
             void clientRef.current?.deactivate();
