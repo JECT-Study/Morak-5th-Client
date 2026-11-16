@@ -4,15 +4,17 @@ import { DatePicker, Icon, TextField } from "@jects/jds";
 import { Dialog } from "radix-ui";
 import { useRef, useState, type KeyboardEvent, type RefCallback } from "react";
 
-import { fromDateString, toDateString, todayKst } from "@/shared/lib/date";
+import { addDays, fromDateString, toDateString, todayKst } from "@/shared/lib/date";
 
 type DateFieldProps = {
   label: string;
   /** "YYYY-MM-DD". 선택 전이면 빈 문자열 */
   value: string;
   onChange: (value: string) => void;
-  /** true면 오늘(KST) 이전 날짜는 고를 수 없다 */
-  disablePast?: boolean;
+  /** 오늘(KST)부터 며칠 뒤부터 고를 수 있는지. 0이면 오늘부터, 1이면 내일부터. 없으면 제한 없음 */
+  minDaysFromToday?: number;
+  /** 이 날짜("YYYY-MM-DD")부터 고를 수 있다. minDaysFromToday와 같이 주면 더 늦은 쪽을 따른다 */
+  minDate?: string;
   required?: boolean;
   error?: string;
   placeholder?: string;
@@ -29,7 +31,8 @@ export default function DateField({
   label,
   value,
   onChange,
-  disablePast,
+  minDaysFromToday,
+  minDate,
   required,
   error,
   placeholder = "YYYY.MM.DD",
@@ -95,7 +98,8 @@ export default function DateField({
           </Dialog.Title>
           <Calendar
             value={value}
-            disablePast={disablePast}
+            minDaysFromToday={minDaysFromToday}
+            minDate={minDate}
             onSelect={(next) => {
               onChange(next);
               setOpen(false);
@@ -113,14 +117,22 @@ export default function DateField({
  */
 function Calendar({
   value,
-  disablePast,
+  minDaysFromToday,
+  minDate,
   onSelect,
 }: {
   value: string;
-  disablePast?: boolean;
+  minDaysFromToday?: number;
+  minDate?: string;
   onSelect: (value: string) => void;
 }) {
-  const min = disablePast ? todayKst() : undefined;
+  const fromToday =
+    minDaysFromToday === undefined ? undefined : addDays(todayKst(), minDaysFromToday);
+  // "YYYY-MM-DD"는 문자열 비교가 날짜 비교와 같다. 둘 다 있으면 더 늦은 날짜가 최소값이다.
+  const min = [fromToday, minDate]
+    .filter((date) => date !== undefined)
+    .sort()
+    .at(-1);
   return (
     <DatePicker
       className="self-center"

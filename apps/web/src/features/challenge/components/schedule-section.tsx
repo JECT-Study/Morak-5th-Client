@@ -1,18 +1,12 @@
 import DateField from "@/shared/ui/date-field";
-import { SelectField, type SelectOption } from "@jects/jds";
-import { Control, Controller } from "react-hook-form";
-import { ChallengeCreateForm } from "../create-schema";
+import { Control, Controller, useWatch } from "react-hook-form";
+import { ChallengeCreateForm, MIN_PERIOD_DAYS, minEndDate } from "../create-schema";
 import FormCard from "./form-card";
 
-// TODO: 기간 선택지는 기획 확인 필요. 백엔드 duration_weeks(주 단위) 기준 임시 값
-const DURATION_OPTIONS: SelectOption[] = [
-  { value: "1", label: "1주" },
-  { value: "2", label: "2주" },
-  { value: "3", label: "3주" },
-  { value: "4", label: "4주" },
-];
-
 export default function ScheduleSection({ control }: { control: Control<ChallengeCreateForm> }) {
+  // 종료일 달력은 시작일에 따라 고를 수 있는 날짜가 달라진다.
+  const startDate = useWatch({ control, name: "startDate" });
+
   return (
     <FormCard title="진행 일정">
       {/* items-start: 한쪽에만 에러 문구가 생겨도 다른 칸이 같이 늘어나지 않게 */}
@@ -27,34 +21,27 @@ export default function ScheduleSection({ control }: { control: Control<Challeng
               required
               value={field.value}
               onChange={field.onChange}
-              disablePast
+              // 백엔드는 KST 기준 내일부터 시작할 수 있다.
+              minDaysFromToday={1}
               error={fieldState.error?.message}
             />
           )}
         />
         <Controller
-          name="durationWeeks"
+          name="endDate"
           control={control}
           render={({ field, fieldState }) => (
-            <SelectField
+            <DateField
+              ref={field.ref}
+              label="종료일"
               required
-              status={fieldState.error ? "error" : "default"}
-              className="min-w-0 flex-1"
-            >
-              <SelectField.Label>기간</SelectField.Label>
-              <SelectField.Input
-                ref={field.ref}
-                options={DURATION_OPTIONS}
-                // SelectField 값은 문자열이고 폼 값(durationWeeks)은 숫자라 서로 바꿔 준다.
-                value={field.value ? String(field.value) : null}
-                onChange={(value) => field.onChange(Number(value))}
-                onBlur={field.onBlur}
-                placeholder="기간을 선택해주세요"
-              />
-              {fieldState.error && (
-                <SelectField.Helper>{fieldState.error.message}</SelectField.Helper>
-              )}
-            </SelectField>
+              value={field.value}
+              onChange={field.onChange}
+              // 시작일을 고르기 전에는 가장 빠른 시작일(내일) 기준. 내일 + (7 - 1)일 = 오늘 + 7일
+              minDaysFromToday={MIN_PERIOD_DAYS}
+              minDate={startDate ? minEndDate(startDate) : undefined}
+              error={fieldState.error?.message}
+            />
           )}
         />
       </div>

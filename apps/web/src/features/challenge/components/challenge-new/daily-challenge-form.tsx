@@ -13,6 +13,7 @@ import FormTextarea from "@/shared/ui/form-textarea";
 import CategoryPicker from "../category-picker";
 import RecruitmentSection from "../recruitment/recruitment-section";
 import ScheduleSection from "../schedule-section";
+import { createChallenge, toCreateChallengeRequest } from "../../challenge-api";
 
 /**
  * 화면에 보이는 순서. 검증에 실패하면 이 순서로 첫 에러 칸에 포커스를 준다.
@@ -23,11 +24,11 @@ const FIELD_ORDER: FieldPath<ChallengeCreateForm>[] = [
   "title",
   "category",
   "description",
-  "mission",
-  "verificationMethod",
+  "commonMission",
+  "verificationRules",
   "purpose",
   "startDate",
-  "durationWeeks",
+  "endDate",
   "visibility",
   "capacity",
   "usePoint",
@@ -41,18 +42,19 @@ export default function DailyChallengeForm() {
     control,
     handleSubmit,
     setFocus,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ChallengeCreateForm>({
     resolver: zodResolver(challengeCreateSchema),
     shouldFocusError: false,
     defaultValues: {
       title: "",
       description: "",
-      mission: "",
-      verificationMethod: "",
+      commonMission: "",
+      verificationRules: "",
       purpose: "",
       message: "",
       startDate: "",
+      endDate: "",
       visibility: "PUBLIC",
       capacity: 3,
       usePoint: false,
@@ -60,9 +62,14 @@ export default function DailyChallengeForm() {
     },
   });
 
-  // TODO: 챌린지 개설 API가 나오면 요청을 보낸다.
-  const onSubmit = (values: ChallengeCreateForm) => {
-    console.info("챌린지 만들기", values);
+  // TODO: 개설 성공 후 이동할 화면과 실패 안내 문구가 정해지면 처리한다.
+  const onSubmit = async (values: ChallengeCreateForm) => {
+    try {
+      await createChallenge(toCreateChallengeRequest(values));
+    } catch (cause) {
+      console.log(cause);
+      console.log(values);
+    }
   };
 
   const focusFirstError = (fieldErrors: FieldErrors<ChallengeCreateForm>) => {
@@ -112,19 +119,19 @@ export default function DailyChallengeForm() {
       <FormTextField
         label="미션"
         required
-        error={errors.mission?.message}
+        error={errors.commonMission?.message}
         maxLength={100}
         placeholder="매일 수행할 미션을 입력해 주세요"
-        {...register("mission")}
+        {...register("commonMission")}
       />
 
       <FormTextField
         label="인증 방법"
         required
-        error={errors.verificationMethod?.message}
+        error={errors.verificationRules?.message}
         maxLength={200}
         placeholder="인증 방법을 입력해 주세요"
-        {...register("verificationMethod")}
+        {...register("verificationRules")}
       />
 
       <FormTextField
@@ -148,7 +155,7 @@ export default function DailyChallengeForm() {
         placeholder="예: 아침형 인간이 되고 싶은 기획자"
         {...register("message")}
       />
-      <BlockButton type="submit" size="lg" hierarchy="accent">
+      <BlockButton type="submit" size="lg" hierarchy="accent" disabled={isSubmitting}>
         챌린지 생성하기
       </BlockButton>
     </form>

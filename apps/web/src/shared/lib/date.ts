@@ -8,3 +8,10 @@ export const toDateString = (date: Date) =>
 
 /** "YYYY-MM-DD" → 로컬 자정 Date */
 export const fromDateString = (value: string) => new Date(`${value}T00:00:00`);
+
+/** "YYYY-MM-DD"에 days일을 더한 "YYYY-MM-DD" */
+export const addDays = (value: string, days: number) => {
+  const date = fromDateString(value);
+  date.setDate(date.getDate() + days);
+  return toDateString(date);
+};
