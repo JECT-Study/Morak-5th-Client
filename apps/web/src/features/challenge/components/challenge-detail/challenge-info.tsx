@@ -51,7 +51,7 @@ export default function ChallengeInfo({
 }: ChallengeInfoProps) {
   return (
     <article className="bg-surface-primary rounded-12 flex flex-col overflow-hidden">
-      <div className="bg-photo relative flex h-[281px] items-end justify-between px-6 py-3">
+      <div className="bg-photo relative flex h-[281px] items-end justify-between px-4 py-3">
         {coverImageUrl ? (
           // TODO: 이미지 저장소 도메인이 정해지면 next.config의 images.remotePatterns에 등록하고 최적화를 켠다.
           <Image
@@ -75,7 +75,7 @@ export default function ChallengeInfo({
         </Badge>
       </div>
 
-      <div className="flex flex-col gap-3 px-6 py-4">
+      <div className="flex flex-col gap-3 px-4 py-4">
         <h2 className="text-title-1 font-title text-fg-primary">{title}</h2>
 
         <ul className="flex gap-2" aria-label="챌린지 특징">

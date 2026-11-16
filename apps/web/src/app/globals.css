@@ -12,8 +12,8 @@
   --font-sans: "Pretendard Variable", Pretendard, sans-serif;
   --font-mono: D2Coding, ui-monospace, monospace;
 
-  /* 모바일 화면 최대 너비. max-w-app */
-  --container-app: 480px;
+  /* 모바일 화면 최대 너비. 가로 440px까지만 대응하고 그보다 넓으면 가운데 정렬한다. max-w-app */
+  --container-app: 440px;
 
   /* 모락 토큰(Figma surface/photo). 사진이 없을 때 표지 영역 배경. bg-photo */
   --color-photo: #f5f4f1;

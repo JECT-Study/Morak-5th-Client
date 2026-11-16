@@ -34,7 +34,7 @@ const ROLE_BADGE: Record<
 export default function MembersTab({ members, memberCount, capacity }: MembersTabProps) {
   return (
     <div className="bg-surface-secondary flex flex-col">
-      <p className="bg-surface-primary text-label-lg flex items-center gap-2 px-6 py-4">
+      <p className="bg-surface-primary text-label-lg flex items-center gap-2 px-4 py-4">
         <span className="font-label-strong text-fg-primary">팀원</span>
         <span className="font-label-normal text-fg-tertiary">
           {memberCount}/{capacity}명

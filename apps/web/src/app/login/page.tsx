@@ -16,7 +16,7 @@ async function TermsStep({ searchParams }: Pick<PageProps<"/login">, "searchPara
 /** 로그인(Figma "로그인"). 헤더 없이 상태바 아래 48px부터 시작하고, 버튼 묶음은 아래쪽에 붙인다. */
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
-    <main className="flex flex-1 flex-col items-center gap-6 px-6 pt-[calc(env(safe-area-inset-top)+48px)] pb-[calc(env(safe-area-inset-bottom)+24px)] text-center">
+    <main className="flex flex-1 flex-col items-center gap-6 px-4 pt-[calc(env(safe-area-inset-top)+48px)] pb-[calc(env(safe-area-inset-bottom)+24px)] text-center">
       <Image src="/images/morak-character.svg" alt="" width={128} height={123} priority />
       <h1 className="text-title-3 font-title text-fg-primary">함께하니까, 포기하지 않게</h1>
       <p className="text-body-md font-body-normal text-fg-secondary break-keep">

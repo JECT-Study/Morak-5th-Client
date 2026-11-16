@@ -33,7 +33,7 @@ export default function ChatRoomTest() {
   const { id } = useParams<{ id: string }>();
   const challengeId = Number(id);
   if (!Number.isInteger(challengeId) || challengeId <= 0) {
-    return <p className="text-label-md text-fg-tertiary p-6">잘못된 챌린지 번호예요.</p>;
+    return <p className="text-label-md text-fg-tertiary p-4">잘못된 챌린지 번호예요.</p>;
   }
   return <ChatRoom challengeId={challengeId} />;
 }
@@ -59,7 +59,7 @@ function ChatRoom({ challengeId }: { challengeId: number }) {
     <div className="flex flex-1 flex-col">
       <StatusBar status={room.status} error={room.error} />
 
-      <ol className="flex flex-1 flex-col gap-3 px-6 py-4">
+      <ol className="flex flex-1 flex-col gap-3 px-4 py-4">
         {room.hasOlder && room.messages.length > 0 && (
           <li className="flex justify-center">
             <button
@@ -97,7 +97,7 @@ function ChatRoom({ challengeId }: { challengeId: number }) {
 
       <form
         onSubmit={handleSubmit}
-        className="bg-background-secondary border-line-subtle sticky bottom-0 flex gap-2 border-t px-6 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]"
+        className="bg-background-secondary border-line-subtle sticky bottom-0 flex gap-2 border-t px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]"
       >
         <input
           value={text}
@@ -129,7 +129,7 @@ function StatusBar({
         ? "text-danger"
         : "text-fg-tertiary";
   return (
-    <div className="bg-surface-primary border-line-subtle flex items-center justify-between border-b px-6 py-2">
+    <div className="bg-surface-primary border-line-subtle flex items-center justify-between border-b px-4 py-2">
       <span className={`text-label-sm font-label-strong ${color}`}>● {STATUS_LABEL[status]}</span>
       {error && (
         <span className="text-label-xs text-danger">

@@ -10,7 +10,7 @@ import { Button } from "@/shared/ui/button";
  */
 export default function MyChallengesEmpty() {
   return (
-    <section className="mx-auto mt-[42px] flex w-full max-w-[327px] flex-col items-center gap-6 p-5 text-center">
+    <section className="mt-[42px] flex w-full flex-col items-center gap-6 px-4 py-5 text-center">
       <Image src="/images/morak-character.svg" alt="" width={128} height={123} priority />
       <h2 className="text-title-1 font-title text-fg-primary">아직 참여중인 챌린지가 없어요</h2>
       <p className="text-label-lg font-label-normal text-fg-secondary">

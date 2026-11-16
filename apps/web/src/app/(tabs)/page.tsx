@@ -44,7 +44,7 @@ export default function MyChallengesPage() {
         ) : (
           <>
             {/* TODO: 남은 인증 수는 내 참가 목록 API 연결 후 계산한다. */}
-            <p className="text-label-md font-label-normal text-fg-secondary px-6">
+            <p className="text-label-md font-label-normal text-fg-secondary px-4">
               오늘의 인증 · 1개 남음
             </p>
             <ChallengeCardCarousel challenges={challenges} />
