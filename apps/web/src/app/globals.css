@@ -28,6 +28,82 @@
   /* 모락 토큰(Figma surface/photo). 사진이 없을 때 표지 영역 배경. bg-photo */
   --color-photo: #f5f4f1;
 
+  /*
+   * 모락 디자인 시스템 색(Figma "Color Variables — Light"). 이름은 용도/역할/변형을 줄여 쓴다.
+   * - fg-*      Foreground: 글자·아이콘          예) text-fg-primary
+   * - surface-* Surface: 카드·버튼·칩 같은 면      예) bg-surface-brand
+   * - background-* Background: 화면 맨 아래 바닥   예) bg-background-secondary
+   * - line-*    Line: 테두리·구분선              예) border-line
+   * - static-*  Static: 다크 모드에서도 그대로     예) text-static-white
+   * hover·pressed·selected는 Figma state 변수(…Hover, …Pressed, …Selected)와 같다.
+   */
+  --color-fg-primary: #1b1c21;
+  --color-fg-secondary: #57595f;
+  --color-fg-secondary-hover: #47484f;
+  --color-fg-secondary-pressed: #2f3036;
+  --color-fg-tertiary: #67686e;
+  --color-fg-quaternary: #76767a;
+  --color-fg-inverse: #ffffff;
+  --color-fg-brand: #a93717;
+  /* Figma 설명은 Peach/700(#83260A)인데 변수 값은 #FF633A다. 변수 값을 따른다. TODO: PD 확인 */
+  --color-fg-brand-strong: #ff633a;
+  --color-fg-disabled: #a3a3a5;
+  --color-fg-inactive: #8d8d90;
+
+  --color-surface-primary: #ffffff;
+  --color-surface-selected: #fef5f0;
+  --color-surface-secondary: #f5f5f5;
+  --color-surface-secondary-hover: #ececec;
+  --color-surface-secondary-pressed: #e0e0e0;
+  --color-surface-tertiary: #ececec;
+  --color-surface-inverse: #1b1c21;
+  --color-surface-brand: #ff633a;
+  --color-surface-brand-hover: #e75630;
+  --color-surface-brand-pressed: #ce4926;
+  --color-surface-brand-subtle: #fef5f0;
+  --color-surface-disabled: #ececec;
+  --color-surface-inactive: #8d8d90;
+
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f9f9f9;
+  --color-background-inverse: #1b1c21;
+  --color-background-brand-subtle: #fef8f5;
+
+  --color-line: #cfcfd0;
+  --color-line-strong: #8d8d90;
+  --color-line-subtle: #ececec;
+  --color-line-brand: #ff633a;
+  --color-line-focus: #ce4926;
+  --color-line-disabled: #e0e0e0;
+
+  --color-static-black: #000000;
+  --color-static-white: #ffffff;
+  --color-static-brand: #ff633a;
+
+  /* 오류·성공 색은 새 디자인 시스템에 아직 없어 JDS 라이트 값을 잠시 쓴다. TODO: PD 확인 */
+  --color-danger: #c23232;
+  --color-success: #2da74b;
+
+  /* shadcn 컴포넌트가 쓰는 기본 이름을 모락 색에 연결한다(shadcn add로 가져온 코드가 그대로 맞게). */
+  --color-background: var(--color-background-primary);
+  --color-foreground: var(--color-fg-primary);
+  --color-primary: var(--color-surface-brand);
+  --color-primary-foreground: var(--color-fg-inverse);
+  --color-secondary: var(--color-surface-secondary);
+  --color-secondary-foreground: var(--color-fg-secondary);
+  --color-muted: var(--color-surface-secondary);
+  --color-muted-foreground: var(--color-fg-tertiary);
+  --color-accent: var(--color-surface-secondary-hover);
+  --color-accent-foreground: var(--color-fg-primary);
+  --color-destructive: var(--color-danger);
+  --color-popover: var(--color-surface-primary);
+  --color-popover-foreground: var(--color-fg-primary);
+  --color-card: var(--color-surface-primary);
+  --color-card-foreground: var(--color-fg-primary);
+  --color-border: var(--color-line);
+  --color-input: var(--color-line);
+  --color-ring: var(--color-line-focus);
+
   --color-surface-standard: var(--color-semantic-surface-standard);
   --color-surface-shallow: var(--color-semantic-surface-shallow);
   --color-surface-shallower: var(--color-semantic-surface-shallower);
@@ -79,66 +155,101 @@
   --color-feedback-positive: var(--color-semantic-feedback-positive);
   --color-feedback-notifying: var(--color-semantic-feedback-notifying);
 
-  --radius-2: var(--scheme-semantic-radius-2);
-  --radius-4: var(--scheme-semantic-radius-4);
-  --radius-6: var(--scheme-semantic-radius-6);
-  --radius-8: var(--scheme-semantic-radius-8);
-  --radius-10: var(--scheme-semantic-radius-10);
-  --radius-12: var(--scheme-semantic-radius-12);
-  --radius-16: var(--scheme-semantic-radius-16);
-  --radius-24: var(--scheme-semantic-radius-24);
-  --radius-max: var(--scheme-semantic-radius-max);
+  /* 모서리. 새 디자인 시스템 Radius(xs 4 · sm 8 · lg 16)와 기존 숫자 이름을 함께 쓴다. rounded-8 = 8px */
+  --radius-2: 2px;
+  --radius-4: 4px;
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-10: 10px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-24: 24px;
+  --radius-max: 9999px;
 
   /* 챌린지 진행 강조색(Figma theme/lime) */
-  --color-lime-assistive: var(--color-semantic-theme-lime-assistive);
-  --color-lime-subtler: var(--color-semantic-theme-lime-subtler);
+  --color-lime-assistive: #71b61d;
+  --color-lime-subtler: #a5e167;
 
   /*
-   * JDS 텍스트 스타일. Figma 텍스트 스타일 이름과 맞춘다.
-   * 크기·줄 높이·자간은 text-*, 굵기는 font-*로 나눠 쓴다.
-   * 예) label/lg/normal → text-label-lg font-label-normal, title/1 → text-title-1 font-title-subtle
+   * 글자 스타일(Figma "Typo"). 크기·줄 높이·자간은 text-*, 굵기는 font-*로 나눠 쓴다.
+   * 예) Label/md/Strong → text-label-md font-label-strong, Title/1 → text-title-1 font-title
+   * 자간·행간은 PD님이 다시 정의할 예정이라 --leading-morak / --tracking-morak 두 곳만 바꾸면 되게 묶어 둔다.
    */
-  --text-label-lg: var(--typo-primitive-fontSize-label-lg);
-  --text-label-lg--line-height: var(--typo-primitive-font-lineHeight-label-lg);
-  --text-label-lg--letter-spacing: var(--typo-primitive-font-letterSpacing-label-lg);
-  --text-label-md: var(--typo-primitive-fontSize-label-md);
-  --text-label-md--line-height: var(--typo-primitive-font-lineHeight-label-md);
-  --text-label-md--letter-spacing: var(--typo-primitive-font-letterSpacing-label-md);
-  --text-label-sm: var(--typo-primitive-fontSize-label-sm);
-  --text-label-sm--line-height: var(--typo-primitive-font-lineHeight-label-sm);
-  --text-label-sm--letter-spacing: var(--typo-primitive-font-letterSpacing-label-sm);
-  --text-label-xs: var(--typo-primitive-fontSize-label-xs);
-  --text-label-xs--line-height: var(--typo-primitive-font-lineHeight-label-xs);
-  --text-label-xs--letter-spacing: var(--typo-primitive-font-letterSpacing-label-xs);
-  --text-title-1: var(--typo-primitive-fontSize-title-1);
-  --text-title-1--line-height: var(--typo-primitive-font-lineHeight-title-1);
-  --text-title-1--letter-spacing: var(--typo-primitive-font-letterSpacing-title-1);
-  --text-title-3: var(--typo-primitive-fontSize-title-3);
-  --text-title-3--line-height: var(--typo-primitive-font-lineHeight-title-3);
-  --text-title-3--letter-spacing: var(--typo-primitive-font-letterSpacing-title-3);
-  --text-title-5: var(--typo-primitive-fontSize-title-5);
-  --text-title-5--line-height: var(--typo-primitive-font-lineHeight-title-5);
-  --text-title-5--letter-spacing: var(--typo-primitive-font-letterSpacing-title-5);
-  --text-body-sm: var(--typo-primitive-fontSize-body-sm);
-  --text-body-sm--line-height: var(--typo-primitive-font-lineHeight-body-sm);
-  --text-body-sm--letter-spacing: var(--typo-primitive-font-letterSpacing-body-sm);
-  --text-body-md: var(--typo-primitive-fontSize-body-md);
-  --text-body-md--line-height: var(--typo-primitive-font-lineHeight-body-md);
-  --text-body-md--letter-spacing: var(--typo-primitive-font-letterSpacing-body-md);
+  --leading-morak: 1.6;
+  --tracking-morak: -0.025em;
+  --text-title-1: 1.125rem;
+  --text-title-1--line-height: var(--leading-morak);
+  --text-title-1--letter-spacing: var(--tracking-morak);
+  --text-title-2: 1.25rem;
+  --text-title-2--line-height: var(--leading-morak);
+  --text-title-2--letter-spacing: var(--tracking-morak);
+  --text-title-3: 1.5rem;
+  --text-title-3--line-height: var(--leading-morak);
+  --text-title-3--letter-spacing: var(--tracking-morak);
+  --text-title-4: 1.75rem;
+  --text-title-4--line-height: var(--leading-morak);
+  --text-title-4--letter-spacing: var(--tracking-morak);
+  --text-title-5: 2rem;
+  --text-title-5--line-height: var(--leading-morak);
+  --text-title-5--letter-spacing: var(--tracking-morak);
+  --text-title-6: 2.5rem;
+  --text-title-6--line-height: var(--leading-morak);
+  --text-title-6--letter-spacing: var(--tracking-morak);
+  --text-title-7: 2.625rem;
+  --text-title-7--line-height: var(--leading-morak);
+  --text-title-7--letter-spacing: var(--tracking-morak);
+  --text-title-8: 3rem;
+  --text-title-8--line-height: var(--leading-morak);
+  --text-title-8--letter-spacing: var(--tracking-morak);
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: var(--leading-morak);
+  --text-body-lg--letter-spacing: var(--tracking-morak);
+  --text-body-md: 0.9375rem;
+  --text-body-md--line-height: var(--leading-morak);
+  --text-body-md--letter-spacing: var(--tracking-morak);
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: var(--leading-morak);
+  --text-body-sm--letter-spacing: var(--tracking-morak);
+  --text-body-xs: 0.8125rem;
+  --text-body-xs--line-height: var(--leading-morak);
+  --text-body-xs--letter-spacing: var(--tracking-morak);
+  --text-body-2xs: 0.75rem;
+  --text-body-2xs--line-height: var(--leading-morak);
+  --text-body-2xs--letter-spacing: var(--tracking-morak);
+  --text-label-lg: 1rem;
+  --text-label-lg--line-height: var(--leading-morak);
+  --text-label-lg--letter-spacing: var(--tracking-morak);
+  --text-label-md: 0.875rem;
+  --text-label-md--line-height: var(--leading-morak);
+  --text-label-md--letter-spacing: var(--tracking-morak);
+  --text-label-sm: 0.75rem;
+  --text-label-sm--line-height: var(--leading-morak);
+  --text-label-sm--letter-spacing: var(--tracking-morak);
+  --text-label-xs: 0.6875rem;
+  --text-label-xs--line-height: var(--leading-morak);
+  --text-label-xs--letter-spacing: var(--tracking-morak);
+  --text-caption: 0.75rem;
+  --text-caption--line-height: var(--leading-morak);
+  --text-caption--letter-spacing: var(--tracking-morak);
 
-  --font-weight-body-bold: var(--typo-primitive-fontWeight-body-bold);
-  --font-weight-body-normal: var(--typo-primitive-fontWeight-body-normal);
-  --font-weight-label-bold: var(--typo-primitive-fontWeight-label-bold);
-  --font-weight-label-normal: var(--typo-primitive-fontWeight-label-normal);
-  --font-weight-label-subtle: var(--typo-primitive-fontWeight-label-subtle);
-  --font-weight-title-bold: var(--typo-primitive-fontWeight-title-bold);
-  --font-weight-title-normal: var(--typo-primitive-fontWeight-title-normal);
-  --font-weight-title-subtle: var(--typo-primitive-fontWeight-title-subtle);
+  /* Title 1~5 SemiBold, Title 6~8 Bold / Label Strong SemiBold · Normal Medium / Body Strong Medium · Normal Regular */
+  --font-weight-title: 600;
+  --font-weight-title-bold: 700;
+  --font-weight-label-strong: 600;
+  --font-weight-label-normal: 500;
+  --font-weight-body-strong: 500;
+  --font-weight-body-normal: 400;
+  /* TODO(#45): 화면 교체가 끝나면 지운다. JDS 굵기 이름을 새 굵기로 잠시 이어 준다. */
+  --font-weight-title-normal: 600;
+  --font-weight-title-subtle: 600;
+  --font-weight-label-bold: 600;
+  --font-weight-label-subtle: 500;
+  --font-weight-body-bold: 500;
 }
 
 @layer base {
   body {
-    background-color: var(--color-semantic-surface-standard);
-    color: var(--color-semantic-object-normal);
+    background-color: var(--color-background-primary);
+    color: var(--color-fg-primary);
   }
 }
