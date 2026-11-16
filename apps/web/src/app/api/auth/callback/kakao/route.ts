@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import type { LoginResponse, SocialLoginRequest } from "@/features/auth/types";
-import { ACCESS_TOKEN_COOKIE, backendFetch } from "@/shared/api/backend";
+import { setAuthCookies } from "@/shared/api/auth-cookies";
+import { backendFetch } from "@/shared/api/backend";
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
@@ -21,25 +22,10 @@ export async function GET(request: NextRequest) {
   if (!result.ok) {
     return NextResponse.redirect(new URL("/login?error=login_failed", request.url));
   }
-  const { accessToken, refreshToken, accessTokenExpiresIn, onboarded } = result.data;
-
-  const response = NextResponse.redirect(new URL(onboarded ? "/" : "/onboarding", request.url));
-
-  const secure = process.env.NODE_ENV === "production";
-  response.cookies.set(ACCESS_TOKEN_COOKIE, accessToken, {
-    httpOnly: true,
-    secure,
-    sameSite: "lax",
-    path: "/",
-    maxAge: accessTokenExpiresIn,
-  });
-  response.cookies.set("refresh_token", refreshToken, {
-    httpOnly: true,
-    secure,
-    sameSite: "lax",
-    path: "/api/auth",
-    maxAge: 60 * 60 * 24 * 14, // 만료 기간은 BE 확인 필요
-  });
+  const response = NextResponse.redirect(
+    new URL(result.data.onboarded ? "/" : "/onboarding", request.url),
+  );
+  setAuthCookies(response, result.data);
   response.cookies.delete("oauth_state");
   return response;
 }
