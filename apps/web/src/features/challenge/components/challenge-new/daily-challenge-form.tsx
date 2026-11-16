@@ -13,7 +13,7 @@ import FormTextarea from "@/shared/ui/form-textarea";
 import CategoryPicker from "../category-picker";
 import RecruitmentSection from "../recruitment/recruitment-section";
 import ScheduleSection from "../schedule-section";
-import { createChallenge, toCreateChallengeRequest } from "../../challenge-api";
+import { useCreateChallenge } from "../../use-create-challenge";
 
 /**
  * 화면에 보이는 순서. 검증에 실패하면 이 순서로 첫 에러 칸에 포커스를 준다.
@@ -42,7 +42,7 @@ export default function DailyChallengeForm() {
     control,
     handleSubmit,
     setFocus,
-    formState: { errors, isSubmitting },
+    formState: { errors, isValid },
   } = useForm<ChallengeCreateForm>({
     resolver: zodResolver(challengeCreateSchema),
     shouldFocusError: false,
@@ -61,16 +61,10 @@ export default function DailyChallengeForm() {
       pointAmount: 1000,
     },
   });
+  const { mutate, isPending, errorMessage } = useCreateChallenge();
 
-  // TODO: 개설 성공 후 이동할 화면과 실패 안내 문구가 정해지면 처리한다.
-  const onSubmit = async (values: ChallengeCreateForm) => {
-    try {
-      await createChallenge(toCreateChallengeRequest(values));
-    } catch (cause) {
-      console.log(cause);
-      console.log(values);
-    }
-  };
+  // 실패해도 입력값은 그대로 두어 버튼만 다시 누르면 재시도된다.
+  const onSubmit = (values: ChallengeCreateForm) => mutate(values);
 
   const focusFirstError = (fieldErrors: FieldErrors<ChallengeCreateForm>) => {
     const first = FIELD_ORDER.find((name) => fieldErrors[name]);
@@ -155,7 +149,15 @@ export default function DailyChallengeForm() {
         placeholder="예: 아침형 인간이 되고 싶은 기획자"
         {...register("message")}
       />
-      <BlockButton type="submit" size="lg" hierarchy="accent" disabled={isSubmitting}>
+      {errorMessage && (
+        <p
+          role="alert"
+          className="text-label-sm text-(--color-semantic-feedback-destructive-normal)"
+        >
+          {errorMessage}
+        </p>
+      )}
+      <BlockButton type="submit" size="lg" hierarchy="accent" disabled={isPending || !isValid}>
         챌린지 생성하기
       </BlockButton>
     </form>
