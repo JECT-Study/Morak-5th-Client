@@ -19,9 +19,16 @@ const ACCESS_TOKEN_PATH = "/";
 /** 리프레시 토큰은 재발급·로그아웃(/api/auth/*)에만 실리도록 좁혀 둔다. */
 const REFRESH_TOKEN_PATH = "/api/auth";
 
+/**
+ * 리프레시 토큰이 있을 수 있다는 표시(값은 "1"뿐, 토큰 아님). 리프레시 토큰과 수명이 같다.
+ * proxy는 페이지 요청에서 refresh_token(path /api/auth)을 볼 수 없어서, 이 쿠키로
+ * "액세스 토큰만 만료됐으니 재발급해 볼지"를 정한다.
+ */
+export const SESSION_COOKIE = "has_session";
+
 type AuthTokens = Pick<LoginResponse, "accessToken" | "refreshToken" | "accessTokenExpiresIn">;
 
-/** 로그인·재발급으로 받은 토큰을 httpOnly 쿠키로 저장한다. */
+/** 로그인·재발급으로 받은 토큰과 로그인 표시를 httpOnly 쿠키로 저장한다. */
 export function setAuthCookies(response: NextResponse, tokens: AuthTokens) {
   // 로컬(http://localhost)에서는 secure 쿠키가 저장·전송되지 않아 배포에서만 켠다.
   const secure = process.env.NODE_ENV === "production";
@@ -39,10 +46,18 @@ export function setAuthCookies(response: NextResponse, tokens: AuthTokens) {
     path: REFRESH_TOKEN_PATH,
     maxAge: REFRESH_TOKEN_MAX_AGE,
   });
+  response.cookies.set(SESSION_COOKIE, "1", {
+    httpOnly: true,
+    secure,
+    sameSite: "lax",
+    path: "/",
+    maxAge: REFRESH_TOKEN_MAX_AGE,
+  });
 }
 
-/** 토큰 쿠키를 지운다. 저장할 때와 path가 같아야 지워진다. */
+/** 토큰 쿠키와 로그인 표시를 지운다. 저장할 때와 path가 같아야 지워진다. */
 export function clearAuthCookies(response: NextResponse) {
   response.cookies.delete({ name: ACCESS_TOKEN_COOKIE, path: ACCESS_TOKEN_PATH });
   response.cookies.delete({ name: REFRESH_TOKEN_COOKIE, path: REFRESH_TOKEN_PATH });
+  response.cookies.delete({ name: SESSION_COOKIE, path: "/" });
 }
