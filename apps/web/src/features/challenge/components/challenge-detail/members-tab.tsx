@@ -1,5 +1,8 @@
-import { ContentBadge, Divider, Icon, type ContentBadgeStyle } from "@jects/jds";
-import { Fragment } from "react";
+import { ChevronRight } from "lucide-react";
+import { Fragment, type ComponentProps } from "react";
+
+import { Badge } from "@/shared/ui/badge";
+import { Separator } from "@/shared/ui/separator";
 
 export type MemberRole = "owner" | "subOwner" | "member";
 
@@ -18,10 +21,13 @@ type MembersTabProps = {
 };
 
 /** 역할 배지: 방장은 채움, 부방장은 옅은 채움, 참여자는 테두리 */
-const ROLE_BADGE: Record<MemberRole, { label: string; badgeStyle: ContentBadgeStyle }> = {
-  owner: { label: "방장", badgeStyle: "solid" },
-  subOwner: { label: "부방장", badgeStyle: "alpha" },
-  member: { label: "참여자", badgeStyle: "outlined" },
+const ROLE_BADGE: Record<
+  MemberRole,
+  { label: string; variant: ComponentProps<typeof Badge>["variant"] }
+> = {
+  owner: { label: "방장", variant: "brand" },
+  subOwner: { label: "부방장", variant: "subtle" },
+  member: { label: "참여자", variant: "outline" },
 };
 
 /** 챌린지 상세 "팀원" 탭(Figma "팀원" + "member list"). 인원 수와 팀원 목록을 보여준다. */
@@ -39,7 +45,7 @@ export default function MembersTab({ members, memberCount, capacity }: MembersTa
         <ul className="bg-surface-standard rounded-12 flex flex-col px-3 py-1">
           {members.map((member, index) => (
             <Fragment key={member.id}>
-              {index > 0 && <Divider />}
+              {index > 0 && <Separator />}
               <MemberRow {...member} />
             </Fragment>
           ))}
@@ -66,12 +72,12 @@ function MemberRow({ nickname, role, isMe }: ChallengeMember) {
             {nickname}
             {isMe && " (나)"}
           </span>
-          <ContentBadge hierarchy="accent" size="sm" badgeStyle={badge.badgeStyle}>
+          <Badge variant={badge.variant} size="sm">
             {badge.label}
-          </ContentBadge>
+          </Badge>
         </div>
       </div>
-      <Icon name="chevron-right" size="md" aria-hidden className="text-object-alternative" />
+      <ChevronRight aria-hidden className="text-fg-quaternary size-5 shrink-0" />
     </li>
   );
 }

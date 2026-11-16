@@ -1,7 +1,8 @@
-import { CheckboxGroup, TextField, Textarea } from "@jects/jds";
 import Image from "next/image";
 
 import type { Interest } from "@/features/auth/types";
+import { CheckboxGroup } from "@/shared/ui/checkbox-group";
+import { TextField } from "@/shared/ui/text-field";
 
 import { INTERESTS, type ProfileErrors, type ProfileForm } from "../profile";
 
@@ -40,9 +41,9 @@ export default function ProfileStep({ form, errors, onChange }: ProfileStepProps
         </TextField.Footer>
       </TextField>
 
-      <Textarea status={errors.bio ? "error" : "default"}>
-        <Textarea.Label>한 줄 소개</Textarea.Label>
-        <Textarea.Control
+      <TextField status={errors.bio ? "error" : "default"}>
+        <TextField.Label>한 줄 소개</TextField.Label>
+        <TextField.Textarea
           value={form.bio}
           onChange={(event) => onChange({ bio: event.target.value })}
           maxLength={255}
@@ -50,11 +51,11 @@ export default function ProfileStep({ form, errors, onChange }: ProfileStepProps
           placeholder="팀원에게 나를 소개해 주세요"
         />
         {errors.bio && (
-          <Textarea.Footer>
-            <Textarea.Helper>{errors.bio}</Textarea.Helper>
-          </Textarea.Footer>
+          <TextField.Footer>
+            <TextField.Helper>{errors.bio}</TextField.Helper>
+          </TextField.Footer>
         )}
-      </Textarea>
+      </TextField>
 
       <TextField status={errors.link ? "error" : "default"}>
         <TextField.Label>관련 링크</TextField.Label>
@@ -83,19 +84,15 @@ export default function ProfileStep({ form, errors, onChange }: ProfileStepProps
         <p className="text-label-sm font-label-subtle text-object-alternative">
           관심 있는 도전 주제를 골라 주세요.
         </p>
-        <CheckboxGroup
-          aria-label="관심 분야"
-          layout="grid"
+        <CheckboxGroup<Interest>
           columns={2}
-          variant="outlined"
-          stretched
-          isInvalid={Boolean(errors.interests)}
+          invalid={Boolean(errors.interests)}
           options={INTERESTS}
           value={form.interests}
-          onChange={(value) => onChange({ interests: value as Interest[] })}
+          onChange={(value) => onChange({ interests: value })}
         />
         {errors.interests && (
-          <p role="alert" className="text-label-sm text-(--color-semantic-feedback-destructive)">
+          <p role="alert" className="text-label-sm font-label-normal text-danger">
             {errors.interests}
           </p>
         )}

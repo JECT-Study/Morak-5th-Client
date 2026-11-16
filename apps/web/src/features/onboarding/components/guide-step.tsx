@@ -1,4 +1,4 @@
-import { Accordion } from "@jects/jds";
+import { Accordion } from "@/shared/ui/accordion";
 
 /*
  * TODO: 본문은 화면정의서 온보딩 "세부 안내 내용" 원문으로 바꾼다.
@@ -41,7 +41,7 @@ export default function GuideStep() {
       <p className="text-label-lg font-label-bold text-object-boldest">
         함께 도전하기 전, 이용 방법을 확인해 주세요.
       </p>
-      <Accordion.Root type="multiple" isStretched>
+      <Accordion type="multiple">
         {GUIDES.map(({ value, title, body }) => (
           <Accordion.Item key={value} value={value}>
             <Accordion.Trigger>{title}</Accordion.Trigger>
@@ -54,7 +54,7 @@ export default function GuideStep() {
             </Accordion.Content>
           </Accordion.Item>
         ))}
-      </Accordion.Root>
+      </Accordion>
     </div>
   );
 }

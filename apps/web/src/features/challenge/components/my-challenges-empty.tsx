@@ -1,6 +1,8 @@
-import { BlockButton } from "@jects/jds";
+import { Plus, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+import { Button } from "@/shared/ui/button";
 
 /**
  * 참여 중인 챌린지가 없을 때 홈에 보여주는 안내(Figma "챌린지 카드" 빈 상태).
@@ -21,20 +23,19 @@ export default function MyChallengesEmpty() {
         작은 도전이 꾸준한 변화를 만들어줄거에요.
       </p>
       <div className="flex w-full flex-col gap-2">
-        <BlockButton asChild size="lg" hierarchy="accent" prefixIcon="search">
-          <Link href="/challenges">챌린지 찾아보기</Link>
-        </BlockButton>
+        <Button asChild fullWidth>
+          <Link href="/challenges">
+            <Search aria-hidden />
+            챌린지 찾아보기
+          </Link>
+        </Button>
         {/* TODO: 챌린지 유형(데일리/프로젝트) 선택 화면이 정해지면 그쪽으로 보낸다. */}
-        <BlockButton
-          asChild
-          size="lg"
-          hierarchy="primary"
-          variant="outlined"
-          prefixIcon="plus"
-          className="bg-(--color-semantic-surface-shallow)"
-        >
-          <Link href="/challenges/new/daily">직접 만들기</Link>
-        </BlockButton>
+        <Button asChild variant="outline" fullWidth>
+          <Link href="/challenges/new/daily">
+            <Plus aria-hidden />
+            직접 만들기
+          </Link>
+        </Button>
       </div>
     </section>
   );

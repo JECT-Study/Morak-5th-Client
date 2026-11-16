@@ -1,9 +1,8 @@
-import { ContentBadge, Icon } from "@jects/jds";
+import { CalendarDays, Coins, ImageIcon, LockKeyhole, Users } from "lucide-react";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
-import LockKeyholeIcon from "@/shared/ui/icons/lock-keyhole-icon";
-import UsersIcon from "@/shared/ui/icons/users-icon";
+import { Badge } from "@/shared/ui/badge";
 
 import { formatPeriodWithWeeks } from "../../utils";
 
@@ -65,15 +64,15 @@ export default function ChallengeInfo({
           />
         ) : (
           <span className="text-object-subtle absolute inset-0 flex items-center justify-center">
-            <Icon name="image" size="2xl" aria-hidden />
+            <ImageIcon aria-hidden className="size-8" />
           </span>
         )}
-        <ContentBadge hierarchy="secondary" size="sm" className="relative">
+        <Badge variant="neutral" size="sm" className="relative">
           {category}
-        </ContentBadge>
-        <ContentBadge badgeStyle="outlined" size="sm" className="relative">
+        </Badge>
+        <Badge variant="outline" size="sm" className="relative">
           {dDayLabel}
-        </ContentBadge>
+        </Badge>
       </div>
 
       <div className="flex flex-col gap-3 px-6 py-4">
@@ -81,41 +80,39 @@ export default function ChallengeInfo({
 
         <ul className="flex gap-2" aria-label="챌린지 특징">
           <li>
-            <ContentBadge badgeStyle="outlined" size="sm">
+            <Badge variant="outline" size="sm">
               {typeLabel}
-            </ContentBadge>
+            </Badge>
           </li>
           {isPrivate && (
             <li>
-              <ContentBadge badgeStyle="outlined" size="sm">
-                <span className="flex items-center gap-0.5">
-                  <LockKeyholeIcon className="text-xs" />
-                  비공개
-                </span>
-              </ContentBadge>
+              <Badge variant="outline" size="sm">
+                <LockKeyhole aria-hidden />
+                비공개
+              </Badge>
             </li>
           )}
           <li>
-            <ContentBadge badgeStyle="outlined" size="sm">
+            <Badge variant="outline" size="sm">
               {verificationLabel}
-            </ContentBadge>
+            </Badge>
           </li>
         </ul>
 
         <dl className="text-object-alternative flex flex-col gap-1">
           <InfoItem
             label="기간"
-            icon={<Icon name="calendar-days" size="sm" aria-hidden />}
+            icon={<CalendarDays aria-hidden className="size-4" />}
             className="text-body-md font-body-normal"
           >
             {formatPeriodWithWeeks(startDate, endDate, durationWeeks)}
           </InfoItem>
           <div className="flex gap-4">
-            <InfoItem label="인원" icon={<UsersIcon className="text-base" />}>
+            <InfoItem label="인원" icon={<Users aria-hidden className="size-4" />}>
               {memberCount}/{capacity}명
             </InfoItem>
             {pointAmount > 0 && (
-              <InfoItem label="참여 포인트" icon={<Icon name="coins" size="sm" aria-hidden />}>
+              <InfoItem label="참여 포인트" icon={<Coins aria-hidden className="size-4" />}>
                 {/* Figma 문구는 "보증금"이지만 위키 규칙상 "참여 포인트"로 쓴다. */}
                 참여 포인트 {pointAmount.toLocaleString("ko-KR")}P
               </InfoItem>

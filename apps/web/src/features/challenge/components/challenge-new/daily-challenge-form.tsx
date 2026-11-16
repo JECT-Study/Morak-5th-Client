@@ -1,13 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BlockButton } from "@jects/jds";
 import { Controller, useForm, type FieldErrors, type FieldPath } from "react-hook-form";
 
 import {
   type ChallengeCreateForm,
   challengeCreateSchema,
 } from "@/features/challenge/create-schema";
+import { Button } from "@/shared/ui/button";
 import FormTextField from "@/shared/ui/form-text-field";
 import FormTextarea from "@/shared/ui/form-textarea";
 import CategoryPicker from "../category-picker";
@@ -157,9 +157,9 @@ export default function DailyChallengeForm() {
           {errorMessage}
         </p>
       )}
-      <BlockButton type="submit" size="lg" hierarchy="accent" disabled={isPending || !isValid}>
+      <Button type="submit" fullWidth disabled={isPending || !isValid}>
         챌린지 생성하기
-      </BlockButton>
+      </Button>
     </form>
   );
 }

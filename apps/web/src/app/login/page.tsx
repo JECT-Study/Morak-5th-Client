@@ -1,8 +1,9 @@
-import { BlockButton } from "@jects/jds";
+import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import SocialLoginButton from "@/features/auth/components/social-login-button";
+import { Button } from "@/shared/ui/button";
 import { Suspense } from "react";
 import LoginError from "@/features/auth/components/login-error";
 import TermsSheet from "@/features/auth/components/terms-sheet";
@@ -35,9 +36,12 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
         <SocialLoginButton provider="kakao" />
         {/* TODO: 백엔드가 구글 로그인을 지원하면 활성화한다. */}
         <SocialLoginButton provider="google" disabled />
-        <BlockButton asChild size="md" variant="hollow" suffixIcon="chevron-right">
-          <Link href="/">로그인 없이 둘러보기</Link>
-        </BlockButton>
+        <Button asChild variant="outline" size="md">
+          <Link href="/">
+            로그인 없이 둘러보기
+            <ChevronRight aria-hidden />
+          </Link>
+        </Button>
       </div>
 
       <p className="text-label-sm font-label-subtle text-object-alternative">

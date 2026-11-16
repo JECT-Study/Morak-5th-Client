@@ -1,10 +1,12 @@
 "use client";
 
-import { DatePicker, Icon, TextField } from "@jects/jds";
+import { CalendarDays } from "lucide-react";
 import { useRef, useState, type KeyboardEvent, type RefCallback } from "react";
 
 import { addDays, fromDateString, toDateString, todayKst } from "@/shared/lib/date";
 import BottomSheet from "@/shared/ui/bottom-sheet";
+import { Calendar } from "@/shared/ui/calendar";
+import { TextField } from "@/shared/ui/text-field";
 
 type DateFieldProps = {
   label: string;
@@ -23,9 +25,9 @@ type DateFieldProps = {
 };
 
 /**
- * 날짜 입력칸(Figma "🔨 Date field"). JDS에 DateField가 없어 TextField와 DatePicker를 조합한다.
+ * 날짜 입력칸(Figma "🔨 Date field"). TextField와 Calendar를 조합한다.
  * 칸을 누르면 아래 시트에 달력이 열리고, 날짜를 고르면 닫힌다.
- * readOnly를 주면 JDS가 읽기 전용 모양(회색, placeholder 숨김)으로 그려서, 대신 직접 입력만 막는다.
+ * readOnly 대신 직접 입력만 막는다(readOnly면 스크린리더가 "읽기 전용"으로 읽어 고를 수 없는 칸처럼 들린다).
  */
 export default function DateField({
   label,
@@ -71,7 +73,7 @@ export default function DateField({
           autoComplete="off"
           aria-haspopup="dialog"
           placeholder={placeholder}
-          suffix={<Icon name="calendar-days" size="md" aria-hidden />}
+          suffix={<CalendarDays aria-hidden />}
           className="cursor-pointer caret-transparent"
         />
         {error && (
@@ -91,7 +93,7 @@ export default function DateField({
           inputRef.current?.focus();
         }}
       >
-        <Calendar
+        <DateCalendar
           value={value}
           minDaysFromToday={minDaysFromToday}
           minDate={minDate}
@@ -109,7 +111,7 @@ export default function DateField({
  * 시트가 열릴 때만 그려지므로 오늘 날짜를 여기서 구한다.
  * cacheComponents에서는 렌더링 중 new Date()가 미리 렌더링(prerender) 값으로 굳을 수 있어 화면 밖에서 계산하지 않는다.
  */
-function Calendar({
+function DateCalendar({
   value,
   minDaysFromToday,
   minDate,
@@ -127,13 +129,18 @@ function Calendar({
     .filter((date) => date !== undefined)
     .sort()
     .at(-1);
+  const selected = value ? fromDateString(value) : undefined;
   return (
-    <DatePicker
+    <Calendar
       className="self-center"
-      value={value ? fromDateString(value) : null}
-      minDate={min ? fromDateString(min) : undefined}
-      isDateDisabled={min ? (date) => toDateString(date) < min : undefined}
-      onChange={(date) => onSelect(date ? toDateString(date) : "")}
+      mode="single"
+      // 고른 날을 다시 눌러도 선택이 풀리지 않게 한다(날짜 칸은 비울 수 없다).
+      required
+      selected={selected}
+      // 고른 날이 있으면 그 달을, 없으면 고를 수 있는 첫 달을 먼저 보여 준다.
+      defaultMonth={selected ?? (min ? fromDateString(min) : undefined)}
+      disabled={min ? (date: Date) => toDateString(date) < min : undefined}
+      onSelect={(date) => onSelect(toDateString(date))}
     />
   );
 }

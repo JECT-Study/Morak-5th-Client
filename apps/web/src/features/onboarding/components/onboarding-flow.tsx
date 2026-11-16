@@ -1,11 +1,11 @@
 "use client";
 
-import { BlockButton } from "@jects/jds";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useMyInfo } from "@/features/auth/use-my-info";
 import AppHeader from "@/shared/layout/app-header";
+import { Button } from "@/shared/ui/button";
 
 import { toOnboardingRequest } from "../profile";
 import { useOnboardingGuard } from "../use-onboarding-guard";
@@ -92,14 +92,9 @@ export default function OnboardingFlow() {
             {onboarding.errorMessage}
           </p>
         )}
-        <BlockButton
-          size="lg"
-          hierarchy="accent"
-          disabled={pending || !me}
-          onClick={action.onClick}
-        >
+        <Button fullWidth disabled={pending || !me} onClick={action.onClick}>
           {action.label}
-        </BlockButton>
+        </Button>
       </div>
     </>
   );

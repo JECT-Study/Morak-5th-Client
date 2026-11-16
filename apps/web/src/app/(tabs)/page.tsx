@@ -1,4 +1,4 @@
-import { DotBadge, IconButton } from "@jects/jds";
+import { Bell, BookKey } from "lucide-react";
 import Link from "next/link";
 
 import ChallengeCardCarousel from "@/features/challenge/components/challenge-card-carousel";
@@ -6,8 +6,7 @@ import MyChallengesEmpty from "@/features/challenge/components/my-challenges-emp
 import type { MyChallengeCardData } from "@/features/challenge/types";
 import { myChallengesMock } from "@/mocks/data/my-challenges";
 import AppHeader from "@/shared/layout/app-header";
-import BookKeyIcon from "@/shared/ui/icons/book-key-icon";
-import SvgIconButton from "@/shared/ui/svg-icon-button";
+import { IconButton } from "@/shared/ui/icon-button";
 
 // TODO: GET /users/me/participations 연결 전까지는 목 모드에서만 목 데이터를 쓰고, 그 외에는 빈 목록으로 둔다.
 const challenges: MyChallengeCardData[] =
@@ -19,20 +18,22 @@ export default function MyChallengesPage() {
       <AppHeader
         title="챌린지 다이어리"
         suffixAction={
-          // Figma는 버튼마다 40×40 영역에 24px 아이콘을 둔다. 버튼은 JDS 크기(24px) 그대로 두고 영역만 감싼다.
-          <div className="flex gap-2">
-            <span className="flex size-10 items-center justify-center">
-              {/* book-key는 JDS 패키지에 없어 Figma SVG를 쓴다. TODO: 이동할 화면 미정 */}
-              <SvgIconButton aria-label="초대코드 입력">
-                <BookKeyIcon />
-              </SvgIconButton>
-            </span>
-            <span className="relative flex size-10 items-center justify-center">
-              <IconButton asChild icon="bell" size="xl" hierarchy="tertiary" aria-label="알림">
-                <Link href="/notifications" />
+          <div className="flex gap-1">
+            {/* TODO: 이동할 화면 미정 */}
+            <IconButton aria-label="초대코드 입력">
+              <BookKey aria-hidden />
+            </IconButton>
+            <span className="relative flex">
+              <IconButton asChild aria-label="알림">
+                <Link href="/notifications">
+                  <Bell aria-hidden />
+                </Link>
               </IconButton>
-              {/* TODO: 안 읽은 알림이 있을 때만 보인다. GET /notifications/unread-count 연결 */}
-              <DotBadge size="sm" className="pointer-events-none absolute top-2 left-6" />
+              {/* TODO: 안 읽은 알림이 있을 때만 보인다. GET /notifications/unread-count 연결. 보일 때는 aria-label에 "새 알림 있음"을 더한다. */}
+              <span
+                aria-hidden
+                className="bg-surface-brand rounded-max pointer-events-none absolute top-2 right-2 size-2"
+              />
             </span>
           </div>
         }
@@ -43,7 +44,7 @@ export default function MyChallengesPage() {
         ) : (
           <>
             {/* TODO: 남은 인증 수는 내 참가 목록 API 연결 후 계산한다. */}
-            <p className="text-label-md font-label-subtle text-object-normal px-6">
+            <p className="text-label-md font-label-normal text-fg-secondary px-6">
               오늘의 인증 · 1개 남음
             </p>
             <ChallengeCardCarousel challenges={challenges} />

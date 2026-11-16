@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import { Slot } from "radix-ui";
 import type { ComponentProps } from "react";
 
 import { cn } from "@/shared/lib/utils";
@@ -31,13 +32,16 @@ type IconButtonProps = Omit<ComponentProps<"button">, "aria-label"> &
   VariantProps<typeof iconButtonVariants> & {
     /** 스크린리더가 읽을 버튼 이름. 예) "알림" */
     "aria-label": string;
+    /** true면 자식 요소(예: next/link의 Link)에 버튼 모양을 입힌다. */
+    asChild?: boolean;
   };
 
-export function IconButton({ className, size, type, ...props }: IconButtonProps) {
+export function IconButton({ className, size, type, asChild = false, ...props }: IconButtonProps) {
+  const Comp = asChild ? Slot.Root : "button";
   return (
-    <button
+    <Comp
       data-slot="icon-button"
-      type={type ?? "button"}
+      type={asChild ? undefined : (type ?? "button")}
       className={cn(iconButtonVariants({ size }), className)}
       {...props}
     />

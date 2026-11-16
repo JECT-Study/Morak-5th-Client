@@ -1,9 +1,5 @@
-import { Icon } from "@jects/jds";
+import { CalendarDays, Camera, CircleCheck, Clock3, Coins, Info, Users } from "lucide-react";
 import type { ReactNode } from "react";
-
-import CameraIcon from "@/shared/ui/icons/camera-icon";
-import CircleCheckIcon from "@/shared/ui/icons/circle-check-icon";
-import UsersIcon from "@/shared/ui/icons/users-icon";
 
 import { formatPeriodWithWeeks } from "../../utils";
 
@@ -50,21 +46,21 @@ export default function IntroTab({
 
       <IntroCard title="기본 정보">
         <dl className="flex flex-col gap-3">
-          <InfoRow icon={<Icon name="calendar-days" size="md" />} title="진행 기간">
+          <InfoRow icon={<CalendarDays className="size-5" />} title="진행 기간">
             {formatPeriodWithWeeks(startDate, endDate, durationWeeks)}
           </InfoRow>
-          <InfoRow icon={<Icon name="clock-3" size="md" />} title="인증 시간">
+          <InfoRow icon={<Clock3 className="size-5" />} title="인증 시간">
             {certificationTime}
           </InfoRow>
-          <InfoRow icon={<CameraIcon className="text-xl" />} title="인증 방식">
+          <InfoRow icon={<Camera className="size-5" />} title="인증 방식">
             {verificationMethod}
           </InfoRow>
-          <InfoRow icon={<UsersIcon className="text-xl" />} title="모집 인원">
+          <InfoRow icon={<Users className="size-5" />} title="모집 인원">
             최대 {capacity}명 (현재 {memberCount}명)
           </InfoRow>
           {pointAmount > 0 && (
             // Figma 문구는 "보증금"이지만 위키 규칙상 "참여 포인트"로 쓴다.
-            <InfoRow icon={<Icon name="coins" size="md" />} title="참여 포인트">
+            <InfoRow icon={<Coins className="size-5" />} title="참여 포인트">
               {pointAmount.toLocaleString("ko-KR")}P (완주 시 반환 규칙 적용)
             </InfoRow>
           )}
@@ -74,7 +70,7 @@ export default function IntroTab({
       <IntroCard title="인증 및 반환 규칙">
         <BulletList
           items={rules}
-          icon={<CircleCheckIcon className="text-xl" />}
+          icon={<CircleCheck className="size-5" />}
           iconClassName="text-(--color-semantic-feedback-positive-alternative)"
         />
       </IntroCard>
@@ -82,7 +78,7 @@ export default function IntroTab({
       <IntroCard title="참여 시 유의사항">
         <BulletList
           items={notices}
-          icon={<Icon name="info" size="md" />}
+          icon={<Info className="size-5" />}
           iconClassName="text-object-alternative"
         />
       </IntroCard>

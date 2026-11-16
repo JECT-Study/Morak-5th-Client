@@ -1,7 +1,8 @@
-import { BlockButton, Divider } from "@jects/jds";
+import { Camera } from "lucide-react";
 import Link from "next/link";
 
-import CameraIcon from "@/shared/ui/icons/camera-icon";
+import { Button } from "@/shared/ui/button";
+import { Separator } from "@/shared/ui/separator";
 
 import type { MyChallengeCardData } from "../../types";
 import ChallengeIntro from "./challenge-intro";
@@ -38,18 +39,17 @@ export default function ChallengeCard({ challenge, className }: ChallengeCardPro
         successRate={challenge.successRate}
         depositAmount={challenge.depositAmount}
       />
-      <Divider />
+      <Separator />
       <TodayCertifications
         memberCount={challenge.memberCount}
         certifications={challenge.todayCertifications}
       />
-      {/* camera는 JDS 패키지에 없어 prefixIcon 대신 Figma SVG를 직접 넣는다. 크기는 lg 버튼의 아이콘 크기(18px) */}
-      <BlockButton asChild size="lg">
+      <Button asChild fullWidth>
         <Link href={`/challenges/${challenge.id}/certifications/new`}>
-          <CameraIcon className="text-[18px]" />
+          <Camera aria-hidden />
           지금 인증하기
         </Link>
-      </BlockButton>
+      </Button>
     </article>
   );
 }

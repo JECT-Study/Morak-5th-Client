@@ -1,7 +1,8 @@
-import { Textarea } from "@jects/jds";
 import type { ComponentProps } from "react";
 
-type FormTextareaProps = ComponentProps<typeof Textarea.Control> & {
+import { TextField } from "./text-field";
+
+type FormTextareaProps = ComponentProps<typeof TextField.Textarea> & {
   label: string;
   /** 에러 메시지. 있으면 테두리가 빨갛게 바뀌고 입력 아래에 보인다. */
   error?: string;
@@ -23,15 +24,15 @@ export default function FormTextarea({
   const counter = showCounter && controlProps.maxLength !== undefined;
 
   return (
-    <Textarea required={required} status={error ? "error" : "default"}>
-      <Textarea.Label>{label}</Textarea.Label>
-      <Textarea.Control {...controlProps} />
+    <TextField required={required} status={error ? "error" : "default"}>
+      <TextField.Label>{label}</TextField.Label>
+      <TextField.Textarea {...controlProps} />
       {(error || counter) && (
-        <Textarea.Footer>
-          {error && <Textarea.Helper>{error}</Textarea.Helper>}
-          {counter && <Textarea.Counter />}
-        </Textarea.Footer>
+        <TextField.Footer>
+          {error && <TextField.Helper>{error}</TextField.Helper>}
+          {counter && <TextField.Counter />}
+        </TextField.Footer>
       )}
-    </Textarea>
+    </TextField>
   );
 }

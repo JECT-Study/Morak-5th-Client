@@ -1,11 +1,11 @@
 "use client";
 
-import { BlockButton } from "@jects/jds";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { useMyInfo } from "@/features/auth/use-my-info";
+import { Button } from "@/shared/ui/button";
 
 import type { ChatMessage, PendingMessage } from "../type";
 import { useChatRoom, type ChatStatus } from "../use-chat-room";
@@ -107,9 +107,9 @@ function ChatRoom({ challengeId }: { challengeId: number }) {
           aria-label="메시지 입력"
           className="rounded-8 border-stroke-subtle bg-surface-standard text-label-md flex-1 border px-3"
         />
-        <BlockButton type="submit" size="md" disabled={room.status !== "connected" || !text.trim()}>
+        <Button type="submit" size="md" disabled={room.status !== "connected" || !text.trim()}>
           보내기
-        </BlockButton>
+        </Button>
       </form>
     </div>
   );

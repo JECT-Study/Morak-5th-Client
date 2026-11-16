@@ -1,9 +1,10 @@
 "use client";
 
-import { BlockButton, Checkbox } from "@jects/jds";
 import { useState } from "react";
 
 import BottomSheet from "@/shared/ui/bottom-sheet";
+import { Button } from "@/shared/ui/button";
+import { Checkbox } from "@/shared/ui/checkbox";
 
 import type { TermsAgreementsRequest } from "../types";
 import { useAgreeTerms } from "../use-agree-terms";
@@ -57,7 +58,6 @@ export default function TermsSheet() {
       {/* Checkbox가 inline 요소라 flex로 감싸야 체크 여부에 따라 줄 높이가 1px씩 바뀌지 않는다. */}
       <div className="border-stroke-subtle rounded-6 flex border px-3 py-2.5">
         <Checkbox
-          size="lg"
           label="전체동의"
           checked={allAgreed ? true : someAgreed ? "indeterminate" : false}
           onCheckedChange={(checked) => toggleAll(checked === true)}
@@ -69,7 +69,6 @@ export default function TermsSheet() {
           <li key={key} className="flex items-center gap-3">
             <div className="flex min-w-0 flex-1">
               <Checkbox
-                size="md"
                 label={label}
                 checked={agreed[key]}
                 onCheckedChange={(checked) =>
@@ -96,14 +95,9 @@ export default function TermsSheet() {
         </p>
       )}
 
-      <BlockButton
-        size="lg"
-        hierarchy="accent"
-        disabled={!requiredAgreed || isPending}
-        onClick={() => agree(agreed)}
-      >
+      <Button fullWidth disabled={!requiredAgreed || isPending} onClick={() => agree(agreed)}>
         동의하고 계속하기
-      </BlockButton>
+      </Button>
     </BottomSheet>
   );
 }

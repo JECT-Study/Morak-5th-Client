@@ -1,4 +1,4 @@
-import { Icon } from "@jects/jds";
+import { Clock3 } from "lucide-react";
 import Image from "next/image";
 
 import type { TodayCertification } from "../../types";
@@ -47,7 +47,7 @@ export default function TodayCertifications({
             aria-label="아직 인증하지 않음"
             className="rounded-10 border-stroke-assistive bg-surface-deep text-object-subtler flex h-18 max-w-16 min-w-15 flex-1 items-center justify-center border"
           >
-            <Icon name="clock-3" size="xl" />
+            <Clock3 aria-hidden className="size-6" />
           </li>
         ))}
       </ul>
