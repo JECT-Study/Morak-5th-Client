@@ -13,7 +13,7 @@ import {
 
 import { cn } from "@/shared/lib/utils";
 
-import RequiredMark from "./required-mark";
+import RequiredMark, { OptionalMark } from "./required-mark";
 
 /**
  * 라벨 + 입력 + 도움말·글자 수를 묶는 입력칸. JDS TextField·Textarea 자리를 잇는다.
@@ -37,6 +37,7 @@ type FieldContextValue = {
   helperId: string;
   status: Status;
   required: boolean;
+  optional: boolean;
   disabled: boolean;
   length: number;
   maxLength: number | undefined;
@@ -54,14 +55,17 @@ function useField() {
 
 type TextFieldProps = ComponentProps<"div"> & {
   status?: Status;
-  /** 라벨 뒤에 * 를 붙이고 입력에 aria-required를 준다. */
+  /** 라벨 뒤에 "필수"를 붙이고 입력에 aria-required를 준다. */
   required?: boolean;
+  /** 라벨 뒤에 "선택"을 붙인다(비워도 되는 칸). */
+  optional?: boolean;
   disabled?: boolean;
 };
 
 function TextFieldRoot({
   status = "default",
   required = false,
+  optional = false,
   disabled = false,
   className,
   ...props
@@ -76,6 +80,7 @@ function TextFieldRoot({
         helperId: `${id}-helper`,
         status,
         required,
+        optional,
         disabled,
         length,
         maxLength,
@@ -93,15 +98,19 @@ function TextFieldRoot({
 }
 
 function Label({ className, children, ...props }: ComponentProps<"label">) {
-  const { inputId, required } = useField();
+  const { inputId, required, optional } = useField();
   return (
     <label
       htmlFor={inputId}
-      className={cn("text-label-md font-label-strong text-fg-primary flex gap-0.5", className)}
+      className={cn(
+        "text-label-md font-label-normal text-fg-primary flex items-center gap-1",
+        className,
+      )}
       {...props}
     >
       {children}
       {required && <RequiredMark />}
+      {!required && optional && <OptionalMark />}
     </label>
   );
 }
@@ -147,9 +156,20 @@ const controlClassName =
 type InputProps = ComponentProps<"input"> & {
   /** 입력 오른쪽 아이콘(예: 달력). 꾸밈이면 aria-hidden을 붙여 넘긴다. */
   suffix?: ReactNode;
+  /** true면 글자 수 (n/max)를 칸 안 오른쪽에 보인다(Figma 온보딩 정보 입력). maxLength가 있어야 한다. */
+  counter?: boolean;
 };
 
-function Input({ className, suffix, ref, value, maxLength, onChange, ...props }: InputProps) {
+function Input({
+  className,
+  suffix,
+  counter = false,
+  ref,
+  value,
+  maxLength,
+  onChange,
+  ...props
+}: InputProps) {
   const { status, setLength, ariaProps } = useControl(value, maxLength);
   return (
     <div className={cn(boxClassName(status), "h-12 items-center gap-2 px-4")}>
@@ -169,22 +189,29 @@ function Input({ className, suffix, ref, value, maxLength, onChange, ...props }:
         className={cn(controlClassName, "h-full", className)}
         {...props}
       />
+      {counter && <Counter className="self-end pb-2" />}
       {suffix && <span className="text-fg-tertiary flex shrink-0 [&_svg]:size-5">{suffix}</span>}
     </div>
   );
 }
 
+type TextareaProps = ComponentProps<"textarea"> & {
+  /** true면 글자 수 (n/max)를 칸 안 아래 오른쪽에 보인다. maxLength가 있어야 한다. */
+  counter?: boolean;
+};
+
 function Textarea({
   className,
+  counter = false,
   ref,
   value,
   maxLength,
   onChange,
   ...props
-}: ComponentProps<"textarea">) {
+}: TextareaProps) {
   const { status, setLength, ariaProps } = useControl(value, maxLength);
   return (
-    <div className={cn(boxClassName(status), "px-4 py-3")}>
+    <div className={cn(boxClassName(status), "flex-col px-4 py-2")}>
       <textarea
         {...ariaProps}
         ref={(node) => {
@@ -200,6 +227,7 @@ function Textarea({
         className={cn(controlClassName, "resize-none", className)}
         {...props}
       />
+      {counter && <Counter className="self-end" />}
     </div>
   );
 }
@@ -224,7 +252,7 @@ function Helper({ className, ...props }: ComponentProps<"p">) {
   );
 }
 
-/** 글자 수(예: 3/12). maxLength가 있는 입력에서만 보인다. 화면용이라 스크린리더는 읽지 않는다. */
+/** 글자 수(예: (3/12)). maxLength가 있는 입력에서만 보인다. 화면용이라 스크린리더는 읽지 않는다. */
 function Counter({ className }: { className?: string }) {
   const { length, maxLength } = useField();
   if (maxLength === undefined) return null;
@@ -232,11 +260,11 @@ function Counter({ className }: { className?: string }) {
     <span
       aria-hidden
       className={cn(
-        "text-label-sm font-label-normal text-fg-quaternary ml-auto shrink-0 tabular-nums",
+        "text-label-sm font-label-normal text-fg-disabled ml-auto shrink-0 tabular-nums",
         className,
       )}
     >
-      {length}/{maxLength}
+      ({length}/{maxLength})
     </span>
   );
 }
