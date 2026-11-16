@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
 import { useState } from "react";
 
-import { AuthApiError, agreeToTerms } from "../onboarding-api";
+import { ApiError } from "@/shared/api/client";
+
+import { agreeToTerms } from "../onboarding-api";
 import type { TermsAgreementsRequest } from "../types";
 
 type TermKey = keyof TermsAgreementsRequest;
@@ -68,7 +70,7 @@ export default function TermsSheet() {
       await goToOnboarding();
     } catch (cause) {
       // 다른 탭 등에서 이미 동의했다면 그대로 온보딩으로 넘어간다.
-      if (cause instanceof AuthApiError && cause.code === "USER_001") {
+      if (cause instanceof ApiError && cause.code === "USER_001") {
         await goToOnboarding();
         return;
       }

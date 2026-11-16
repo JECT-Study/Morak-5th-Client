@@ -5,8 +5,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { AuthApiError, checkNickname, completeOnboarding } from "@/features/auth/onboarding-api";
+import { checkNickname, completeOnboarding } from "@/features/auth/onboarding-api";
 import { useMyInfo } from "@/features/auth/use-my-info";
+import { ApiError } from "@/shared/api/client";
 import AppHeader from "@/shared/layout/app-header";
 
 import {
@@ -101,7 +102,7 @@ export default function OnboardingFlow() {
       setStep("done");
       window.scrollTo(0, 0);
     } catch (cause) {
-      const code = cause instanceof AuthApiError ? cause.code : null;
+      const code = cause instanceof ApiError ? cause.code : null;
       if (code === "USER_004") {
         setErrors({ nickname: NICKNAME_TAKEN });
         setStep("profile");
