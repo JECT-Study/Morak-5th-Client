@@ -1,4 +1,5 @@
 import { type ChallengeCreateForm } from "@/features/challenge/create-schema";
+import type { ChallengeView } from "@/features/challenge/types";
 import { request } from "@/shared/api/client";
 
 /** 챌린지 개설 결과. 백엔드 CreatedChallenge */
@@ -21,3 +22,6 @@ export const toCreateChallengeRequest = (values: ChallengeCreateForm) => ({
   pointAmount: values.usePoint ? values.pointAmount : undefined,
   expectations: values.message || undefined,
 });
+
+export const fetchChallenge = (id: string) =>
+  request<ChallengeView>(`/api/challenges/${encodeURIComponent(id)}`);

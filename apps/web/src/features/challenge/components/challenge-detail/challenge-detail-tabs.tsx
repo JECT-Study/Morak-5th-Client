@@ -13,7 +13,8 @@ const TABS = [
 
 type ChallengeDetailTabsProps = {
   intro: ChallengeIntroData;
-  members: ChallengeMember[];
+  /** 팀원 목록. 참가자 API가 나오기 전에는 없어서 준비 중 안내를 보여 준다. */
+  members?: ChallengeMember[];
 };
 
 /**
@@ -36,7 +37,11 @@ export default function ChallengeDetailTabs({ intro, members }: ChallengeDetailT
         <TabPlaceholder name="인증" />
       </TabsContent>
       <TabsContent value="members">
-        <MembersTab members={members} memberCount={intro.memberCount} capacity={intro.capacity} />
+        {members ? (
+          <MembersTab members={members} memberCount={intro.memberCount} capacity={intro.capacity} />
+        ) : (
+          <TabPlaceholder name="팀원" />
+        )}
       </TabsContent>
       <TabsContent value="intro">
         <IntroTab {...intro} />

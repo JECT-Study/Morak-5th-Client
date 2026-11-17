@@ -1,0 +1,145 @@
+"use client";
+
+import { useParams } from "next/navigation";
+
+import { ApiError } from "@/shared/api/client";
+import { todayKst } from "@/shared/lib/date";
+import { Button } from "@/shared/ui/button";
+
+import type { ChallengeView } from "../../types";
+import { useChallenge } from "../../use-challenge";
+import { countDays, formatDDay } from "../../utils";
+import { CATEGORY_META } from "../category-picker";
+import ChallengeDetailTabs from "./challenge-detail-tabs";
+import ChallengeInfo from "./challenge-info";
+
+/** 인증 마감(위키 1. 서비스 요약). 모든 챌린지가 같다. */
+const CERTIFICATION_TIME = "매일 23:59까지";
+
+/** 위키에 [확정]으로 적힌 규칙만 안내한다. */
+const NOTICES = [
+  "인증은 매일 23:59까지 할 수 있어요. 시간이 지나면 그날 인증은 할 수 없어요.",
+  "승인된 인증 사진만 팀원에게 보여요.",
+];
+
+/** 종료·폐기된 챌린지(위키 5.3). 신청·합류를 진행하지 않는다. */
+const CLOSED_STATUSES = ["ENDED", "DISCARDED"];
+
+/**
+ * 표지 배지 문구(위키 4.1).
+ * 모집 중이면 시작까지, 진행 중이면 종료까지 남은 일수. 나머지는 상태 이름.
+ */
+const toBadgeLabel = ({ status, startDate, endDate, currentCount, capacity }: ChallengeView) => {
+  const today = todayKst();
+  switch (status) {
+    case "RECRUITING":
+      if (currentCount >= capacity) return "모집 마감";
+      return today < startDate ? formatDDay(countDays(today, startDate) - 1) : "시작 대기";
+    case "START_HELD":
+      return "시작 보류";
+    case "IN_PROGRESS":
+      return formatDDay(Math.max(countDays(today, endDate) - 1, 0));
+    case "FINALIZING":
+      return "결과 집계 중";
+    case "ENDED":
+      return "종료";
+    case "DISCARDED":
+      return "폐기됨";
+    default:
+      return "";
+  }
+};
+
+/** 인증 규칙은 여러 줄로 입력될 수 있어 줄마다 한 항목으로 나눈다. */
+const toLines = (text: string) =>
+  text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+const errorMessage = (error: Error) => {
+  if (error instanceof ApiError && error.status === 403) return "비공개 챌린지라 볼 수 없어요.";
+  if (error instanceof ApiError && error.status === 404) return "챌린지를 찾을 수 없어요.";
+  return "정보를 불러오지 못했어요.";
+};
+
+/**
+ * 챌린지 상세(GET /challenges/{id}).
+ * TODO: 내 참가 상태별 하단 버튼(위키 4.2)과 팀원 목록은 지원·참가자 API가 나오면 붙인다.
+ */
+export default function ChallengeDetail() {
+  const { id } = useParams<{ id: string }>();
+  const { data: challenge, error, isPending, refetch, isRefetching } = useChallenge(id);
+
+  if (isPending) return <ChallengeDetailSkeleton />;
+
+  if (error) {
+    // 권한 없음·없는 챌린지는 다시 시도해도 같아서 버튼을 보이지 않는다.
+    const retryable = !(error instanceof ApiError && [403, 404].includes(error.status));
+    return (
+      <main className="flex flex-1 flex-col items-center justify-center gap-4 p-4">
+        <p className="text-body-md font-body-normal text-fg-tertiary">{errorMessage(error)}</p>
+        {retryable && (
+          <Button variant="outline" size="md" onClick={() => refetch()} disabled={isRefetching}>
+            다시 시도
+          </Button>
+        )}
+      </main>
+    );
+  }
+
+  return (
+    <>
+      {CLOSED_STATUSES.includes(challenge.status) && (
+        <p
+          role="status"
+          className="bg-surface-caution-subtle text-fg-caution text-label-md font-label-normal px-4 py-3"
+        >
+          이미 종료된 챌린지입니다
+        </p>
+      )}
+      <ChallengeInfo
+        title={challenge.title}
+        category={CATEGORY_META[challenge.category].label}
+        coverImageUrl={challenge.coverImageUrl}
+        dDayLabel={toBadgeLabel(challenge)}
+        isPrivate={challenge.visibility === "PRIVATE"}
+        verificationLabel="사진 인증"
+        startDate={challenge.startDate}
+        endDate={challenge.endDate}
+        memberCount={challenge.currentCount}
+        capacity={challenge.capacity}
+        pointAmount={challenge.pointAmount}
+      />
+      <ChallengeDetailTabs
+        intro={{
+          description: challenge.description,
+          startDate: challenge.startDate,
+          endDate: challenge.endDate,
+          certificationTime: CERTIFICATION_TIME,
+          verificationMethod: "사진 인증",
+          commonMission: challenge.commonMission,
+          capacity: challenge.capacity,
+          memberCount: challenge.currentCount,
+          pointAmount: challenge.pointAmount,
+          rules: toLines(challenge.verificationRules),
+          notices: NOTICES,
+        }}
+      />
+    </>
+  );
+}
+
+/** 불러오는 동안 0명·0P 같은 임시 값 대신 보여 줄 뼈대(위키 3.2) */
+function ChallengeDetailSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="챌린지 정보를 불러오는 중" className="flex flex-col">
+      <div className="bg-surface-tertiary h-[281px] animate-pulse" />
+      <div className="flex flex-col gap-3 p-4">
+        <div className="bg-surface-tertiary rounded-4 h-6 w-2/3 animate-pulse" />
+        <div className="bg-surface-tertiary rounded-4 h-5 w-1/2 animate-pulse" />
+        <div className="bg-surface-tertiary rounded-4 h-5 w-1/3 animate-pulse" />
+      </div>
+    </div>
+  );
+}
