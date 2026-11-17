@@ -1,9 +1,5 @@
-import { Icon } from "@jects/jds";
+import { CalendarDays, Camera, CircleCheck, Clock3, Coins, Info, Users } from "lucide-react";
 import type { ReactNode } from "react";
-
-import CameraIcon from "@/shared/ui/icons/camera-icon";
-import CircleCheckIcon from "@/shared/ui/icons/circle-check-icon";
-import UsersIcon from "@/shared/ui/icons/users-icon";
 
 import { formatPeriodWithWeeks } from "../../utils";
 
@@ -43,28 +39,28 @@ export default function IntroTab({
   notices,
 }: ChallengeIntroData) {
   return (
-    <div className="bg-surface-deep flex flex-col gap-3 p-4">
+    <div className="bg-surface-secondary flex flex-col gap-3 p-4">
       <IntroCard title="챌린지 소개">
-        <p className="text-body-sm font-body-normal text-object-bold break-keep">{description}</p>
+        <p className="text-body-sm font-body-normal text-fg-primary break-keep">{description}</p>
       </IntroCard>
 
       <IntroCard title="기본 정보">
         <dl className="flex flex-col gap-3">
-          <InfoRow icon={<Icon name="calendar-days" size="md" />} title="진행 기간">
+          <InfoRow icon={<CalendarDays className="size-5" />} title="진행 기간">
             {formatPeriodWithWeeks(startDate, endDate, durationWeeks)}
           </InfoRow>
-          <InfoRow icon={<Icon name="clock-3" size="md" />} title="인증 시간">
+          <InfoRow icon={<Clock3 className="size-5" />} title="인증 시간">
             {certificationTime}
           </InfoRow>
-          <InfoRow icon={<CameraIcon className="text-xl" />} title="인증 방식">
+          <InfoRow icon={<Camera className="size-5" />} title="인증 방식">
             {verificationMethod}
           </InfoRow>
-          <InfoRow icon={<UsersIcon className="text-xl" />} title="모집 인원">
+          <InfoRow icon={<Users className="size-5" />} title="모집 인원">
             최대 {capacity}명 (현재 {memberCount}명)
           </InfoRow>
           {pointAmount > 0 && (
             // Figma 문구는 "보증금"이지만 위키 규칙상 "참여 포인트"로 쓴다.
-            <InfoRow icon={<Icon name="coins" size="md" />} title="참여 포인트">
+            <InfoRow icon={<Coins className="size-5" />} title="참여 포인트">
               {pointAmount.toLocaleString("ko-KR")}P (완주 시 반환 규칙 적용)
             </InfoRow>
           )}
@@ -74,16 +70,16 @@ export default function IntroTab({
       <IntroCard title="인증 및 반환 규칙">
         <BulletList
           items={rules}
-          icon={<CircleCheckIcon className="text-xl" />}
-          iconClassName="text-(--color-semantic-feedback-positive-alternative)"
+          icon={<CircleCheck className="size-5" />}
+          iconClassName="text-success"
         />
       </IntroCard>
 
       <IntroCard title="참여 시 유의사항">
         <BulletList
           items={notices}
-          icon={<Icon name="info" size="md" />}
-          iconClassName="text-object-alternative"
+          icon={<Info className="size-5" />}
+          iconClassName="text-fg-tertiary"
         />
       </IntroCard>
     </div>
@@ -93,8 +89,8 @@ export default function IntroTab({
 /** 흰 카드 + 제목 */
 function IntroCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="bg-surface-standard rounded-12 flex flex-col gap-3 p-4">
-      <h3 className="text-label-lg font-label-bold text-object-boldest">{title}</h3>
+    <section className="bg-surface-primary rounded-12 flex flex-col gap-3 p-4">
+      <h3 className="text-label-lg font-label-strong text-fg-primary">{title}</h3>
       {children}
     </section>
   );
@@ -114,13 +110,13 @@ function InfoRow({
     <div className="flex items-start gap-3">
       <span
         aria-hidden
-        className="text-object-alternative flex size-5 shrink-0 items-center justify-center"
+        className="text-fg-tertiary flex size-5 shrink-0 items-center justify-center"
       >
         {icon}
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <dt className="text-label-sm font-label-subtle text-object-alternative">{title}</dt>
-        <dd className="text-body-sm font-body-normal text-object-boldest">{children}</dd>
+        <dt className="text-label-sm font-label-normal text-fg-tertiary">{title}</dt>
+        <dd className="text-body-sm font-body-normal text-fg-primary">{children}</dd>
       </div>
     </div>
   );
@@ -146,7 +142,7 @@ function BulletList({
           >
             {icon}
           </span>
-          <span className="text-body-sm font-body-normal text-object-bold min-w-0 flex-1">
+          <span className="text-body-sm font-body-normal text-fg-primary min-w-0 flex-1">
             {item}
           </span>
         </li>

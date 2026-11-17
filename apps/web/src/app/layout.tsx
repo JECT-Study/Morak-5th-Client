@@ -18,10 +18,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className="antialiased">
-      <body className="bg-surface-deepest">
+      <body className="bg-surface-tertiary">
         <Providers>
           {/* 모바일 화면 폭으로 가운데 정렬한다. 넓은 화면에서는 양옆에 바깥 배경이 보인다. */}
-          <div className="max-w-app bg-page mx-auto flex min-h-dvh w-full flex-col">{children}</div>
+          <div className="max-w-app bg-background-secondary mx-auto flex min-h-dvh w-full flex-col">
+            {children}
+          </div>
         </Providers>
       </body>
     </html>

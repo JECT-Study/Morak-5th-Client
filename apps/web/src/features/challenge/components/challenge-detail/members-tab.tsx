@@ -1,5 +1,8 @@
-import { ContentBadge, Divider, Icon, type ContentBadgeStyle } from "@jects/jds";
-import { Fragment } from "react";
+import { ChevronRight } from "lucide-react";
+import { Fragment, type ComponentProps } from "react";
+
+import { Badge } from "@/shared/ui/badge";
+import { Separator } from "@/shared/ui/separator";
 
 export type MemberRole = "owner" | "subOwner" | "member";
 
@@ -18,28 +21,31 @@ type MembersTabProps = {
 };
 
 /** 역할 배지: 방장은 채움, 부방장은 옅은 채움, 참여자는 테두리 */
-const ROLE_BADGE: Record<MemberRole, { label: string; badgeStyle: ContentBadgeStyle }> = {
-  owner: { label: "방장", badgeStyle: "solid" },
-  subOwner: { label: "부방장", badgeStyle: "alpha" },
-  member: { label: "참여자", badgeStyle: "outlined" },
+const ROLE_BADGE: Record<
+  MemberRole,
+  { label: string; variant: ComponentProps<typeof Badge>["variant"] }
+> = {
+  owner: { label: "방장", variant: "brand" },
+  subOwner: { label: "부방장", variant: "subtle" },
+  member: { label: "참여자", variant: "outline" },
 };
 
 /** 챌린지 상세 "팀원" 탭(Figma "팀원" + "member list"). 인원 수와 팀원 목록을 보여준다. */
 export default function MembersTab({ members, memberCount, capacity }: MembersTabProps) {
   return (
-    <div className="bg-surface-deep flex flex-col">
-      <p className="bg-surface-standard text-label-lg flex items-center gap-2 px-6 py-4">
-        <span className="font-label-bold text-object-boldest">팀원</span>
-        <span className="font-label-subtle text-object-alternative">
+    <div className="bg-surface-secondary flex flex-col">
+      <p className="bg-surface-primary text-label-lg flex items-center gap-2 px-4 py-4">
+        <span className="font-label-strong text-fg-primary">팀원</span>
+        <span className="font-label-normal text-fg-tertiary">
           {memberCount}/{capacity}명
         </span>
       </p>
 
       <div className="p-4">
-        <ul className="bg-surface-standard rounded-12 flex flex-col px-3 py-1">
+        <ul className="bg-surface-primary rounded-12 flex flex-col px-3 py-1">
           {members.map((member, index) => (
             <Fragment key={member.id}>
-              {index > 0 && <Divider />}
+              {index > 0 && <Separator />}
               <MemberRow {...member} />
             </Fragment>
           ))}
@@ -62,16 +68,16 @@ function MemberRow({ nickname, role, isMe }: ChallengeMember) {
           {nickname.charAt(0)}
         </span>
         <div className="flex min-w-0 items-center gap-2">
-          <span className="text-label-lg font-label-normal text-object-boldest truncate">
+          <span className="text-label-lg font-label-normal text-fg-primary truncate">
             {nickname}
             {isMe && " (나)"}
           </span>
-          <ContentBadge hierarchy="accent" size="sm" badgeStyle={badge.badgeStyle}>
+          <Badge variant={badge.variant} size="sm">
             {badge.label}
-          </ContentBadge>
+          </Badge>
         </div>
       </div>
-      <Icon name="chevron-right" size="md" aria-hidden className="text-object-alternative" />
+      <ChevronRight aria-hidden className="text-fg-quaternary size-5 shrink-0" />
     </li>
   );
 }

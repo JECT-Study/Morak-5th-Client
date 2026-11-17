@@ -1,10 +1,11 @@
 "use client";
 
-import { LocalNavigation } from "@jects/jds";
+import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { canGoBackInApp } from "@/shared/navigation/history";
+import { IconButton } from "@/shared/ui/icon-button";
 
 type AppHeaderProps = {
   title: string;
@@ -14,9 +15,9 @@ type AppHeaderProps = {
 };
 
 /**
- * 화면 상단 헤더(JDS LocalNavigation). 상단에 고정한다.
+ * 화면 상단 헤더. 상단에 고정한다.
  * - 위쪽은 노치(상태바) 영역 + 26px을 띄운다. Figma 모든 화면에서 상태바와 헤더 사이가 26px이다.
- * - Figma처럼 화면 좌우 여백(24px)을 바깥에서 주고 LocalNavigation은 stretched로 둔다.
+ * - 좌우 여백은 24px(뒤로가기 버튼은 누르는 영역이 넓어서 왼쪽으로 8px 당긴다).
  * - 배경은 부모(화면) 배경을 이어받아, 스크롤할 때 뒤 내용이 비치지 않게 한다.
  */
 export default function AppHeader({ title, nested = false, suffixAction }: AppHeaderProps) {
@@ -27,18 +28,15 @@ export default function AppHeader({ title, nested = false, suffixAction }: AppHe
 
   return (
     <header className="sticky top-0 z-10 bg-inherit px-6 pt-[calc(env(safe-area-inset-top)+26px)]">
-      {nested ? (
-        <LocalNavigation
-          nested
-          stretched
-          title={title}
-          titleAs="h1"
-          onBackClick={handleBack}
-          suffixAction={suffixAction}
-        />
-      ) : (
-        <LocalNavigation stretched title={title} titleAs="h1" suffixAction={suffixAction} />
-      )}
+      <div className="flex h-12 items-center gap-1">
+        {nested && (
+          <IconButton aria-label="뒤로 가기" onClick={handleBack} className="-ml-2">
+            <ArrowLeft aria-hidden />
+          </IconButton>
+        )}
+        <h1 className="text-title-1 font-title text-fg-primary min-w-0 flex-1 truncate">{title}</h1>
+        {suffixAction && <div className="flex shrink-0 items-center">{suffixAction}</div>}
+      </div>
     </header>
   );
 }

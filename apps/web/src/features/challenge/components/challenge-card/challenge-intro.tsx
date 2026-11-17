@@ -1,7 +1,7 @@
-import { ContentBadge, Icon } from "@jects/jds";
+import { ChevronRight, LockKeyhole } from "lucide-react";
 import Link from "next/link";
 
-import LockKeyholeIcon from "@/shared/ui/icons/lock-keyhole-icon";
+import { Badge } from "@/shared/ui/badge";
 
 type ChallengeIntroProps = {
   id: number;
@@ -22,28 +22,26 @@ export default function ChallengeIntro({
   return (
     <>
       <div className="flex items-center justify-between">
-        <ContentBadge hierarchy="primary" size="sm">
+        <Badge variant="inverse" size="sm">
           {category}
-        </ContentBadge>
+        </Badge>
         {isPrivate && (
-          <ContentBadge badgeStyle="outlined" size="sm">
-            <span className="flex items-center gap-0.5">
-              <LockKeyholeIcon className="text-xs" />
-              비공개
-            </span>
-          </ContentBadge>
+          <Badge variant="outline" size="sm">
+            <LockKeyhole aria-hidden />
+            비공개
+          </Badge>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <h2 className="text-title-1 font-title-subtle text-object-boldest">{title}</h2>
-        <p className="text-label-lg font-label-subtle text-object-normal">{description}</p>
+        <h2 className="text-title-1 font-title text-fg-primary">{title}</h2>
+        <p className="text-label-lg font-label-normal text-fg-secondary">{description}</p>
         <Link
           href={`/challenges/${id}`}
-          className="text-label-xs font-label-subtle text-object-alternative flex items-center justify-end gap-1"
+          className="text-label-xs font-label-normal text-fg-tertiary flex items-center justify-end gap-1"
         >
           챌린지 상세보기
-          <Icon name="chevron-right" size="sm" />
+          <ChevronRight aria-hidden className="size-4" />
         </Link>
       </div>
     </>

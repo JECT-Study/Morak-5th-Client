@@ -1,5 +1,6 @@
-import { TextField } from "@jects/jds";
 import type { ComponentProps } from "react";
+
+import { TextField } from "./text-field";
 
 type FormTextFieldProps = ComponentProps<typeof TextField.Input> & {
   label: string;

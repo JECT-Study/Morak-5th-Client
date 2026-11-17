@@ -1,11 +1,11 @@
 "use client";
 
-import { BlockButton } from "@jects/jds";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useMyInfo } from "@/features/auth/use-my-info";
 import AppHeader from "@/shared/layout/app-header";
+import { Button } from "@/shared/ui/button";
 
 import { toOnboardingRequest } from "../profile";
 import { useOnboardingGuard } from "../use-onboarding-guard";
@@ -86,20 +86,15 @@ export default function OnboardingFlow() {
         {step === "guide" && <GuideStep />}
         {step === "done" && <DoneStep />}
       </main>
-      <div className="bg-page border-stroke-subtler sticky bottom-0 flex flex-col gap-2 border-t px-6 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
+      <div className="bg-background-secondary border-line-subtle sticky bottom-0 flex flex-col gap-2 border-t px-6 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
         {onboarding.errorMessage && (
-          <p role="alert" className="text-label-sm text-(--color-semantic-feedback-destructive)">
+          <p role="alert" className="text-label-sm text-danger">
             {onboarding.errorMessage}
           </p>
         )}
-        <BlockButton
-          size="lg"
-          hierarchy="accent"
-          disabled={pending || !me}
-          onClick={action.onClick}
-        >
+        <Button fullWidth disabled={pending || !me} onClick={action.onClick}>
           {action.label}
-        </BlockButton>
+        </Button>
       </div>
     </>
   );

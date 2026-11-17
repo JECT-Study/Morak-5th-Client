@@ -1,7 +1,8 @@
-import { Divider, SegmentedControls } from "@jects/jds";
 import { useController, type Control } from "react-hook-form";
 
 import type { ChallengeCreateForm } from "@/features/challenge/create-schema";
+import { SegmentedControl } from "@/shared/ui/segmented-control";
+import { Separator } from "@/shared/ui/separator";
 import Stepper from "@/shared/ui/stepper";
 
 import FormCard from "../form-card";
@@ -60,20 +61,19 @@ export default function RecruitmentSection({ control }: RecruitmentSectionProps)
         required
         description={VISIBILITY_DESCRIPTION[visibility.field.value]}
       >
-        <SegmentedControls.Root
-          size="xs"
+        <SegmentedControl
           aria-labelledby="visibility-label"
           aria-describedby="visibility-description"
           value={visibility.field.value}
           onValueChange={(value) => changeVisibility(value as ChallengeCreateForm["visibility"])}
           className="w-[102px]"
         >
-          <SegmentedControls.Item value="PUBLIC">공개</SegmentedControls.Item>
-          <SegmentedControls.Item value="PRIVATE">비공개</SegmentedControls.Item>
-        </SegmentedControls.Root>
+          <SegmentedControl.Item value="PUBLIC">공개</SegmentedControl.Item>
+          <SegmentedControl.Item value="PRIVATE">비공개</SegmentedControl.Item>
+        </SegmentedControl>
       </ConditionRow>
 
-      <Divider />
+      <Separator />
 
       <ConditionRow
         id="capacity"
@@ -95,7 +95,7 @@ export default function RecruitmentSection({ control }: RecruitmentSectionProps)
       {/* 참여 포인트는 공개 챌린지에서만 걸 수 있다. */}
       {isPublic && (
         <>
-          <Divider />
+          <Separator />
           <ConditionRow
             id="use-point"
             label="참여 포인트"
@@ -103,22 +103,21 @@ export default function RecruitmentSection({ control }: RecruitmentSectionProps)
             description="포인트를 걸면 챌린지 결과에 따라 돌려받아요."
             error={usePoint.fieldState.error?.message}
           >
-            <SegmentedControls.Root
-              size="xs"
+            <SegmentedControl
               aria-labelledby="use-point-label"
               aria-describedby="use-point-description"
               value={usePoint.field.value ? "ON" : "OFF"}
               onValueChange={(value) => changeUsePoint(value === "ON")}
               className="w-[102px]"
             >
-              <SegmentedControls.Item value="ON">ON</SegmentedControls.Item>
-              <SegmentedControls.Item value="OFF">OFF</SegmentedControls.Item>
-            </SegmentedControls.Root>
+              <SegmentedControl.Item value="ON">ON</SegmentedControl.Item>
+              <SegmentedControl.Item value="OFF">OFF</SegmentedControl.Item>
+            </SegmentedControl>
           </ConditionRow>
 
           {usePoint.field.value && (
             <>
-              <Divider />
+              <Separator />
               <ConditionRow
                 id="point-amount"
                 label="1인당 참여 포인트"

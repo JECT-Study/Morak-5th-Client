@@ -1,4 +1,4 @@
-import { Accordion } from "@jects/jds";
+import { Accordion } from "@/shared/ui/accordion";
 
 /*
  * TODO: 본문은 화면정의서 온보딩 "세부 안내 내용" 원문으로 바꾼다.
@@ -38,15 +38,15 @@ const GUIDES = [
 export default function GuideStep() {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-label-lg font-label-bold text-object-boldest">
+      <p className="text-label-lg font-label-strong text-fg-primary">
         함께 도전하기 전, 이용 방법을 확인해 주세요.
       </p>
-      <Accordion.Root type="multiple" isStretched>
+      <Accordion type="multiple">
         {GUIDES.map(({ value, title, body }) => (
           <Accordion.Item key={value} value={value}>
             <Accordion.Trigger>{title}</Accordion.Trigger>
             <Accordion.Content>
-              <ul className="text-body-sm font-body-normal text-object-neutral flex list-disc flex-col gap-1 pl-5">
+              <ul className="text-body-sm font-body-normal text-fg-secondary flex list-disc flex-col gap-1 pl-5">
                 {body.map((line) => (
                   <li key={line}>{line}</li>
                 ))}
@@ -54,7 +54,7 @@ export default function GuideStep() {
             </Accordion.Content>
           </Accordion.Item>
         ))}
-      </Accordion.Root>
+      </Accordion>
     </div>
   );
 }

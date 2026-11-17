@@ -1,6 +1,6 @@
 "use client";
 
-import { TabsContent, TabsList, TabsRoot, TabsTrigger } from "@jects/jds";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
 import IntroTab, { type ChallengeIntroData } from "./intro-tab";
 import MembersTab, { type ChallengeMember } from "./members-tab";
@@ -18,11 +18,11 @@ type ChallengeDetailTabsProps = {
 
 /**
  * 챌린지 상세 하단 탭(Figma "Tabs": 인증 · 팀원 · 소개). 탭을 누르면 아래 내용이 바뀐다.
- * JDS Tabs(radix 기반)라 방향키 이동·스크린리더 탭 안내가 기본으로 된다.
+ * radix Tabs라 방향키 이동·스크린리더 탭 안내가 기본으로 된다.
  */
 export default function ChallengeDetailTabs({ intro, members }: ChallengeDetailTabsProps) {
   return (
-    <TabsRoot defaultValue="certification" variant="header" isItemStretched>
+    <Tabs defaultValue="certification">
       <TabsList>
         {TABS.map(({ value, label }) => (
           <TabsTrigger key={value} value={value}>
@@ -41,13 +41,13 @@ export default function ChallengeDetailTabs({ intro, members }: ChallengeDetailT
       <TabsContent value="intro">
         <IntroTab {...intro} />
       </TabsContent>
-    </TabsRoot>
+    </Tabs>
   );
 }
 
 function TabPlaceholder({ name }: { name: string }) {
   return (
-    <p className="text-label-md font-label-subtle text-object-assistive py-16 text-center">
+    <p className="text-label-md font-label-normal text-fg-quaternary py-16 text-center">
       {name} 탭은 준비 중이에요.
     </p>
   );
