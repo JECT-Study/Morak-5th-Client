@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { Badge } from "@/shared/ui/badge";
 
-import { formatPeriodWithWeeks } from "../../utils";
+import { formatPeriodWithDuration } from "../../utils";
 
 type ChallengeInfoProps = {
   title: string;
@@ -12,10 +12,10 @@ type ChallengeInfoProps = {
   category: string;
   /** 표지 사진. 없으면 기본 배경과 사진 아이콘을 보여준다. */
   coverImageUrl?: string | null;
-  /** 표지 오른쪽 아래 배지. 예) "D-12" */
+  /** 표지 오른쪽 아래 배지. 예) "D-12", "모집 마감" */
   dDayLabel: string;
-  /** 챌린지 유형. 예) "데일리" */
-  typeLabel: string;
+  /** 챌린지 유형. 예) "데일리". 상세 API에 아직 없어 없으면 표시하지 않는다. */
+  typeLabel?: string;
   isPrivate: boolean;
   /** 인증 방식. 예) "사진 인증" */
   verificationLabel: string;
@@ -23,7 +23,6 @@ type ChallengeInfoProps = {
   startDate: string;
   /** "YYYY-MM-DD" */
   endDate: string;
-  durationWeeks: number;
   memberCount: number;
   capacity: number;
   /** 1인당 참여 포인트. 0이면 포인트 없는 챌린지라 표시하지 않는다. */
@@ -44,7 +43,6 @@ export default function ChallengeInfo({
   verificationLabel,
   startDate,
   endDate,
-  durationWeeks,
   memberCount,
   capacity,
   pointAmount,
@@ -79,11 +77,13 @@ export default function ChallengeInfo({
         <h2 className="text-title-1 font-title text-fg-primary">{title}</h2>
 
         <ul className="flex gap-2" aria-label="챌린지 특징">
-          <li>
-            <Badge variant="outline" size="sm">
-              {typeLabel}
-            </Badge>
-          </li>
+          {typeLabel && (
+            <li>
+              <Badge variant="outline" size="sm">
+                {typeLabel}
+              </Badge>
+            </li>
+          )}
           {isPrivate && (
             <li>
               <Badge variant="outline" size="sm">
@@ -105,7 +105,7 @@ export default function ChallengeInfo({
             icon={<CalendarDays aria-hidden className="size-4" />}
             className="text-body-md font-body-normal"
           >
-            {formatPeriodWithWeeks(startDate, endDate, durationWeeks)}
+            {formatPeriodWithDuration(startDate, endDate)}
           </InfoItem>
           <div className="flex gap-4">
             <InfoItem label="인원" icon={<Users aria-hidden className="size-4" />}>
