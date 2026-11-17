@@ -70,6 +70,10 @@
   --color-static-white: #ffffff;
   --color-static-brand: #ff633a;
 
+  /* 주의(Figma Surface/Cautionary/Subtle, Foreground/Cautionary/Primary). 예) 채팅방 판정 업무 경고 안내 */
+  --color-surface-caution-subtle: #fff7de;
+  --color-fg-caution: #765c22;
+
   /* 오류·성공 색은 새 디자인 시스템에 아직 없어 JDS 라이트 값을 잠시 쓴다. TODO: PD 확인 */
   --color-danger: #c23232;
   --color-success: #2da74b;
