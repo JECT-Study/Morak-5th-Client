@@ -16,6 +16,8 @@ type AppHeaderProps = {
    * TODO: 다른 화면 시안도 이 모양으로 바뀌면 기본값으로 바꾼다.
    */
   centered?: boolean;
+  /** centered 헤더 아래 구분선. 기본 true(온보딩), 채팅방은 시안에 없어서 false */
+  divider?: boolean;
   /** 뒤로가기를 직접 처리할 때(예: 온보딩 단계 되돌리기). 없으면 브라우저 뒤로가기 */
   onBack?: () => void;
   suffixAction?: ReactNode;
@@ -31,6 +33,7 @@ export default function AppHeader({
   title,
   nested = false,
   centered = false,
+  divider = true,
   onBack,
   suffixAction,
 }: AppHeaderProps) {
@@ -41,7 +44,9 @@ export default function AppHeader({
 
   if (centered) {
     return (
-      <header className="border-line sticky top-0 z-10 border-b bg-inherit pt-[env(safe-area-inset-top)]">
+      <header
+        className={`sticky top-0 z-10 bg-inherit pt-[env(safe-area-inset-top)] ${divider ? "border-line border-b" : ""}`}
+      >
         <div className="relative flex h-14 items-center justify-center px-4">
           {nested && (
             <IconButton
