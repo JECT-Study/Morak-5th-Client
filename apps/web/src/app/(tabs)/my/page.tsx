@@ -2,7 +2,7 @@ import { Settings } from "lucide-react";
 import Link from "next/link";
 
 import AppHeader from "@/shared/layout/app-header";
-import ScreenPlaceholder from "@/shared/layout/screen-placeholder";
+import MySummary from "@/features/point/components/my-summary";
 import { IconButton } from "@/shared/ui/icon-button";
 
 export default function MyPage() {
@@ -18,7 +18,7 @@ export default function MyPage() {
           </IconButton>
         }
       />
-      <ScreenPlaceholder name="마이페이지" />
+      <MySummary />
     </>
   );
 }
