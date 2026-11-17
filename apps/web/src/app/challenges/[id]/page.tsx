@@ -55,7 +55,8 @@ const membersMock: ChallengeMember[] = [
 export default function ChallengeDetailPage() {
   return (
     <>
-      <AppHeader nested title="챌린지 상세" />
+      {/* 만들기·초대 링크 등 어디서 들어왔든 뒤로가기는 챌린지 목록으로 보낸다 */}
+      <AppHeader nested title="챌린지 상세" backHref="/challenges" />
       <ChallengeInfo {...challengeMock} />
       <ChallengeDetailTabs intro={introMock} members={membersMock} />
     </>
