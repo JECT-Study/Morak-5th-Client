@@ -16,6 +16,9 @@ import {
   type WebViewProps,
 } from "react-native-webview";
 import * as Haptics from "expo-haptics";
+import * as Notifications from "expo-notifications";
+
+import { getNotificationPath, getPushToken } from "./push";
 
 // react-native-webview의 기본 제네릭(P = undefined) 때문에 최신 TS에서 props가 never로 계산된다.
 // 동작은 그대로 두고 타입만 바로잡는다.
@@ -35,28 +38,49 @@ export default function App() {
   const [offline, setOffline] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
+  // 웹이 READY를 보내기 전(앱이 알림으로 켜진 직후 등)에 들어온 이동 경로는 모아 뒀다가 보낸다.
+  const webReady = useRef(false);
+  const pendingPath = useRef<string | null>(null);
+
   const sendToWeb = useCallback((message: AppToWeb) => {
     webRef.current?.injectJavaScript(toInjectedScript(message));
   }, []);
 
+  const openPath = useCallback(
+    (path: string) => {
+      if (webReady.current) sendToWeb({ type: "OPEN_URL", path });
+      else pendingPath.current = path;
+    },
+    [sendToWeb],
+  );
+
   const handleWebMessage = useCallback(
     (message: WebToApp) => {
       switch (message.type) {
-        case "READY":
+        case "READY": {
           SplashScreen.hideAsync();
+          webReady.current = true;
           sendToWeb({
             type: "APP_INFO",
             bridgeVersion: BRIDGE_VERSION,
             appVersion: APP_VERSION,
-            features: ["share"],
+            features: ["share", "push"],
           });
+          // 앱이 꺼져 있다가 알림을 눌러 켜진 경우, 그 알림의 경로로 보낸다.
+          const lastResponse = Notifications.getLastNotificationResponse();
+          const path = pendingPath.current ?? (lastResponse && getNotificationPath(lastResponse));
+          pendingPath.current = null;
+          Notifications.clearLastNotificationResponse();
+          if (path) sendToWeb({ type: "OPEN_URL", path });
           break;
+        }
         case "SHARE":
           Share.share({ url: message.url, message: message.title ?? message.url });
           break;
         case "REQUEST_PUSH_TOKEN":
-          // 푸시는 아직 붙이지 않았다.
-          sendToWeb({ type: "PUSH_TOKEN", id: message.id, status: "unavailable", token: null });
+          getPushToken(message.prompt).then(({ status, token }) =>
+            sendToWeb({ type: "PUSH_TOKEN", id: message.id, status, token }),
+          );
           break;
         case "HAPTIC":
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -72,6 +96,17 @@ export default function App() {
     const message = parseWebToApp(event.nativeEvent.data);
     if (message) handleWebMessage(message);
   };
+
+  // 앱을 쓰는 중이거나 백그라운드에서 알림을 누르면 그 경로로 보낸다.
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      const path = getNotificationPath(response);
+      if (!path) return;
+      Notifications.clearLastNotificationResponse();
+      openPath(path);
+    });
+    return () => subscription.remove();
+  }, [openPath]);
 
   // Android 하드웨어 뒤로가기는 웹 기록부터 되돌린다.
   useEffect(() => {

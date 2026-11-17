@@ -10,10 +10,12 @@ const UNAVAILABLE: PushTokenResult = { status: "unavailable", token: null };
 const PUSH_TOKEN_TIMEOUT_MS = 60_000;
 
 /**
- * 앱에 알림 권한과 Expo 푸시 토큰을 요청한다.
+ * 앱에 Expo 푸시 토큰을 요청한다.
+ * - prompt=true: 아직 묻지 않았으면 권한 팝업을 띄운다(챌린지 참여·생성 등 이유가 분명할 때).
+ * - prompt=false: 묻지 않고, 이미 허용된 경우에만 토큰을 받는다(로그인 직후 조용한 재등록).
  * 브라우저이거나, 앱이 답하지 않거나(푸시를 모르는 예전 앱), 시간이 지나면 unavailable.
  */
-export function requestPushToken(): Promise<PushTokenResult> {
+export function requestPushToken({ prompt }: { prompt: boolean }): Promise<PushTokenResult> {
   return new Promise((resolve) => {
     const id = crypto.randomUUID();
 
@@ -29,6 +31,6 @@ export function requestPushToken(): Promise<PushTokenResult> {
       finish({ status: message.status, token: message.token });
     });
 
-    if (!sendToApp({ type: "REQUEST_PUSH_TOKEN", id })) finish(UNAVAILABLE);
+    if (!sendToApp({ type: "REQUEST_PUSH_TOKEN", id, prompt })) finish(UNAVAILABLE);
   });
 }
