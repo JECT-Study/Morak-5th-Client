@@ -6,7 +6,7 @@ import RequiredMark from "@/shared/ui/required-mark";
 type ChallengeCategory = (typeof CHALLENGE_CATEGORIES)[number];
 
 /** 카테고리별 이름과 아이콘(Figma에서 내려받은 SVG, public/icons/category) */
-const CATEGORY_META: Record<ChallengeCategory, { label: string; icon: string }> = {
+export const CATEGORY_META: Record<ChallengeCategory, { label: string; icon: string }> = {
   EXERCISE: { label: "운동", icon: "/icons/category/exercise.svg" },
   STUDY: { label: "공부", icon: "/icons/category/study.svg" },
   CAREER: { label: "커리어", icon: "/icons/category/career.svg" },
