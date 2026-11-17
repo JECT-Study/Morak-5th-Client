@@ -15,6 +15,7 @@ import {
   type WebViewMessageEvent,
   type WebViewProps,
 } from "react-native-webview";
+import * as Haptics from "expo-haptics";
 
 // react-native-webview의 기본 제네릭(P = undefined) 때문에 최신 TS에서 props가 never로 계산된다.
 // 동작은 그대로 두고 타입만 바로잡는다.
@@ -58,6 +59,7 @@ export default function App() {
           sendToWeb({ type: "PUSH_TOKEN", id: message.id, token: null });
           break;
         case "HAPTIC":
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           break;
       }
     },
