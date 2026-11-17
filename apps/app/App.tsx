@@ -15,6 +15,7 @@ import {
   type WebViewMessageEvent,
   type WebViewProps,
 } from "react-native-webview";
+import * as Haptics from "expo-haptics";
 
 // react-native-webview의 기본 제네릭(P = undefined) 때문에 최신 TS에서 props가 never로 계산된다.
 // 동작은 그대로 두고 타입만 바로잡는다.
@@ -55,9 +56,10 @@ export default function App() {
           break;
         case "REQUEST_PUSH_TOKEN":
           // 푸시는 아직 붙이지 않았다.
-          sendToWeb({ type: "PUSH_TOKEN", id: message.id, token: null });
+          sendToWeb({ type: "PUSH_TOKEN", id: message.id, status: "unavailable", token: null });
           break;
         case "HAPTIC":
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           break;
       }
     },
@@ -114,13 +116,30 @@ export default function App() {
           key={reloadKey}
           ref={webRef}
           source={{ uri: WEB_URL }}
-          originWhitelist={[`${WEB_ORIGIN}*`]}
+          originWhitelist={[
+            `${WEB_ORIGIN}*`,
+            "https://kauth.kakao.com*",
+            "https://accounts.kakao.com*",
+            "http://localhost:3000*",
+          ]}
           onMessage={onMessage}
           onNavigationStateChange={(state) => {
             canGoBack.current = state.canGoBack;
           }}
           onShouldStartLoadWithRequest={(request) => {
+            if (__DEV__ && request.url.startsWith("http://localhost:3000/")) {
+              const fixed = request.url.replace("http://localhost:3000", WEB_ORIGIN);
+              webRef.current?.injectJavaScript(`location.replace(${JSON.stringify(fixed)}); true;`);
+              return false; // 원래 localhost 이동은 막는다
+            }
             if (request.url.startsWith(WEB_ORIGIN) || request.url.startsWith("about:")) return true;
+            // 카카오 로그인 화면은 WebView 안에서 연다. 그래야 쿠키가 WebView에 남는다.
+            if (
+              request.url.startsWith("https://kauth.kakao.com/") ||
+              request.url.startsWith("https://accounts.kakao.com/")
+            ) {
+              return true;
+            }
             // 외부 링크는 시스템 브라우저로 연다.
             Linking.openURL(request.url);
             return false;

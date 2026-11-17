@@ -12,15 +12,26 @@ export const BRIDGE_VERSION = 1;
 /** 앱 껍데기가 지원할 수 있는 기능. 오래된 앱은 일부만 지원할 수 있다. */
 export type AppFeature = "haptic" | "share" | "push" | "deeplink";
 
+/**
+ * 푸시 알림을 받을 수 있는 상태.
+ * - granted: 권한 허용, token에 Expo 푸시 토큰이 있다.
+ * - denied: 사용자가 거부했다. 앱 안에서 다시 물을 수 없으니 기기 설정으로 안내한다.
+ * - unavailable: 받을 수 없는 환경(브라우저, 시뮬레이터, 푸시를 붙이지 않은 앱, 토큰 발급 실패).
+ */
+export type PushStatus = "granted" | "denied" | "unavailable";
+
 export type WebToApp =
   | { type: "READY" }
   | { type: "HAPTIC"; style: "light" | "medium" | "success" }
   | { type: "SHARE"; url: string; title?: string }
+  /** 알림 권한을 묻고(아직 안 물었으면) Expo 푸시 토큰을 받는다. 같은 id의 PUSH_TOKEN으로 답한다. */
   | { type: "REQUEST_PUSH_TOKEN"; id: string };
 
 export type AppToWeb =
   | { type: "APP_INFO"; bridgeVersion: number; appVersion: string; features: AppFeature[] }
-  | { type: "PUSH_TOKEN"; id: string; token: string | null }
+  /** REQUEST_PUSH_TOKEN 응답. status가 granted일 때만 token이 있다. */
+  | { type: "PUSH_TOKEN"; id: string; status: PushStatus; token: string | null }
+  /** 딥링크·알림 탭으로 열 웹 경로. 예) "/challenges/12" */
   | { type: "OPEN_URL"; path: string };
 
 const WEB_TO_APP_TYPES: ReadonlySet<string> = new Set<WebToApp["type"]>([
