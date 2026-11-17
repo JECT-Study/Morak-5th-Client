@@ -55,7 +55,7 @@ export default function App() {
           break;
         case "REQUEST_PUSH_TOKEN":
           // 푸시는 아직 붙이지 않았다.
-          sendToWeb({ type: "PUSH_TOKEN", id: message.id, token: null });
+          sendToWeb({ type: "PUSH_TOKEN", id: message.id, status: "unavailable", token: null });
           break;
         case "HAPTIC":
           break;

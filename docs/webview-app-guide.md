@@ -95,7 +95,12 @@ type WebToApp =
 
 type AppToWeb =
   | { type: "APP_INFO"; version: string; features: string[] }
-  | { type: "PUSH_TOKEN"; id: string; token: string | null }
+  | {
+      type: "PUSH_TOKEN";
+      id: string;
+      status: "granted" | "denied" | "unavailable";
+      token: string | null;
+    }
   | { type: "OPEN_URL"; path: string };
 ```
 
