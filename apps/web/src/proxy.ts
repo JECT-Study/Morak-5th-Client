@@ -4,7 +4,7 @@ import { SESSION_COOKIE } from "@/shared/api/auth-cookies";
 import { ACCESS_TOKEN_COOKIE } from "@/shared/api/backend";
 
 /** 로그인해야 들어올 수 있는 페이지. 그 외(홈·챌린지 목록 등)는 비로그인도 볼 수 있다. */
-const PROTECTED_PATHS = ["/challenges/new", "/settings"];
+const PROTECTED_PATHS = ["/challenges/new", "/settings", "/my/points"];
 
 const isProtected = (pathname: string) =>
   PROTECTED_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
