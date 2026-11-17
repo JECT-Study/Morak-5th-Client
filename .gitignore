@@ -39,3 +39,11 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+
+google-services.json
+/ios
+/android
+
+# Firebase 서비스 계정 키(FCM V1). Expo에만 올리고 저장소에는 두지 않는다.
+*firebase-adminsdk*.json
