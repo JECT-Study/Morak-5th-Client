@@ -12,6 +12,7 @@
   "dependencies": {
     "@morak/bridge": "workspace:*",
     "expo": "~58.0.16",
+    "expo-haptics": "~58.0.8",
     "expo-splash-screen": "~58.0.10",
     "expo-status-bar": "~58.0.3",
     "react": "19.3.0",
