@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { addTransitionType, startTransition, useState } from "react";
 
 import { useMyInfo } from "@/features/auth/use-my-info";
 import AppHeader from "@/shared/layout/app-header";
 import { Button } from "@/shared/ui/button";
+import { DirectionalTransition, type NavDirection } from "@/shared/ui/directional-transition";
 
 import { toOnboardingRequest } from "../profile";
 import { useOnboardingGuard } from "../use-onboarding-guard";
@@ -54,14 +55,21 @@ export default function OnboardingFlow() {
   const onboarding = useCompleteOnboarding({
     onNicknameTaken: () => {
       setFieldError("nickname", NICKNAME_TAKEN);
-      setStep("profile");
+      moveTo("profile", "nav-back");
     },
   });
 
-  const moveTo = (next: Step) => {
-    setStep(next);
+  /**
+   * 단계를 바꾼다. startTransition 안에서 바꿔야 View Transition이 돌고,
+   * addTransitionType으로 붙인 방향에 따라 DirectionalTransition이 슬라이드 방향을 고른다.
+   */
+  function moveTo(next: Step, direction: NavDirection = "nav-forward") {
+    startTransition(() => {
+      addTransitionType(direction);
+      setStep(next);
+    });
     window.scrollTo(0, 0);
-  };
+  }
 
   const goToGuide = () => {
     if (!validate()) return;
@@ -99,15 +107,23 @@ export default function OnboardingFlow() {
         centered
         nested={prev !== undefined || step === "done"}
         // 완료 화면은 이미 저장을 마쳐 이전 단계로 되돌릴 수 없으니 홈으로 나간다.
-        onBack={step === "done" ? () => router.replace("/") : prev ? () => moveTo(prev) : undefined}
+        onBack={
+          step === "done"
+            ? () => router.replace("/")
+            : prev
+              ? () => moveTo(prev, "nav-back")
+              : undefined
+        }
         title={STEP_TITLE[step]}
       />
-      <main className="flex flex-1 flex-col px-4 pt-4 pb-6">
-        {step === "start" && <StartStep />}
-        {step === "profile" && <ProfileStep form={form} errors={errors} onChange={updateForm} />}
-        {step === "guide" && <GuideStep confirmed={confirmed} onConfirmChange={changeConfirm} />}
-        {step === "done" && <DoneStep />}
-      </main>
+      <DirectionalTransition key={step}>
+        <main className="flex flex-1 flex-col px-4 pt-4 pb-6">
+          {step === "start" && <StartStep />}
+          {step === "profile" && <ProfileStep form={form} errors={errors} onChange={updateForm} />}
+          {step === "guide" && <GuideStep confirmed={confirmed} onConfirmChange={changeConfirm} />}
+          {step === "done" && <DoneStep />}
+        </main>
+      </DirectionalTransition>
       <div className="bg-background-primary sticky bottom-0 flex flex-col gap-2 p-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         {onboarding.errorMessage && (
           <p role="alert" className="text-label-sm font-label-normal text-danger">

@@ -1,24 +1,34 @@
-import { CalendarDays, Camera, CircleCheck, Clock3, Coins, Info, Users } from "lucide-react";
+import {
+  CalendarDays,
+  Camera,
+  CircleCheck,
+  Clock3,
+  Coins,
+  Info,
+  Target,
+  Users,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
-import { formatPeriodWithWeeks } from "../../utils";
+import { formatPeriodWithDuration } from "../../utils";
 
 export type ChallengeIntroData = {
-  /** 챌린지 소개(본문) */
-  description: string;
+  /** 챌린지 소개(본문). 없으면 카드를 그리지 않는다. */
+  description: string | null;
   /** "YYYY-MM-DD" */
   startDate: string;
   endDate: string;
-  durationWeeks: number;
   /** 인증 시간. 예) "매일 05:00 ~ 06:00" */
   certificationTime: string;
-  /** 인증 방식(판정 기준). 예) "기상 직후 시간이 보이는 사진 인증" */
+  /** 인증 방식. 예) "사진 인증" */
   verificationMethod: string;
+  /** 공동 미션. 예) "매일 10쪽 읽기" */
+  commonMission: string;
   capacity: number;
   memberCount: number;
   /** 1인당 참여 포인트. 0이면 포인트 없는 챌린지 */
   pointAmount: number;
-  /** 인증 및 포인트 반환 규칙 */
+  /** 인증 규칙(판정 기준) */
   rules: string[];
   /** 참여 시 유의사항 */
   notices: string[];
@@ -29,9 +39,9 @@ export default function IntroTab({
   description,
   startDate,
   endDate,
-  durationWeeks,
   certificationTime,
   verificationMethod,
+  commonMission,
   capacity,
   memberCount,
   pointAmount,
@@ -40,14 +50,21 @@ export default function IntroTab({
 }: ChallengeIntroData) {
   return (
     <div className="bg-surface-secondary flex flex-col gap-3 p-4">
-      <IntroCard title="챌린지 소개">
-        <p className="text-body-sm font-body-normal text-fg-primary break-keep">{description}</p>
-      </IntroCard>
+      {description && (
+        <IntroCard title="챌린지 소개">
+          <p className="text-body-sm font-body-normal text-fg-primary break-keep whitespace-pre-line">
+            {description}
+          </p>
+        </IntroCard>
+      )}
 
       <IntroCard title="기본 정보">
         <dl className="flex flex-col gap-3">
           <InfoRow icon={<CalendarDays className="size-5" />} title="진행 기간">
-            {formatPeriodWithWeeks(startDate, endDate, durationWeeks)}
+            {formatPeriodWithDuration(startDate, endDate)}
+          </InfoRow>
+          <InfoRow icon={<Target className="size-5" />} title="공동 미션">
+            {commonMission}
           </InfoRow>
           <InfoRow icon={<Clock3 className="size-5" />} title="인증 시간">
             {certificationTime}
@@ -67,7 +84,8 @@ export default function IntroTab({
         </dl>
       </IntroCard>
 
-      <IntroCard title="인증 및 반환 규칙">
+      {/* TODO: 판정 방식·퇴장 기준·포인트 반환 규칙(위키 5.3)은 상세 API에 없어 나오면 추가한다. */}
+      <IntroCard title="인증 규칙">
         <BulletList
           items={rules}
           icon={<CircleCheck className="size-5" />}

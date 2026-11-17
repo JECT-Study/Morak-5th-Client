@@ -30,3 +30,46 @@ export type MyChallengeCardData = {
   depositAmount: number;
   todayCertifications: TodayCertification[];
 };
+
+/** 챌린지 카테고리 (백엔드 Category enum) */
+export type ChallengeCategory = "STUDY" | "EXERCISE" | "CAREER" | "LIFESTYLE" | "READING";
+
+/**
+ * 챌린지 진행 상태(백엔드 status). 화면 표시는 위키 4.1.
+ * 백엔드가 새 값을 더할 수 있어 string도 받는다.
+ */
+export type ChallengeStatus =
+  | "RECRUITING"
+  | "START_HELD"
+  | "IN_PROGRESS"
+  | "FINALIZING"
+  | "ENDED"
+  | "DISCARDED"
+  | (string & {});
+
+/** GET /challenges/{id} 응답 data (Swagger ChallengeView) */
+export type ChallengeView = {
+  id: number;
+  title: string;
+  description: string;
+  /** "PUBLIC" | "PRIVATE" */
+  visibility: string;
+  category: ChallengeCategory;
+  purpose: string | null;
+  commonMission: string;
+  verificationRules: string;
+  expectations: string | null;
+  status: ChallengeStatus;
+  /** "YYYY-MM-DD" */
+  startDate: string;
+  /** "YYYY-MM-DD" */
+  endDate: string;
+  capacity: number;
+  currentCount: number;
+  /** 1인 참여 포인트. 0이면 포인트 없는 챌린지 */
+  pointAmount: number;
+  /** 내 참가 상태(위키 4.4). 참가하지 않았으면 null */
+  myParticipationStatus: string | null;
+  canApply: boolean;
+  coverImageUrl: string | null;
+};

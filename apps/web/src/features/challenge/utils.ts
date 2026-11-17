@@ -18,9 +18,16 @@ const formatMonthDay = (date: string) => {
   return `${month}월 ${day}일`;
 };
 
-/** "10월 20일 ~ 11월 16일 (4주)" */
-export const formatPeriodWithWeeks = (startDate: string, endDate: string, weeks: number) =>
-  `${formatMonthDay(startDate)} ~ ${formatMonthDay(endDate)} (${weeks}주)`;
+/** 시작일·종료일을 모두 포함한 기간(일). "2026-10-20" ~ "2026-11-16" → 28 */
+export const countDays = (startDate: string, endDate: string) =>
+  Math.round((Date.parse(endDate) - Date.parse(startDate)) / 86_400_000) + 1;
+
+/** "10월 20일 ~ 11월 16일 (4주)". 7일 단위가 아니면 "(10일)"처럼 일로 쓴다. */
+export const formatPeriodWithDuration = (startDate: string, endDate: string) => {
+  const days = countDays(startDate, endDate);
+  const duration = days % 7 === 0 ? `${days / 7}주` : `${days}일`;
+  return `${formatMonthDay(startDate)} ~ ${formatMonthDay(endDate)} (${duration})`;
+};
 
 /** 남은 일수. 마지막 날이면 0("D-Day") */
 export const getRemainingDays = (currentDay: number, totalDays: number) =>

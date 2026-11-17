@@ -20,6 +20,8 @@ type AppHeaderProps = {
   divider?: boolean;
   /** 뒤로가기를 직접 처리할 때(예: 온보딩 단계 되돌리기). 없으면 브라우저 뒤로가기 */
   onBack?: () => void;
+  /** 뒤로가기를 누르면 항상 이 주소로 보낼 때(서버 컴포넌트에서 onBack 대신). 예) 챌린지 상세 → 목록 */
+  backHref?: string;
   suffixAction?: ReactNode;
 };
 
@@ -35,12 +37,19 @@ export default function AppHeader({
   centered = false,
   divider = true,
   onBack,
+  backHref,
   suffixAction,
 }: AppHeaderProps) {
   const router = useRouter();
 
   // 딥링크로 바로 들어와 앱 안 기록이 없으면 홈으로 보낸다.
-  const handleBack = onBack ?? (() => (canGoBackInApp() ? router.back() : router.replace("/")));
+  const handleBack =
+    onBack ??
+    (() => {
+      if (backHref) router.replace(backHref);
+      else if (canGoBackInApp()) router.back();
+      else router.replace("/");
+    });
 
   if (centered) {
     return (

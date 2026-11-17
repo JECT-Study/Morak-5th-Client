@@ -9,7 +9,7 @@ import type { ChallengeCreateForm } from "./create-schema";
 const FALLBACK_MESSAGE = "챌린지를 만들지 못했어요. 다시 시도해 주세요.";
 
 /**
- * 챌린지 개설. 성공하면 만든 챌린지 상세로 이동한다.
+ * 챌린지 개설. 성공하면 만든 챌린지 상세로 이동한다(만들기 화면은 기록에서 빼서 뒤로가기로 돌아오지 않게).
  * - 401(로그인 만료)은 로그인, 403(온보딩 전)은 온보딩 화면으로 보낸다.
  * - 400·409는 서버 문구를 그대로 보여준다. 400 규칙은 폼 검증(zod)이 먼저 막으므로
  *   자정이 지나는 등 드문 경우에만 온다.
@@ -19,7 +19,7 @@ export const useCreateChallenge = () => {
   const router = useRouter();
   const mutation = useMutation({
     mutationFn: (values: ChallengeCreateForm) => createChallenge(toCreateChallengeRequest(values)),
-    onSuccess: ({ challengeId }) => router.push(`/challenges/${challengeId}`),
+    onSuccess: ({ challengeId }) => router.replace(`/challenges/${challengeId}`),
     onError: (cause) => {
       if (!(cause instanceof ApiError)) return;
       if (cause.status === 401) router.replace("/login");
