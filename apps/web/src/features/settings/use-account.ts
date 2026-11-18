@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 
 import type { MyUserInfo } from "@/features/auth/types";
 import { ApiError } from "@/shared/api/client";
+import { unregisterPushToken } from "@/shared/native/register-push-token";
 
 import { logout, updateMarketingAgreement, withdraw } from "./settings-api";
 
@@ -19,7 +20,14 @@ const useLeave = () => {
 /** 로그아웃. 확인 없이 바로 하고 홈으로 간다(위키 6.10). */
 export function useLogout() {
   const leave = useLeave();
-  const mutation = useMutation({ mutationFn: logout, onSuccess: leave });
+  const mutation = useMutation({
+    // 토큰 삭제는 인증이 필요해서 로그아웃(쿠키 삭제)보다 먼저 한다. 실패해도 로그아웃은 진행한다.
+    mutationFn: async () => {
+      await unregisterPushToken();
+      await logout();
+    },
+    onSuccess: leave,
+  });
   return {
     logout: () => mutation.mutate(),
     // 성공 후 홈으로 이동하는 동안에도 다시 누르지 못하게 한다.

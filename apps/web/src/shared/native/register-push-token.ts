@@ -18,3 +18,19 @@ export async function registerPushToken({ prompt }: { prompt: boolean }): Promis
   }
   return status;
 }
+
+/** 로그아웃 때 앱 답을 기다리는 시간. 푸시를 모르는 예전 앱이면 이만큼만 기다리고 넘어간다. */
+const UNREGISTER_TIMEOUT_MS = 3_000;
+
+/**
+ * 이 기기의 푸시 토큰을 서버에서 지운다(DELETE /api/push-tokens). 로그아웃 직전, 인증이 살아 있을 때 부른다.
+ * 권한을 묻지 않고, 토큰이 없거나 실패해도 throw하지 않는다(로그아웃을 막지 않는다).
+ */
+export async function unregisterPushToken(): Promise<void> {
+  const { status, token } = await requestPushToken({
+    prompt: false,
+    timeoutMs: UNREGISTER_TIMEOUT_MS,
+  });
+  if (status !== "granted" || !token) return;
+  await request("/api/push-tokens", { method: "DELETE", json: { token } }).catch(() => undefined);
+}
