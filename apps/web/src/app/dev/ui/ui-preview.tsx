@@ -9,6 +9,7 @@ import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { CheckboxGroup } from "@/shared/ui/checkbox-group";
 import { Chip } from "@/shared/ui/chip";
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { IconButton } from "@/shared/ui/icon-button";
 import { SegmentedControl } from "@/shared/ui/segmented-control";
 import { Separator } from "@/shared/ui/separator";
@@ -32,6 +33,7 @@ export default function UiPreview() {
   const [interests, setInterests] = useState<string[]>(["STUDY"]);
   const [date, setDate] = useState<Date | undefined>();
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const all = terms.a && terms.b;
   const some = terms.a || terms.b;
 
@@ -246,6 +248,20 @@ export default function UiPreview() {
             달력 열기
           </Button>
         )}
+      </Section>
+
+      <Section title="ConfirmDialog">
+        <Button variant="outline" size="md" onClick={() => setShowDialog(true)}>
+          모달 열기
+        </Button>
+        <ConfirmDialog
+          open={showDialog}
+          onOpenChange={setShowDialog}
+          title="알림을 받아보시겠어요?"
+          description="챌린지 인증 시간과 팀원 소식을 알림으로 알려드려요."
+          cancelLabel="다음에"
+          onConfirm={() => setShowDialog(false)}
+        />
       </Section>
     </main>
   );
