@@ -18,7 +18,13 @@ const FALLBACK_MESSAGE = "챌린지를 만들지 못했어요. 다시 시도해 
 export const useCreateChallenge = () => {
   const router = useRouter();
   const mutation = useMutation({
-    mutationFn: (values: ChallengeCreateForm) => createChallenge(toCreateChallengeRequest(values)),
+    mutationFn: ({
+      values,
+      coverImage,
+    }: {
+      values: ChallengeCreateForm;
+      coverImage: File | null;
+    }) => createChallenge(toCreateChallengeRequest(values), coverImage),
     onSuccess: ({ challengeId }) => router.replace(`/challenges/${challengeId}`),
     onError: (cause) => {
       if (!(cause instanceof ApiError)) return;
@@ -35,6 +41,9 @@ const toErrorMessage = (error: Error | null): string | null => {
   if (!error) return null;
   if (error instanceof ApiError && (error.status === 400 || error.status === 409)) {
     return error.message;
+  }
+  if (error instanceof ApiError && error.status === 413) {
+    return "대표 사진은 5MB 이하로 올려 주세요.";
   }
   return FALLBACK_MESSAGE;
 };

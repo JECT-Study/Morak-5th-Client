@@ -19,16 +19,19 @@ export class ApiError extends Error {
 type RequestOptions = Omit<RequestInit, "body"> & {
   /** 넘기면 JSON 본문으로 보낸다(Content-Type 헤더 포함) */
   json?: unknown;
+  /** 넘기면 multipart 본문으로 보낸다. Content-Type(boundary)은 브라우저가 붙인다. */
+  formData?: FormData;
 };
 
 /**
  * 요청을 한 번 보내고 Response를 그대로 돌려준다. 본문은 읽지 않는다(한 번만 읽을 수 있어서).
  * json 본문은 보낼 때마다 직렬화하므로 재발급 뒤 같은 요청을 다시 보내도 된다.
  */
-function send(url: string, { json, ...init }: RequestOptions): Promise<Response> {
+function send(url: string, { json, formData, ...init }: RequestOptions): Promise<Response> {
   return fetch(url, {
     ...init,
     credentials: "same-origin",
+    ...(formData && { body: formData }),
     ...(json !== undefined && {
       headers: { "Content-Type": "application/json", ...init.headers },
       body: JSON.stringify(json),

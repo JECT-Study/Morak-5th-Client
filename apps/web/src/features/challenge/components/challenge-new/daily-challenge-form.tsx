@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { Controller, useForm, type FieldErrors, type FieldPath } from "react-hook-form";
 
 import {
@@ -14,6 +15,7 @@ import CategoryPicker from "../category-picker";
 import RecruitmentSection from "../recruitment/recruitment-section";
 import ScheduleSection from "../schedule-section";
 import { useCreateChallenge } from "../../use-create-challenge";
+import CoverImagePicker from "./cover-image-picker";
 
 /**
  * 화면에 보이는 순서. 검증에 실패하면 이 순서로 첫 에러 칸에 포커스를 준다.
@@ -62,9 +64,11 @@ export default function DailyChallengeForm() {
     },
   });
   const { mutate, isPending, errorMessage } = useCreateChallenge();
+  // 대표 사진은 선택 항목이고 파일이라 폼 검증(zod) 밖에서 들고 있는다.
+  const [coverImage, setCoverImage] = useState<File | null>(null);
 
   // 실패해도 입력값은 그대로 두어 버튼만 다시 누르면 재시도된다.
-  const onSubmit = (values: ChallengeCreateForm) => mutate(values);
+  const onSubmit = (values: ChallengeCreateForm) => mutate({ values, coverImage });
 
   const focusFirstError = (fieldErrors: FieldErrors<ChallengeCreateForm>) => {
     const first = FIELD_ORDER.find((name) => fieldErrors[name]);
@@ -77,6 +81,8 @@ export default function DailyChallengeForm() {
       noValidate
       className="flex flex-col gap-4"
     >
+      <CoverImagePicker value={coverImage} onChange={setCoverImage} />
+
       <FormTextField
         label="챌린지 제목"
         required
