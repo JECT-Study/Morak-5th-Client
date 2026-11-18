@@ -9,9 +9,12 @@ export const metadata: Metadata = {
 };
 
 // viewport-fit=cover여야 노치·홈 인디케이터 영역에 env(safe-area-inset-*) 값이 들어온다.
+// maximum-scale=1: iOS(Safari·앱 WebView)는 16px보다 작은 입력칸에 포커스가 가면 화면을 확대해
+// 가로 스크롤이 생긴다. 시안 입력 글자가 14px이라 확대를 막는다. (안드로이드는 손가락 확대도 막힌다)
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
   viewportFit: "cover",
 };
 
