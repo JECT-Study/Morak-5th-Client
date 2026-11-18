@@ -2,6 +2,7 @@
 
 import { ApiError } from "@/shared/api/client";
 import { Button } from "@/shared/ui/button";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { myChallengesMock } from "@/mocks/data/my-challenges";
 
 import { useMyChallenges } from "../my-challenges";
@@ -22,7 +23,7 @@ export default function MyChallengesSection() {
   if (!MOCKING && isPending) {
     return (
       <div aria-busy="true" aria-label="내 챌린지를 불러오는 중" className="px-4 pt-10">
-        <div className="bg-surface-tertiary rounded-12 h-[480px] animate-pulse" />
+        <Skeleton className="rounded-12 h-[480px]" />
       </div>
     );
   }

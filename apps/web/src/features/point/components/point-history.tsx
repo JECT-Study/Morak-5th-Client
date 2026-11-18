@@ -4,6 +4,7 @@ import { Fragment } from "react";
 
 import { Button } from "@/shared/ui/button";
 import { Separator } from "@/shared/ui/separator";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 import {
   formatPoint,
@@ -37,8 +38,8 @@ export default function PointHistory() {
         aria-label="포인트 내역을 불러오는 중"
         className="flex flex-col gap-4 p-4"
       >
-        <div className="bg-surface-tertiary rounded-12 h-24 animate-pulse" />
-        <div className="bg-surface-tertiary rounded-12 h-48 animate-pulse" />
+        <Skeleton className="rounded-12 h-24" />
+        <Skeleton className="rounded-12 h-48" />
       </main>
     );
   }

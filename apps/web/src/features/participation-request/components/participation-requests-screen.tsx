@@ -10,6 +10,7 @@ import { ApiError } from "@/shared/api/client";
 import { Button } from "@/shared/ui/button";
 import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 import type { ParticipationRequest, RequestAction } from "../types";
 import {
@@ -176,7 +177,7 @@ function RequestList({ query, items, empty, render }: RequestListProps) {
         className="flex flex-col gap-3 px-6 pt-3"
       >
         {[0, 1].map((key) => (
-          <div key={key} className="bg-surface-tertiary rounded-12 h-40 animate-pulse" />
+          <Skeleton key={key} className="rounded-12 h-40" />
         ))}
       </div>
     );
