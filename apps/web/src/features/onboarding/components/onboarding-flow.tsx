@@ -19,7 +19,7 @@ import {
   useCompleteOnboarding,
 } from "../use-onboarding-mutations";
 import { useProfileForm } from "../use-profile-form";
-import DoneStep from "./done-step";
+import DoneStep, { preloadReadyImage } from "./done-step";
 import GuideStep, { GUIDES, type GuideValue } from "./guide-step";
 import ProfileStep from "./profile-step";
 import StartStep from "./start-step";
@@ -48,6 +48,9 @@ export default function OnboardingFlow() {
   const { data: me, isError } = useMyInfo();
   const [step, setStep] = useState<Step>("start");
   const [confirmed, setConfirmed] = useState<GuideValue[]>([]);
+
+  // 완료 화면 이미지를 미리 받아 둔다(같은 주소는 React가 한 번만 넣는다).
+  preloadReadyImage();
 
   const { form, errors, updateForm, validate, setFieldError } = useProfileForm(
     me ? me.nickname : undefined,
