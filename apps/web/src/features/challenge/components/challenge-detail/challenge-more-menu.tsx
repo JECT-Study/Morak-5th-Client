@@ -18,6 +18,8 @@ import { sendToApp } from "@/shared/native/bridge";
 import { cn } from "@/shared/lib/utils";
 import { IconButton } from "@/shared/ui/icon-button";
 
+import { useParticipationRequests } from "@/features/participation-request/use-participation-requests";
+
 import { useChallenge } from "../../use-challenge";
 import { useMyRole } from "../../use-my-role";
 
@@ -25,13 +27,18 @@ import { useMyRole } from "../../use-my-role";
  * 챌린지 상세 헤더의 더보기(⋯) 메뉴. Figma "참고 · 방장 더보기 메뉴".
  * - 공통: 채팅방 이동(참여 확정된 사람만), 공유하기
  * - 관리자 메뉴: 방장에게만 보인다.
- * TODO: 참여 신청·인증 대기 건수 배지는 집계 API가 생기면 붙인다(0건이면 배지만 숨김).
+ * - 참여 신청 관리 옆에는 대기 건수 배지를 붙인다(0건이면 배지만 숨김).
+ * TODO: 인증 관리 대기 건수 배지는 인증 API가 생기면 붙인다.
  */
 export default function ChallengeMoreMenu() {
   const { id } = useParams<{ id: string }>();
   const { data: challenge } = useChallenge(id);
   const myStatus = challenge?.myParticipationStatus ?? null;
   const { data: myRole } = useMyRole(id, myStatus !== null);
+  const isHost = myRole === "HOST";
+  // 무효 신청도 방장이 확인해야 해서 대기 건수에 넣는다.
+  const { data: pendingRequests } = useParticipationRequests(id, "PENDING", isHost);
+  const pendingCount = pendingRequests?.items.length ?? 0;
 
   if (!challenge) return null;
 
@@ -69,7 +76,7 @@ export default function ChallengeMoreMenu() {
           <MenuItem icon={Share2} onSelect={share}>
             공유하기
           </MenuItem>
-          {myRole === "HOST" && (
+          {isHost && (
             <DropdownMenu.Group>
               <DropdownMenu.Label className="text-label-xs font-label-normal text-fg-tertiary">
                 관리자 메뉴
@@ -78,7 +85,11 @@ export default function ChallengeMoreMenu() {
               <MenuItem icon={Settings} disabled>
                 챌린지 설정
               </MenuItem>
-              <MenuLink icon={UserPlus} href={`/challenges/${id}/manage/requests`}>
+              <MenuLink
+                icon={UserPlus}
+                href={`/challenges/${id}/manage/requests`}
+                count={pendingCount}
+              >
                 참여 신청 관리
               </MenuLink>
               <MenuLink icon={CircleCheck} href={`/challenges/${id}/manage/certifications`}>
@@ -114,12 +125,26 @@ function MenuItem({
   );
 }
 
-function MenuLink({ icon: Icon, children, href }: RowProps & { href: string }) {
+/** count가 1 이상이면 오른쪽에 건수 배지를 붙인다(0건이면 배지만 숨김). */
+function MenuLink({
+  icon: Icon,
+  children,
+  href,
+  count = 0,
+}: RowProps & { href: string; count?: number }) {
   return (
     <DropdownMenu.Item asChild className={ROW_CLASS}>
       <Link href={href}>
         <Icon aria-hidden />
-        {children}
+        <span className="flex-1">{children}</span>
+        {count > 0 && (
+          <span
+            aria-label={`대기 ${count}건`}
+            className="text-label-xs flex size-5 shrink-0 items-center justify-center rounded-full bg-[rgba(255,122,82,0.8)] text-white"
+          >
+            {count}
+          </span>
+        )}
       </Link>
     </DropdownMenu.Item>
   );

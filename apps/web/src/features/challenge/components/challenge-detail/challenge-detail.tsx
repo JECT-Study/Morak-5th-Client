@@ -10,6 +10,7 @@ import type { ChallengeView } from "../../types";
 import { useChallenge } from "../../use-challenge";
 import { countDays, formatDDay } from "../../utils";
 import { CATEGORY_META } from "../category-picker";
+import ApplyBar from "./apply-bar";
 import ChallengeDetailTabs from "./challenge-detail-tabs";
 import ChallengeInfo from "./challenge-info";
 
@@ -21,6 +22,9 @@ const NOTICES = [
   "인증은 매일 23:59까지 할 수 있어요. 시간이 지나면 그날 인증은 할 수 없어요.",
   "승인된 인증 사진만 팀원에게 보여요.",
 ];
+
+/** 시작 전 상태. 인증 탭에 시작 후 열린다는 안내를 보여 준다. */
+const NOT_STARTED_STATUSES = ["RECRUITING", "START_HELD"];
 
 /** 종료·폐기된 챌린지(위키 5.3). 신청·합류를 진행하지 않는다. */
 const CLOSED_STATUSES = ["ENDED", "DISCARDED"];
@@ -65,7 +69,7 @@ const errorMessage = (error: Error) => {
 
 /**
  * 챌린지 상세(GET /challenges/{id}).
- * TODO: 내 참가 상태별 하단 버튼(위키 4.2)과 팀원 목록은 지원·참가자 API가 나오면 붙인다.
+ * TODO: 팀원 목록은 참가자 조회 API가 나오면 붙인다.
  */
 export default function ChallengeDetail() {
   const { id } = useParams<{ id: string }>();
@@ -112,6 +116,7 @@ export default function ChallengeDetail() {
         pointAmount={challenge.pointAmount}
       />
       <ChallengeDetailTabs
+        notStarted={NOT_STARTED_STATUSES.includes(challenge.status)}
         intro={{
           description: challenge.description,
           startDate: challenge.startDate,
@@ -126,6 +131,7 @@ export default function ChallengeDetail() {
           notices: NOTICES,
         }}
       />
+      <ApplyBar challenge={challenge} />
     </>
   );
 }
