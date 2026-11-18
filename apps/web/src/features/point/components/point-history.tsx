@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { Button } from "@/shared/ui/button";
 import { Separator } from "@/shared/ui/separator";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { Spinner } from "@/shared/ui/spinner";
 
 import {
   formatPoint,
@@ -116,7 +117,7 @@ export default function PointHistory() {
               onClick={() => fetchNextPage()}
               disabled={isFetchingNextPage}
             >
-              {isFetchingNextPage ? "불러오는 중…" : "더 보기"}
+              {isFetchingNextPage ? <Spinner size={20} /> : "더 보기"}
             </Button>
           </div>
         )}

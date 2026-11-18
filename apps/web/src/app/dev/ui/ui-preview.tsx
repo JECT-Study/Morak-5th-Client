@@ -13,6 +13,8 @@ import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { IconButton } from "@/shared/ui/icon-button";
 import { SegmentedControl } from "@/shared/ui/segmented-control";
 import { Separator } from "@/shared/ui/separator";
+import { Skeleton } from "@/shared/ui/skeleton";
+import { Spinner } from "@/shared/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { TextField } from "@/shared/ui/text-field";
 
@@ -45,6 +47,15 @@ export default function UiPreview() {
   return (
     <main className="bg-background-primary flex flex-col gap-8 px-4 py-6">
       <h1 className="text-title-3 font-title text-fg-primary">모락 디자인 시스템</h1>
+
+      <Section title="Spinner · Skeleton">
+        <div className="flex items-center gap-4">
+          <Spinner />
+          <Spinner size={48} />
+          <Spinner size={24} />
+          <Skeleton className="h-6 w-32" />
+        </div>
+      </Section>
 
       <Section title="Button">
         {(["primary", "subtle", "outline"] as const).map((variant) => (

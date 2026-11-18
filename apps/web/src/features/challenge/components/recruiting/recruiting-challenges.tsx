@@ -8,6 +8,7 @@ import { ApiError } from "@/shared/api/client";
 import { Button } from "@/shared/ui/button";
 import { Chip } from "@/shared/ui/chip";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { Spinner } from "@/shared/ui/spinner";
 
 import { CHALLENGE_CATEGORIES } from "../../create-schema";
 import type { RecruitingFilter } from "../../recruiting-types";
@@ -167,9 +168,9 @@ function RecruitingList({ filter }: { filter: RecruitingFilter }) {
       </ul>
       <div ref={sentinelRef} aria-hidden />
       {isFetchingNextPage && (
-        <p className="text-label-sm font-label-normal text-fg-quaternary text-center">
-          불러오는 중…
-        </p>
+        <div className="flex justify-center">
+          <Spinner size={32} />
+        </div>
       )}
       {/* 다음 페이지 요청이 실패하면 자동으로 다시 부르지 않으므로 직접 다시 시도할 수 있게 한다. */}
       {hasNextPage && !isFetchingNextPage && (
