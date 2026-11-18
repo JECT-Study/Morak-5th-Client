@@ -24,6 +24,9 @@ dist/
 .DS_Store
 *.pem
 
+# JetBrains IDE(Android Studio·WebStorm 등) 프로젝트 설정
+.idea/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
