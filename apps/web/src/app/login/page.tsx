@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import DevLogin from "@/features/auth/components/dev-login";
 import SocialLoginButton from "@/features/auth/components/social-login-button";
 import { Button } from "@/shared/ui/button";
 import { Suspense } from "react";
@@ -40,6 +41,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
             <ChevronRight aria-hidden />
           </Link>
         </Button>
+        <DevLogin />
       </div>
 
       <p className="text-label-sm font-label-normal text-fg-tertiary">

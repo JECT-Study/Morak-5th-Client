@@ -5,7 +5,10 @@ import { addTransitionType, startTransition, useState } from "react";
 
 import { useMyInfo } from "@/features/auth/use-my-info";
 import AppHeader from "@/shared/layout/app-header";
+import { isApp } from "@/shared/native/bridge";
+import { registerPushToken } from "@/shared/native/register-push-token";
 import { Button } from "@/shared/ui/button";
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { DirectionalTransition, type NavDirection } from "@/shared/ui/directional-transition";
 
 import { toOnboardingRequest } from "../profile";
@@ -46,8 +49,6 @@ export default function OnboardingFlow() {
   const [step, setStep] = useState<Step>("start");
   const [confirmed, setConfirmed] = useState<GuideValue[]>([]);
 
-  useOnboardingGuard({ me, isError, enabled: step !== "done" });
-
   const { form, errors, updateForm, validate, setFieldError } = useProfileForm(
     me ? me.nickname : undefined,
   );
@@ -57,6 +58,14 @@ export default function OnboardingFlow() {
       setFieldError("nickname", NICKNAME_TAKEN);
       moveTo("profile", "nav-back");
     },
+  });
+
+  // 저장에 성공하면 내 정보가 먼저 onboarded로 바뀌고, 완료 단계로는 전환 애니메이션 뒤에 넘어간다.
+  // 그 사이에 가드가 "이미 온보딩함"으로 보고 홈으로 보내지 않도록, 저장 중·저장 후에는 검사하지 않는다.
+  useOnboardingGuard({
+    me,
+    isError,
+    enabled: step !== "done" && !onboarding.isPending && !onboarding.isCompleted,
   });
 
   /**
@@ -91,11 +100,23 @@ export default function OnboardingFlow() {
     );
   const allConfirmed = GUIDES.every(({ value }) => confirmed.includes(value));
 
+  // 완료를 누르면 앱에서만 알림 수신을 먼저 묻는다. 브라우저는 푸시를 받을 수 없어 바로 넘어간다.
+  const [pushDialogOpen, setPushDialogOpen] = useState(false);
+  const [pushPending, setPushPending] = useState(false);
+  const goToChallenges = () => router.replace("/challenges");
+  const done = () => (isApp() ? setPushDialogOpen(true) : goToChallenges());
+  // 확인을 누른 뒤에야 기기 권한 팝업을 띄운다(iOS는 한 번 거절하면 앱에서 다시 물을 수 없다).
+  const allowPush = async () => {
+    setPushPending(true);
+    await registerPushToken({ prompt: true });
+    goToChallenges();
+  };
+
   const action = {
     start: { label: "다음", onClick: () => moveTo("profile"), disabled: false },
     profile: { label: "다음", onClick: goToGuide, disabled: false },
     guide: { label: "확인했어요", onClick: finish, disabled: !allConfirmed },
-    done: { label: "완료", onClick: () => router.replace("/challenges"), disabled: false },
+    done: { label: "완료", onClick: done, disabled: false },
   }[step];
 
   const pending = nicknameCheck.isPending || onboarding.isPending;
@@ -134,6 +155,18 @@ export default function OnboardingFlow() {
           {action.label}
         </Button>
       </div>
+      {/* TODO: 문구는 PM 확인 전 임시 */}
+      <ConfirmDialog
+        open={pushDialogOpen}
+        onOpenChange={setPushDialogOpen}
+        title="알림을 받아보시겠어요?"
+        description="챌린지 인증 시간과 팀원 소식을 알림으로 알려드려요."
+        cancelLabel="다음에"
+        confirmLabel="확인"
+        onCancel={goToChallenges}
+        onConfirm={allowPush}
+        pending={pushPending}
+      />
     </div>
   );
 }

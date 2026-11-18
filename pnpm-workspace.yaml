@@ -7,6 +7,10 @@ allowBuilds:
   esbuild: true
   unrs-resolver: true
 
+minimumReleaseAgeExclude:
+  - expo-dev-client@58.0.21
+  - expo-dev-launcher@58.0.21
+
 overrides:
   # @hookform/resolvers의 옵셔널 피어(@typeschema/zod)가 zod 3을 요구해 프로젝트의 zod 4로 맞춘다.
   "@typeschema/zod>zod": "^4.6.7"

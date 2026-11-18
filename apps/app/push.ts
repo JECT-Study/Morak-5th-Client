@@ -1,6 +1,5 @@
 import type { PushStatus } from "@morak/bridge";
 import Constants from "expo-constants";
-import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
@@ -29,6 +28,8 @@ async function ensureAndroidChannel() {
   if (Platform.OS !== "android") return;
   await Notifications.setNotificationChannelAsync(ANDROID_CHANNEL_ID, {
     name: "기본 알림",
+    // expo-notifications가 다시 내보내는 enum을 import/namespace 규칙이 못 찾는다(tsc는 통과).
+    // eslint-disable-next-line import/namespace
     importance: Notifications.AndroidImportance.HIGH,
   });
 }
@@ -40,9 +41,6 @@ async function ensureAndroidChannel() {
  * - prompt=false: 묻지 않고, 이미 허용된 경우에만 토큰을 준다.
  */
 export async function getPushToken(prompt: boolean): Promise<PushTokenResult> {
-  // 시뮬레이터·에뮬레이터는 원격 푸시 토큰을 받을 수 없다.
-  if (!Device.isDevice) return UNAVAILABLE;
-
   await ensureAndroidChannel();
 
   let permission = await Notifications.getPermissionsAsync();

@@ -16,8 +16,10 @@ export function useAgreeTerms() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  // 로그인 화면에는 내 정보를 보는 곳이 없어 invalidate만 하면 다시 불러오지 않는다.
+  // 그러면 온보딩이 옛 값(약관 미동의)을 보고 약관 시트로 되돌려 보내므로, 새 값을 받은 뒤 이동한다.
   const goToOnboarding = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["users", "me"] });
+    await queryClient.refetchQueries({ queryKey: ["users", "me"] });
     router.replace("/onboarding");
   };
 

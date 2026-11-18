@@ -1,5 +1,7 @@
 import type { PushStatus } from "@morak/bridge";
 
+import { createUuid } from "@/shared/lib/uuid";
+
 import { onAppMessage, sendToApp } from "./bridge";
 
 export type PushTokenResult = { status: PushStatus; token: string | null };
@@ -17,7 +19,7 @@ const PUSH_TOKEN_TIMEOUT_MS = 60_000;
  */
 export function requestPushToken({ prompt }: { prompt: boolean }): Promise<PushTokenResult> {
   return new Promise((resolve) => {
-    const id = crypto.randomUUID();
+    const id = createUuid();
 
     const finish = (result: PushTokenResult) => {
       clearTimeout(timer);
