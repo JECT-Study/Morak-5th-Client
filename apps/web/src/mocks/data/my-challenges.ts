@@ -4,6 +4,7 @@ import type { MyChallengeCardData } from "@/features/challenge/types";
 export const myChallengesMock: MyChallengeCardData[] = [
   {
     id: 1,
+    phase: "IN_PROGRESS",
     category: "생활습관",
     isPrivate: true,
     title: "매일 아침 6시 기상 인증",
@@ -15,21 +16,26 @@ export const myChallengesMock: MyChallengeCardData[] = [
     memberCount: 4,
     successRate: 60,
     depositAmount: 5000,
-    todayCertifications: [
-      {
-        memberId: 1,
-        imageUrl: "/mock/certification-1.png",
-        certifiedAt: "2025-10-05T06:02:00+09:00",
-      },
-      {
-        memberId: 2,
-        imageUrl: "/mock/certification-2.png",
-        certifiedAt: "2025-10-05T06:15:00+09:00",
-      },
-    ],
+    myTodayStatus: null,
+    todayCertifications: {
+      targetCount: 4,
+      photos: [
+        {
+          memberId: 1,
+          imageUrl: "/mock/certification-1.png",
+          certifiedAt: "2025-10-05T06:02:00+09:00",
+        },
+        {
+          memberId: 2,
+          imageUrl: "/mock/certification-2.png",
+          certifiedAt: "2025-10-05T06:15:00+09:00",
+        },
+      ],
+    },
   },
   {
     id: 2,
+    phase: "IN_PROGRESS",
     category: "독서",
     isPrivate: false,
     title: "하루 30분 책 읽기",
@@ -41,12 +47,16 @@ export const myChallengesMock: MyChallengeCardData[] = [
     memberCount: 5,
     successRate: 82,
     depositAmount: 10000,
-    todayCertifications: [
-      {
-        memberId: 3,
-        imageUrl: "/mock/certification-2.png",
-        certifiedAt: "2025-10-05T21:40:00+09:00",
-      },
-    ],
+    myTodayStatus: null,
+    todayCertifications: {
+      targetCount: 5,
+      photos: [
+        {
+          memberId: 3,
+          imageUrl: "/mock/certification-2.png",
+          certifiedAt: "2025-10-05T21:40:00+09:00",
+        },
+      ],
+    },
   },
 ];
