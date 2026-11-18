@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { Spinner } from "@/shared/ui/spinner";
 
 import { formatNotificationTime, toNotificationPath } from "../notification-link";
 import type { AppNotification } from "../types";
@@ -129,7 +130,7 @@ export default function NotificationList() {
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
           >
-            {isFetchingNextPage ? "불러오는 중…" : "더 보기"}
+            {isFetchingNextPage ? <Spinner size={20} /> : "더 보기"}
           </Button>
         </div>
       )}

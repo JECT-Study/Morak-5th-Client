@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Fragment, useEffect } from "react";
 
 import { useMyInfo } from "@/features/auth/use-my-info";
+import { Spinner } from "@/shared/ui/spinner";
 
 import { chatDateKey } from "../format";
 import type { ChatMessage } from "../type";
@@ -67,14 +68,20 @@ function ChatRoom({ challengeId, readOnly }: { challengeId: number; readOnly?: R
     return sent;
   };
 
-  const empty =
-    room.messages.length === 0 && room.pending.length === 0 && room.status === "connected";
+  const noMessages = room.messages.length === 0 && room.pending.length === 0;
+  const empty = noMessages && room.status === "connected";
+  // 처음 들어와 연결·첫 메시지를 기다리는 동안은 빈 화면 대신 스피너를 보인다.
+  const connecting = noMessages && room.status === "connecting";
 
   return (
     <div className="bg-background-primary flex flex-1 flex-col">
       <ConnectionNotice status={room.status} error={room.error} />
 
-      {empty ? (
+      {connecting ? (
+        <div className="flex flex-1 items-center justify-center">
+          <Spinner size={48} label="채팅방에 연결하는 중" />
+        </div>
+      ) : empty ? (
         <p className="text-body-lg font-body-normal text-fg-primary flex flex-1 items-center justify-center text-center">
           첫 인사를 나누고,
           <br />
@@ -90,7 +97,7 @@ function ChatRoom({ challengeId, readOnly }: { challengeId: number; readOnly?: R
                 disabled={room.loadingOlder}
                 className="text-body-2xs text-fg-tertiary focus-visible:ring-line-focus rounded-4 underline focus-visible:ring-2 focus-visible:outline-none"
               >
-                {room.loadingOlder ? "불러오는 중…" : "이전 메시지 더 보기"}
+                {room.loadingOlder ? <Spinner size={24} /> : "이전 메시지 더 보기"}
               </button>
             </li>
           )}
