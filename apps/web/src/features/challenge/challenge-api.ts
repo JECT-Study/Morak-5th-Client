@@ -5,8 +5,21 @@ import { request } from "@/shared/api/client";
 /** 챌린지 개설 결과. 백엔드 CreatedChallenge */
 export type CreatedChallenge = { challengeId: number; inviteCode: string };
 
-export const createChallenge = (body: ReturnType<typeof toCreateChallengeRequest>) =>
-  request<CreatedChallenge>("/api/challenges", { method: "POST", json: body });
+/**
+ * 챌린지 개설. 대표 사진이 있으면 multipart(challenge JSON + coverImage), 없으면 JSON으로 보낸다.
+ */
+export const createChallenge = (
+  body: ReturnType<typeof toCreateChallengeRequest>,
+  coverImage?: File | null,
+) => {
+  if (!coverImage)
+    return request<CreatedChallenge>("/api/challenges", { method: "POST", json: body });
+  const formData = new FormData();
+  // 백엔드 @RequestPart("challenge")가 JSON으로 읽도록 Content-Type을 붙인다.
+  formData.append("challenge", new Blob([JSON.stringify(body)], { type: "application/json" }));
+  formData.append("coverImage", coverImage);
+  return request<CreatedChallenge>("/api/challenges", { method: "POST", formData });
+};
 
 export const toCreateChallengeRequest = (values: ChallengeCreateForm) => ({
   title: values.title,

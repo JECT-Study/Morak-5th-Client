@@ -20,6 +20,8 @@ export type BackendResult<T> =
 type BackendFetchOptions = Omit<RequestInit, "body"> & {
   /** JSON으로 보낼 본문. 객체를 넘기면 직렬화하고 Content-Type을 붙인다. */
   json?: unknown;
+  /** multipart로 보낼 본문(파일 업로드). Content-Type(boundary)은 fetch가 붙인다. */
+  formData?: FormData;
   /** false면 토큰을 붙이지 않는다(로그인처럼 토큰이 없는 요청). 기본 true */
   auth?: boolean;
 };
@@ -32,7 +34,7 @@ const failure = (status: number, code: string, message: string): BackendResult<n
 
 export async function backendFetch<T>(
   path: string,
-  { json, auth = true, headers, ...init }: BackendFetchOptions = {},
+  { json, formData, auth = true, headers, ...init }: BackendFetchOptions = {},
 ): Promise<BackendResult<T>> {
   const requestHeaders = new Headers(headers);
   requestHeaders.set("Accept", "application/json");
@@ -50,7 +52,7 @@ export async function backendFetch<T>(
     response = await fetch(`${process.env.API_BASE_URL}${path}`, {
       ...init,
       headers: requestHeaders,
-      body: json === undefined ? undefined : JSON.stringify(json),
+      body: formData ?? (json === undefined ? undefined : JSON.stringify(json)),
       cache: "no-store",
     });
   } catch {

@@ -17,7 +17,16 @@ export async function GET(request: NextRequest) {
   return toRouteResponse(await backendFetch<ChallengePage>(`/challenges${search}`));
 }
 
+/**
+ * 챌린지 개설(POST /challenges).
+ * - JSON: 대표 사진 없이 개설
+ * - multipart: challenge(JSON) + coverImage(사진 한 장, 5MB 이하)를 그대로 넘긴다
+ */
 export async function POST(request: Request) {
+  if (request.headers.get("content-type")?.startsWith("multipart/form-data")) {
+    const formData = await request.formData();
+    return toRouteResponse(await backendFetch(`/challenges`, { method: "POST", formData }));
+  }
   const body = await request.json();
   return toRouteResponse(await backendFetch(`/challenges`, { method: "POST", json: body }));
 }
