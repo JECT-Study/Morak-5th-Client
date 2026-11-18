@@ -1,0 +1,126 @@
+"use client";
+
+import {
+  CircleCheck,
+  Ellipsis,
+  MessageSquareMore,
+  Settings,
+  Share2,
+  UserPlus,
+  type LucideIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { DropdownMenu } from "radix-ui";
+import type { ComponentProps } from "react";
+
+import { sendToApp } from "@/shared/native/bridge";
+import { cn } from "@/shared/lib/utils";
+import { IconButton } from "@/shared/ui/icon-button";
+
+import { useChallenge } from "../../use-challenge";
+import { useMyRole } from "../../use-my-role";
+
+/**
+ * 챌린지 상세 헤더의 더보기(⋯) 메뉴. Figma "참고 · 방장 더보기 메뉴".
+ * - 공통: 채팅방 이동(참여 확정된 사람만), 공유하기
+ * - 관리자 메뉴: 방장에게만 보인다.
+ * TODO: 참여 신청·인증 대기 건수 배지는 집계 API가 생기면 붙인다(0건이면 배지만 숨김).
+ */
+export default function ChallengeMoreMenu() {
+  const { id } = useParams<{ id: string }>();
+  const { data: challenge } = useChallenge(id);
+  const myStatus = challenge?.myParticipationStatus ?? null;
+  const { data: myRole } = useMyRole(id, myStatus !== null);
+
+  if (!challenge) return null;
+
+  const share = () => {
+    const url = `${window.location.origin}/challenges/${challenge.id}`;
+    if (sendToApp({ type: "SHARE", url, title: challenge.title })) return;
+    if (navigator.share) {
+      // 사용자가 공유 창을 닫아도 오류가 나므로 무시한다.
+      navigator.share({ url, title: challenge.title }).catch(() => undefined);
+      return;
+    }
+    // TODO: 토스트가 생기면 "링크를 복사했어요"를 띄운다.
+    navigator.clipboard?.writeText(url).catch(() => undefined);
+  };
+
+  return (
+    <DropdownMenu.Root modal={false}>
+      <DropdownMenu.Trigger asChild>
+        <IconButton aria-label="더보기">
+          <Ellipsis aria-hidden />
+        </IconButton>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          align="end"
+          sideOffset={4}
+          className="bg-surface-primary border-line-subtle rounded-16 z-20 flex w-[216px] flex-col border px-4 py-2 shadow-lg"
+        >
+          {/* 채팅은 참여가 확정된(ACTIVE) 뒤부터 들어갈 수 있다(위키 7절) */}
+          {myStatus === "ACTIVE" && (
+            <MenuLink icon={MessageSquareMore} href={`/challenges/${id}/chat`}>
+              채팅방 이동
+            </MenuLink>
+          )}
+          <MenuItem icon={Share2} onSelect={share}>
+            공유하기
+          </MenuItem>
+          {myRole === "HOST" && (
+            <DropdownMenu.Group>
+              <DropdownMenu.Label className="text-label-xs font-label-normal text-fg-tertiary">
+                관리자 메뉴
+              </DropdownMenu.Label>
+              {/* TODO: 챌린지 설정 화면이 정해지면 연결한다 */}
+              <MenuItem icon={Settings} disabled>
+                챌린지 설정
+              </MenuItem>
+              <MenuLink icon={UserPlus} href={`/challenges/${id}/manage/requests`}>
+                참여 신청 관리
+              </MenuLink>
+              <MenuLink icon={CircleCheck} href={`/challenges/${id}/manage/certifications`}>
+                인증 관리
+              </MenuLink>
+            </DropdownMenu.Group>
+          )}
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
+}
+
+/** 메뉴 한 줄: 왼쪽 아이콘 24 + 글자. 좌우 8, 위아래 12, 간격 12 */
+const ROW_CLASS = cn(
+  "text-body-md font-body-normal text-fg-primary flex items-center gap-3 rounded-8 px-2 py-3 outline-none",
+  "data-[highlighted]:bg-surface-secondary data-[disabled]:text-fg-disabled",
+  "[&_svg]:size-6 [&_svg]:shrink-0",
+);
+
+type RowProps = { icon: LucideIcon; children: string };
+
+function MenuItem({
+  icon: Icon,
+  children,
+  ...props
+}: RowProps & Omit<ComponentProps<typeof DropdownMenu.Item>, "children">) {
+  return (
+    <DropdownMenu.Item className={ROW_CLASS} {...props}>
+      <Icon aria-hidden />
+      {children}
+    </DropdownMenu.Item>
+  );
+}
+
+function MenuLink({ icon: Icon, children, href }: RowProps & { href: string }) {
+  return (
+    <DropdownMenu.Item asChild className={ROW_CLASS}>
+      <Link href={href}>
+        <Icon aria-hidden />
+        {children}
+      </Link>
+    </DropdownMenu.Item>
+  );
+}
