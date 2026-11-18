@@ -36,7 +36,9 @@ export type AppToWeb =
   /** REQUEST_PUSH_TOKEN 응답. status가 granted일 때만 token이 있다. */
   | { type: "PUSH_TOKEN"; id: string; status: PushStatus; token: string | null }
   /** 딥링크·알림 탭으로 열 웹 경로. 예) "/challenges/12" */
-  | { type: "OPEN_URL"; path: string };
+  | { type: "OPEN_URL"; path: string }
+  /** 앱을 보고 있을 때 푸시가 왔다. 웹은 알림·관련 화면 데이터를 다시 불러온다. */
+  | { type: "PUSH_RECEIVED" };
 
 const WEB_TO_APP_TYPES: ReadonlySet<string> = new Set<WebToApp["type"]>([
   "READY",
@@ -49,6 +51,7 @@ const APP_TO_WEB_TYPES: ReadonlySet<string> = new Set<AppToWeb["type"]>([
   "APP_INFO",
   "PUSH_TOKEN",
   "OPEN_URL",
+  "PUSH_RECEIVED",
 ]);
 
 const parse = (raw: string): { type?: unknown } | null => {

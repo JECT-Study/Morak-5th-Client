@@ -97,6 +97,14 @@ export default function App() {
     if (message) handleWebMessage(message);
   };
 
+  // 앱을 보고 있을 때 푸시가 오면 웹에 알려 알림 목록·종 아이콘을 바로 갱신하게 한다.
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(() => {
+      if (webReady.current) sendToWeb({ type: "PUSH_RECEIVED" });
+    });
+    return () => subscription.remove();
+  }, [sendToWeb]);
+
   // 앱을 쓰는 중이거나 백그라운드에서 알림을 누르면 그 경로로 보낸다.
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
