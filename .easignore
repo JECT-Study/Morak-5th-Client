@@ -1,0 +1,52 @@
+# EAS 빌드 때 올리지 않을 파일.
+# 이 파일이 있으면 EAS CLI는 저장소의 모든 .gitignore 대신 이것만 쓴다(git 루트에서만 읽음).
+# 그래서 루트 .gitignore와 apps/app/.gitignore를 합쳐 두고, google-services.json만 빼서 빌드에 올라가게 한다.
+# .gitignore에 규칙을 추가하면 여기에도 같이 넣는다.
+
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# build·cache
+coverage/
+.next/
+out/
+next-env.d.ts
+build/
+dist/
+web-build/
+.turbo/
+.vercel
+.expo/
+.kotlin/
+expo-env.d.ts
+.metro-health-check*
+*.tsbuildinfo
+
+# 네이티브 폴더(CNG로 빌드 때 생성). 루트 기준 경로라 apps/app을 붙인다.
+apps/app/ios/
+apps/app/android/
+
+# 서명 키·인증서
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+
+# Firebase 서비스 계정 키(FCM V1). Expo에만 올리고 저장소·빌드에는 두지 않는다.
+*firebase-adminsdk*.json
+
+# env
+.env*
+!.env.example
+
+# misc
+.DS_Store
+*.orig.*
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.pnpm-debug.log*

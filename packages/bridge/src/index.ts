@@ -24,8 +24,12 @@ export type WebToApp =
   | { type: "READY" }
   | { type: "HAPTIC"; style: "light" | "medium" | "success" }
   | { type: "SHARE"; url: string; title?: string }
-  /** 알림 권한을 묻고(아직 안 물었으면) Expo 푸시 토큰을 받는다. 같은 id의 PUSH_TOKEN으로 답한다. */
-  | { type: "REQUEST_PUSH_TOKEN"; id: string };
+  /**
+   * Expo 푸시 토큰을 받는다. 같은 id의 PUSH_TOKEN으로 답한다.
+   * prompt=true면 아직 묻지 않았을 때 권한 팝업을 띄운다(챌린지 참여·생성 등).
+   * prompt=false면 묻지 않고, 이미 허용된 경우에만 토큰을 준다(로그인·앱 실행 시 조용한 재등록).
+   */
+  | { type: "REQUEST_PUSH_TOKEN"; id: string; prompt: boolean };
 
 export type AppToWeb =
   | { type: "APP_INFO"; bridgeVersion: number; appVersion: string; features: AppFeature[] }

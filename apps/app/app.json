@@ -13,6 +13,7 @@
     },
     "android": {
       "package": "kr.ject.morak",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#FFF8EF",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -29,7 +30,21 @@
           "image": "./assets/icon.png",
           "imageWidth": 120
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#FF633A",
+          "defaultChannel": "default"
+        }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "eea113d7-56fd-4655-a125-3e76a7fcb099"
+      }
+    },
+    "owner": "brighthans-team"
   }
 }
