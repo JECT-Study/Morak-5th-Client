@@ -1,16 +1,9 @@
 import { Bell, BookKey } from "lucide-react";
 import Link from "next/link";
 
-import ChallengeCardCarousel from "@/features/challenge/components/challenge-card-carousel";
-import MyChallengesEmpty from "@/features/challenge/components/my-challenges-empty";
-import type { MyChallengeCardData } from "@/features/challenge/types";
-import { myChallengesMock } from "@/mocks/data/my-challenges";
+import MyChallengesSection from "@/features/challenge/components/my-challenges-section";
 import AppHeader from "@/shared/layout/app-header";
 import { IconButton } from "@/shared/ui/icon-button";
-
-// TODO: GET /users/me/participations 연결 전까지는 목 모드에서만 목 데이터를 쓰고, 그 외에는 빈 목록으로 둔다.
-const challenges: MyChallengeCardData[] =
-  process.env.NEXT_PUBLIC_API_MOCKING === "enabled" ? myChallengesMock : [];
 
 export default function MyChallengesPage() {
   return (
@@ -39,17 +32,7 @@ export default function MyChallengesPage() {
         }
       />
       <main className="flex flex-col gap-5 pt-0.5 pb-5">
-        {challenges.length === 0 ? (
-          <MyChallengesEmpty />
-        ) : (
-          <>
-            {/* TODO: 남은 인증 수는 내 참가 목록 API 연결 후 계산한다. */}
-            <p className="text-label-md font-label-normal text-fg-secondary px-4">
-              오늘의 인증 · 1개 남음
-            </p>
-            <ChallengeCardCarousel challenges={challenges} />
-          </>
-        )}
+        <MyChallengesSection />
       </main>
     </>
   );

@@ -1,13 +1,13 @@
 import { CircleCheck, Coins, Users } from "lucide-react";
 import { Fragment, type ReactNode } from "react";
 
+import { formatPoint } from "@/features/point/format";
 import { Separator } from "@/shared/ui/separator";
-
-import { formatWon } from "../../utils";
 
 type TeamStatsProps = {
   memberCount: number;
-  successRate: number;
+  /** 인증 집계가 없으면 null("-") */
+  successRate: number | null;
   depositAmount: number;
 };
 
@@ -17,12 +17,12 @@ export default function TeamStats({ memberCount, successRate, depositAmount }: T
     { icon: <Users aria-hidden className="size-6" />, value: `${memberCount}명`, label: "팀 인원" },
     {
       icon: <CircleCheck aria-hidden className="size-6" />,
-      value: `${successRate}%`,
+      value: successRate === null ? "-" : `${successRate}%`,
       label: "팀 누적 성공률",
     },
     {
       icon: <Coins aria-hidden className="size-6" />,
-      value: formatWon(depositAmount),
+      value: formatPoint(depositAmount),
       label: "1인 참여 포인트",
     },
   ];

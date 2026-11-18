@@ -6,29 +6,33 @@ export type TodayCertification = {
   certifiedAt: string;
 };
 
-/**
- * 홈(내 챌린지) 카드에 필요한 데이터.
- * API가 나오면 GET /users/me/participations 응답에서 이 모양으로 바꿔 넘긴다.
- */
+/** 홈 카드의 단계. 시작 전(모집 중) / 진행 중 / 결과 집계 중 */
+export type MyChallengePhase = "BEFORE_START" | "IN_PROGRESS" | "FINALIZING";
+
+/** 홈(내 챌린지) 카드에 필요한 데이터. GET /users/me/participations 응답에서 바꿔 넘긴다(toMyChallengeCard). */
 export type MyChallengeCardData = {
   id: number;
+  phase: MyChallengePhase;
   category: string;
   isPrivate: boolean;
   title: string;
   description: string;
-  /** 1부터 시작하는 현재 일차 */
-  currentDay: number;
+  /** 1부터 시작하는 현재 일차. 시작 전이면 null */
+  currentDay: number | null;
   totalDays: number;
   /** YYYY-MM-DD */
   startDate: string;
   /** YYYY-MM-DD */
   endDate: string;
   memberCount: number;
-  /** 팀 누적 성공률(0~100) */
-  successRate: number;
-  /** 1인 보증금(원). 0이면 보증금 없음 */
+  /** 팀 달성률(0~100). 인증 집계가 없으면 null */
+  successRate: number | null;
+  /** 1인 참여 포인트. 0이면 포인트 없음 */
   depositAmount: number;
-  todayCertifications: TodayCertification[];
+  /** 오늘 인증 현황. 인증 집계가 없으면 null */
+  todayCertifications: { targetCount: number; photos: TodayCertification[] } | null;
+  /** 오늘 내 인증 상태. 제출 전이면 null */
+  myTodayStatus: string | null;
 };
 
 /** 챌린지 카테고리 (백엔드 Category enum) */
@@ -52,14 +56,38 @@ export type ParticipationRole = "HOST" | "DEPUTY" | "MEMBER" | (string & {});
 
 /**
  * GET /users/me/participations 응답의 한 행(백엔드 MyChallengeItem).
- * TODO: 홈 카드에 붙일 때 나머지 필드도 채운다. 지금은 역할 판단에 쓰는 값만 둔다.
+ * TODO(D-23): 필드명은 백엔드 제안값이다. 인증 관련 값(teamAchievementRate~pendingJudgeCount)은 인증 집계 연동 전까지 null.
  */
 export type MyParticipationItem = {
   participationId: number;
   challengeId: number;
+  title: string;
+  description: string | null;
+  category: ChallengeCategory;
+  /** "PUBLIC" | "PRIVATE" */
+  visibility: string;
+  coverImageUrl: string | null;
+  /** YYYY-MM-DD */
+  startDate: string;
+  endDate: string;
+  pointAmount: number;
   myRole: ParticipationRole;
   /** 내 참가 상태(위키 4.4) */
   myStatus: string;
+  challengeStatus: ChallengeStatus;
+  currentCount: number;
+  capacity: number;
+  /** 진행 일차(1부터). 진행 중·결과 집계 중일 때만 */
+  progressDay: number | null;
+  startHeld: { currentCount: number; minCount: number; recruitDeadline: string } | null;
+  teamAchievementRate: number | null;
+  todayTeamCertifications: {
+    certifiedCount: number;
+    targetCount: number;
+    photos: { userId: number; thumbnailUrl: string; submittedAt: string }[];
+  } | null;
+  myTodayStatus: string | null;
+  pendingJudgeCount: number | null;
 };
 
 /** GET /users/me/participations 응답 data (백엔드 MyChallengePage) */
