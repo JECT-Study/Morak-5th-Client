@@ -46,8 +46,6 @@ export default function OnboardingFlow() {
   const [step, setStep] = useState<Step>("start");
   const [confirmed, setConfirmed] = useState<GuideValue[]>([]);
 
-  useOnboardingGuard({ me, isError, enabled: step !== "done" });
-
   const { form, errors, updateForm, validate, setFieldError } = useProfileForm(
     me ? me.nickname : undefined,
   );
@@ -57,6 +55,14 @@ export default function OnboardingFlow() {
       setFieldError("nickname", NICKNAME_TAKEN);
       moveTo("profile", "nav-back");
     },
+  });
+
+  // 저장에 성공하면 내 정보가 먼저 onboarded로 바뀌고, 완료 단계로는 전환 애니메이션 뒤에 넘어간다.
+  // 그 사이에 가드가 "이미 온보딩함"으로 보고 홈으로 보내지 않도록, 저장 중·저장 후에는 검사하지 않는다.
+  useOnboardingGuard({
+    me,
+    isError,
+    enabled: step !== "done" && !onboarding.isPending && !onboarding.isCompleted,
   });
 
   /**

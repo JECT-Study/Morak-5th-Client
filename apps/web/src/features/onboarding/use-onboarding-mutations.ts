@@ -41,6 +41,8 @@ export function useCompleteOnboarding({ onNicknameTaken }: CompleteOnboardingOpt
   return {
     complete: mutation.mutate,
     isPending: mutation.isPending,
+    /** 이 화면에서 온보딩 저장을 마쳤는지. 마친 뒤에는 내 정보가 onboarded로 바뀌어도 홈으로 보내지 않는다. */
+    isCompleted: mutation.isSuccess,
     /** 따로 처리하지 않은 실패만 화면에 보여준다. */
     errorMessage: mutation.isError && !handled ? "저장하지 못했어요. 다시 시도해 주세요." : null,
   };
