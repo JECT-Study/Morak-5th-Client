@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { afterLoginPath } from "@/features/auth/after-login-path";
 import type { LoginResponse, SocialLoginRequest } from "@/features/auth/types";
 import { setAuthCookies } from "@/shared/api/auth-cookies";
 import { backendFetch } from "@/shared/api/backend";
@@ -22,9 +23,7 @@ export async function GET(request: NextRequest) {
   if (!result.ok) {
     return NextResponse.redirect(new URL("/login?error=login_failed", request.url));
   }
-  const response = NextResponse.redirect(
-    new URL(result.data.onboarded ? "/" : "/onboarding", request.url),
-  );
+  const response = NextResponse.redirect(new URL(await afterLoginPath(result.data), request.url));
   setAuthCookies(response, result.data);
   response.cookies.delete("oauth_state");
   return response;
