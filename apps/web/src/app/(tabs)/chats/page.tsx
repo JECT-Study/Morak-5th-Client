@@ -1,11 +1,11 @@
+import ChatList from "@/features/chat/components/chat-list";
 import AppHeader from "@/shared/layout/app-header";
-import ScreenPlaceholder from "@/shared/layout/screen-placeholder";
 
 export default function ChatsPage() {
   return (
-    <>
+    <div className="bg-surface-secondary flex flex-1 flex-col">
       <AppHeader title="채팅" />
-      <ScreenPlaceholder name="채팅 목록" />
-    </>
+      <ChatList />
+    </div>
   );
 }

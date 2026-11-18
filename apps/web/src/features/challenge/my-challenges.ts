@@ -50,7 +50,7 @@ export const toMyChallengeCard = (item: MyParticipationItem): MyChallengeCardDat
 export const useMyChallenges = () =>
   useQuery({
     queryKey: ["users", "me", "participations"],
-    queryFn: fetchMyParticipations,
+    queryFn: () => fetchMyParticipations(),
     select: (page) =>
       page.items
         .map(toMyChallengeCard)
