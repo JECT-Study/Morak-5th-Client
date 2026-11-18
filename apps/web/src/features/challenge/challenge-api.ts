@@ -1,5 +1,5 @@
 import { type ChallengeCreateForm } from "@/features/challenge/create-schema";
-import type { ChallengeView } from "@/features/challenge/types";
+import type { ChallengeView, MyParticipationPage } from "@/features/challenge/types";
 import { request } from "@/shared/api/client";
 
 /** 챌린지 개설 결과. 백엔드 CreatedChallenge */
@@ -25,3 +25,7 @@ export const toCreateChallengeRequest = (values: ChallengeCreateForm) => ({
 
 export const fetchChallenge = (id: string) =>
   request<ChallengeView>(`/api/challenges/${encodeURIComponent(id)}`);
+
+/** 참여 중인 내 챌린지 전체(HOME). 홈은 한 번에 모두 내려준다. */
+export const fetchMyParticipations = () =>
+  request<MyParticipationPage>("/api/users/me/participations");

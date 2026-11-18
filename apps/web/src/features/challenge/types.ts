@@ -47,6 +47,28 @@ export type ChallengeStatus =
   | "DISCARDED"
   | (string & {});
 
+/** 참가 역할(백엔드 ParticipationRole). HOST 방장 / DEPUTY 부방장 / MEMBER 참여자 */
+export type ParticipationRole = "HOST" | "DEPUTY" | "MEMBER" | (string & {});
+
+/**
+ * GET /users/me/participations 응답의 한 행(백엔드 MyChallengeItem).
+ * TODO: 홈 카드에 붙일 때 나머지 필드도 채운다. 지금은 역할 판단에 쓰는 값만 둔다.
+ */
+export type MyParticipationItem = {
+  participationId: number;
+  challengeId: number;
+  myRole: ParticipationRole;
+  /** 내 참가 상태(위키 4.4) */
+  myStatus: string;
+};
+
+/** GET /users/me/participations 응답 data (백엔드 MyChallengePage) */
+export type MyParticipationPage = {
+  items: MyParticipationItem[];
+  nextCursor: number | null;
+  hasNext: boolean;
+};
+
 /** GET /challenges/{id} 응답 data (Swagger ChallengeView) */
 export type ChallengeView = {
   id: number;
