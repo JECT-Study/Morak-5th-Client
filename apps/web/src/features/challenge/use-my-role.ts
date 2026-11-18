@@ -13,7 +13,7 @@ import type { ParticipationRole } from "./types";
 export const useMyRole = (challengeId: string, enabled: boolean) =>
   useQuery({
     queryKey: ["users", "me", "participations"],
-    queryFn: fetchMyParticipations,
+    queryFn: () => fetchMyParticipations(),
     enabled,
     select: (page): ParticipationRole | null =>
       page.items.find((item) => String(item.challengeId) === challengeId)?.myRole ?? null,
