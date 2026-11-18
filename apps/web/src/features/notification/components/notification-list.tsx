@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 import { formatNotificationTime, toNotificationPath } from "../notification-link";
 import type { AppNotification } from "../types";
@@ -37,7 +38,7 @@ export default function NotificationList() {
     return (
       <div aria-busy="true" aria-label="알림을 불러오는 중" className="flex flex-col gap-2 p-4">
         {[0, 1, 2].map((key) => (
-          <div key={key} className="bg-surface-tertiary rounded-12 h-20 animate-pulse" />
+          <Skeleton key={key} className="rounded-12 h-20" />
         ))}
       </div>
     );

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useMyInfo } from "@/features/auth/use-my-info";
 import { ApiError } from "@/shared/api/client";
 import { Button } from "@/shared/ui/button";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 import { formatPoint } from "../format";
 import { usePointLedger } from "../use-point-ledger";
@@ -24,10 +25,10 @@ export default function MySummary() {
     return (
       <main aria-busy="true" aria-label="내 정보를 불러오는 중" className="flex flex-col gap-4 p-4">
         <div className="flex items-center gap-3">
-          <div className="bg-surface-tertiary size-16 animate-pulse rounded-full" />
-          <div className="bg-surface-tertiary rounded-4 h-6 w-32 animate-pulse" />
+          <Skeleton className="size-16 rounded-full" />
+          <Skeleton className="h-6 w-32" />
         </div>
-        <div className="bg-surface-tertiary rounded-12 h-20 animate-pulse" />
+        <Skeleton className="rounded-12 h-20" />
       </main>
     );
   }
@@ -91,7 +92,7 @@ function PointSummary() {
       <span className="flex flex-col gap-1">
         <span className="text-label-md font-label-normal text-fg-tertiary">사용 가능한 포인트</span>
         {isPending ? (
-          <span aria-hidden className="bg-surface-tertiary rounded-4 h-7 w-24 animate-pulse" />
+          <Skeleton className="h-7 w-24" />
         ) : (
           <span className="text-title-2 font-title text-fg-primary">
             {/* 불러오지 못했으면 0P로 보이지 않게 대시를 쓴다(위키 3.2). */}

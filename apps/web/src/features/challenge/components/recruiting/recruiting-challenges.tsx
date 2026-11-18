@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "rea
 import { ApiError } from "@/shared/api/client";
 import { Button } from "@/shared/ui/button";
 import { Chip } from "@/shared/ui/chip";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 import { CHALLENGE_CATEGORIES } from "../../create-schema";
 import type { RecruitingFilter } from "../../recruiting-types";
@@ -113,7 +114,9 @@ function RecruitingList({ filter }: { filter: RecruitingFilter }) {
         className="flex flex-col gap-2 px-4"
       >
         {[0, 1, 2].map((key) => (
-          <li key={key} className="bg-surface-tertiary rounded-12 h-[104px] animate-pulse" />
+          <li key={key}>
+            <Skeleton className="rounded-12 h-[104px]" />
+          </li>
         ))}
       </ul>
     );

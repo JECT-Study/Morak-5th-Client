@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { ApiError } from "@/shared/api/client";
 import { todayKst } from "@/shared/lib/date";
 import { Button } from "@/shared/ui/button";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 import type { ChallengeView } from "../../types";
 import { useChallenge } from "../../use-challenge";
@@ -140,11 +141,11 @@ export default function ChallengeDetail() {
 function ChallengeDetailSkeleton() {
   return (
     <div aria-busy="true" aria-label="챌린지 정보를 불러오는 중" className="flex flex-col">
-      <div className="bg-surface-tertiary h-[281px] animate-pulse" />
+      <Skeleton className="h-[281px] rounded-none" />
       <div className="flex flex-col gap-3 p-4">
-        <div className="bg-surface-tertiary rounded-4 h-6 w-2/3 animate-pulse" />
-        <div className="bg-surface-tertiary rounded-4 h-5 w-1/2 animate-pulse" />
-        <div className="bg-surface-tertiary rounded-4 h-5 w-1/3 animate-pulse" />
+        <Skeleton className="h-6 w-2/3" />
+        <Skeleton className="h-5 w-1/2" />
+        <Skeleton className="h-5 w-1/3" />
       </div>
     </div>
   );

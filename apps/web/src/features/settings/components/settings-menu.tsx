@@ -7,6 +7,7 @@ import { useId } from "react";
 import { useMyInfo } from "@/features/auth/use-my-info";
 import { Separator } from "@/shared/ui/separator";
 import { Switch } from "@/shared/ui/switch";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 import { useLogout, useMarketingAgreement } from "../use-account";
 
@@ -32,7 +33,7 @@ export default function SettingsMenu() {
             이벤트·혜택 알림 받기
           </label>
           {isMeLoading ? (
-            <span aria-hidden className="rounded-max bg-surface-tertiary h-6 w-10 animate-pulse" />
+            <Skeleton className="rounded-max h-6 w-10" />
           ) : (
             <Switch
               id={marketingId}
