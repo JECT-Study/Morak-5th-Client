@@ -3,7 +3,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import dynamic from "next/dynamic";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 
 import { getQueryClient } from "@/shared/api/query-client";
 import OnboardingRedirect from "@/features/auth/components/onboarding-redirect";
@@ -25,7 +25,10 @@ export default function Providers({ children }: { children: ReactNode }) {
       {shouldMock ? <MswProvider>{children}</MswProvider> : children}
       <AppBridgeListener />
       <PushTokenSync />
-      <OnboardingRedirect />
+      {/* 경로(usePathname)를 읽어서 Suspense 안에 둔다(cacheComponents 프리렌더 규칙) */}
+      <Suspense>
+        <OnboardingRedirect />
+      </Suspense>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
