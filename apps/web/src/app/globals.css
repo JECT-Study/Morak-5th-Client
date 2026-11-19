@@ -247,6 +247,18 @@
     var(--duration-move) ease-in-out both vt-slide;
 }
 
+/*
+ * 화면의 나머지(헤더·하단 버튼 등 root)는 교차 페이드하지 않고 바로 새 모습으로 바꾼다.
+ * 브라우저 기본값은 root를 250ms 교차 페이드하는데, 그러면 슬라이드하는 단계 내용과 타이밍이 어긋나
+ * 제목·버튼이 겹쳐 보인다. 이전 root 스냅숏은 숨기고 새 root는 애니메이션 없이 보여 준다.
+ */
+::view-transition-old(root) {
+  display: none;
+}
+::view-transition-new(root) {
+  animation: none;
+}
+
 /* 움직임 줄이기를 켠 사용자는 애니메이션 없이 바로 바꾼다. React가 자동으로 꺼주지 않는다. */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),
