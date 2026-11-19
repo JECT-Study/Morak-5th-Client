@@ -192,79 +192,33 @@
 }
 
 /*
- * 화면 전환(View Transition) 애니메이션. DirectionalTransition의 enter/exit 클래스와 짝이다.
- * - ::view-transition-old(.클래스) = 사라지는 이전 화면의 스냅샷
- * - ::view-transition-new(.클래스) = 나타나는 새 화면의 스냅샷
- * nav-forward: 이전 화면은 왼쪽으로, 새 화면은 오른쪽에서 / nav-back: 반대
+ * 단계 전환 슬라이드. DirectionalTransition이 새 화면에 붙인다.
+ * 이전 화면은 바로 사라지고, 새 화면만 흰 바탕을 깔고 옆에서 밀려 들어온다.
  */
-:root {
-  --duration-exit: 150ms;
-  --duration-enter: 210ms;
-  --duration-move: 400ms;
-}
-
-@keyframes vt-fade {
+@keyframes slide-in-from-right {
   from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+    translate: 100%;
   }
 }
 
-@keyframes vt-slide {
+@keyframes slide-in-from-left {
   from {
-    translate: var(--slide-offset);
-  }
-  to {
-    translate: 0;
+    translate: -100%;
   }
 }
 
-::view-transition-old(.nav-forward) {
-  --slide-offset: -60px;
-  animation:
-    var(--duration-exit) ease-in both vt-fade reverse,
-    var(--duration-move) ease-in-out both vt-slide reverse;
-}
-::view-transition-new(.nav-forward) {
-  --slide-offset: 60px;
-  animation:
-    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
-    var(--duration-move) ease-in-out both vt-slide;
+.slide-in-from-right {
+  animation: slide-in-from-right 300ms ease-out both;
 }
 
-::view-transition-old(.nav-back) {
-  --slide-offset: 60px;
-  animation:
-    var(--duration-exit) ease-in both vt-fade reverse,
-    var(--duration-move) ease-in-out both vt-slide reverse;
-}
-::view-transition-new(.nav-back) {
-  --slide-offset: -60px;
-  animation:
-    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
-    var(--duration-move) ease-in-out both vt-slide;
+.slide-in-from-left {
+  animation: slide-in-from-left 300ms ease-out both;
 }
 
-/*
- * 화면의 나머지(헤더·하단 버튼 등 root)는 교차 페이드하지 않고 바로 새 모습으로 바꾼다.
- * 브라우저 기본값은 root를 250ms 교차 페이드하는데, 그러면 슬라이드하는 단계 내용과 타이밍이 어긋나
- * 제목·버튼이 겹쳐 보인다. 이전 root 스냅숏은 숨기고 새 root는 애니메이션 없이 보여 준다.
- */
-::view-transition-old(root) {
-  display: none;
-}
-::view-transition-new(root) {
-  animation: none;
-}
-
-/* 움직임 줄이기를 켠 사용자는 애니메이션 없이 바로 바꾼다. React가 자동으로 꺼주지 않는다. */
+/* 움직임 줄이기를 켠 사용자는 애니메이션 없이 바로 바꾼다. */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*),
-  ::view-transition-new(*),
-  ::view-transition-group(*) {
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
+  .slide-in-from-right,
+  .slide-in-from-left {
+    animation: none;
   }
 }
