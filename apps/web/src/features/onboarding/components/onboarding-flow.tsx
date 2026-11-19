@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { addTransitionType, startTransition, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { useMyInfo } from "@/features/auth/use-my-info";
 import AppHeader from "@/shared/layout/app-header";
@@ -33,8 +33,12 @@ const STEP_TITLE: Record<Step, string> = {
   done: "준비 완료",
 };
 
-/** 뒤로가기로 돌아갈 단계. 시작 화면은 처음이라 뒤로가기가 없다. */
-const PREV_STEP: Partial<Record<Step, Step>> = { profile: "start", guide: "profile" };
+/** 뒤로가기로 돌아갈 단계. 시작 화면은 처음이라 뒤로가기가 없다. 완료 화면도 이용 안내로 돌아간다. */
+const PREV_STEP: Partial<Record<Step, Step>> = {
+  profile: "start",
+  guide: "profile",
+  done: "guide",
+};
 
 /**
  * 온보딩 4화면(시작 → 정보 입력 → 이용 안내 → 준비 완료). Figma "온보딩".
@@ -47,6 +51,8 @@ export default function OnboardingFlow() {
   const router = useRouter();
   const { data: me, isError } = useMyInfo();
   const [step, setStep] = useState<Step>("start");
+  // 마지막으로 넘어간 방향. 처음 그릴 때는 null이라 움직이지 않는다.
+  const [direction, setDirection] = useState<NavDirection | null>(null);
   const [confirmed, setConfirmed] = useState<GuideValue[]>([]);
 
   // 완료 화면 이미지를 미리 받아 둔다(같은 주소는 React가 한 번만 넣는다).
@@ -71,17 +77,16 @@ export default function OnboardingFlow() {
     enabled: step !== "done" && !onboarding.isPending && !onboarding.isCompleted,
   });
 
-  /**
-   * 단계를 바꾼다. startTransition 안에서 바꿔야 View Transition이 돌고,
-   * addTransitionType으로 붙인 방향에 따라 DirectionalTransition이 슬라이드 방향을 고른다.
-   */
-  function moveTo(next: Step, direction: NavDirection = "nav-forward") {
-    startTransition(() => {
-      addTransitionType(direction);
-      setStep(next);
-    });
-    window.scrollTo(0, 0);
+  /** 단계를 바꾼다. 방향에 따라 DirectionalTransition이 새 단계를 오른쪽·왼쪽에서 밀어 넣는다. */
+  function moveTo(next: Step, nextDirection: NavDirection = "nav-forward") {
+    setDirection(nextDirection);
+    setStep(next);
   }
+
+  // 새 단계는 맨 위부터 보이게 한다. 새 단계를 그린 직후, 화면에 보이기 전에 올린다.
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
 
   const goToGuide = () => {
     if (!validate()) return;
@@ -94,8 +99,11 @@ export default function OnboardingFlow() {
     });
   };
 
+  // 이미 저장을 마치고 완료 화면에서 돌아온 경우에는 다시 저장하지 않고(서버가 USER_003으로 거절) 완료로 간다.
   const finish = () =>
-    onboarding.complete(toOnboardingRequest(form), { onSuccess: () => moveTo("done") });
+    onboarding.isCompleted
+      ? moveTo("done")
+      : onboarding.complete(toOnboardingRequest(form), { onSuccess: () => moveTo("done") });
 
   const changeConfirm = (value: GuideValue, checked: boolean) =>
     setConfirmed((prev) =>
@@ -126,21 +134,15 @@ export default function OnboardingFlow() {
   const prev = PREV_STEP[step];
 
   return (
-    <div className="bg-background-primary flex flex-1 flex-col">
+    // 옆에서 밀려 들어오는 동안 가로 스크롤이 생기지 않게 넘치는 부분을 자른다.
+    <div className="bg-background-primary flex flex-1 flex-col overflow-x-clip">
       <AppHeader
         centered
-        nested={prev !== undefined || step === "done"}
-        // 완료 화면은 이미 저장을 마쳐 이전 단계로 되돌릴 수 없으니 홈으로 나간다.
-        onBack={
-          step === "done"
-            ? () => router.replace("/")
-            : prev
-              ? () => moveTo(prev, "nav-back")
-              : undefined
-        }
+        nested={prev !== undefined}
+        onBack={prev ? () => moveTo(prev, "nav-back") : undefined}
         title={STEP_TITLE[step]}
       />
-      <DirectionalTransition key={step}>
+      <DirectionalTransition key={step} direction={direction}>
         <main className="flex flex-1 flex-col px-4 pt-4 pb-6">
           {step === "start" && <StartStep />}
           {step === "profile" && <ProfileStep form={form} errors={errors} onChange={updateForm} />}
