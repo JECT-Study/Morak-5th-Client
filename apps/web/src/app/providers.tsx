@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 
 import { getQueryClient } from "@/shared/api/query-client";
 import AppBridgeListener from "@/shared/native/app-bridge-listener";
+import PushTokenSync from "@/shared/native/push-token-sync";
 // 헤더 뒤로가기가 앱 안 기록 위치를 알 수 있도록 첫 이동 전에 history를 감싼다.
 import "@/shared/navigation/history";
 
@@ -22,6 +23,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       {shouldMock ? <MswProvider>{children}</MswProvider> : children}
       <AppBridgeListener />
+      <PushTokenSync />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
