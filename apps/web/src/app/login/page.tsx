@@ -16,7 +16,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
       <Image src="/images/morak-character.svg" alt="" width={128} height={123} priority />
       <h1 className="text-title-3 font-title text-fg-primary">함께하니까, 포기하지 않게</h1>
       <p className="text-body-md font-body-normal text-fg-secondary break-keep">
-        목표를 함께하고, 보증금으로 실천 의지를 더해
+        목표를 함께하고, 참여 포인트로 실천 의지를 더해
         <br />
         끝까지 완주해 보세요.
       </p>
