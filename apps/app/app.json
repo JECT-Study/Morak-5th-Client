@@ -45,11 +45,11 @@
         }
       ]
     ],
+    "owner": "morak",
     "extra": {
       "eas": {
-        "projectId": "eea113d7-56fd-4655-a125-3e76a7fcb099"
+        "projectId": "45b7e0a1-dfb6-4e8f-ac3c-0a786e367b0a"
       }
-    },
-    "owner": "brighthans-team"
+    }
   }
 }
