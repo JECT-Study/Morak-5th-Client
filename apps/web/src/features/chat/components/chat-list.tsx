@@ -39,7 +39,7 @@ export default function ChatList() {
         className="flex flex-col gap-2 px-4"
       >
         {[0, 1, 2].map((key) => (
-          <Skeleton key={key} className="h-[84px] rounded-[20px]" />
+          <Skeleton key={key} className="rounded-20 h-[84px]" />
         ))}
       </div>
     );
@@ -154,7 +154,7 @@ function ChatRow({ chat, ended = false }: { chat: ChatListItem; ended?: boolean 
     <li>
       <Link
         href={`/challenges/${chat.challengeId}/chat`}
-        className="bg-surface-primary flex items-center gap-3 rounded-[20px] p-3"
+        className="bg-surface-primary rounded-20 flex items-center gap-3 p-3"
       >
         <div className={cn("flex min-w-0 flex-1 items-center gap-3", ended && "opacity-60")}>
           <div className="rounded-12 bg-surface-secondary relative size-15 shrink-0 overflow-hidden">

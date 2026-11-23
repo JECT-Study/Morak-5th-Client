@@ -20,7 +20,7 @@ export default function TabBar() {
 
   return (
     <nav aria-label="주요 메뉴" className="max-w-app fixed inset-x-0 bottom-0 z-10 mx-auto">
-      <ul className="rounded-16 border-line-subtle bg-surface-primary flex gap-3 border p-4 pb-[calc(16px+env(safe-area-inset-bottom))] shadow-[0_1px_6px_rgb(38_49_59/0.03)]">
+      <ul className="rounded-16 border-line-subtle bg-surface-primary shadow-float-nav flex gap-3 border p-4 pb-[calc(16px+env(safe-area-inset-bottom))]">
         {TABS.map(({ href, label, icon: TabIcon }) => {
           const active = pathname === href;
           return (
