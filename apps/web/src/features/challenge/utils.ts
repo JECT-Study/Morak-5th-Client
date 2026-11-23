@@ -13,7 +13,7 @@ export const formatPeriod = (startDate: string, endDate: string) =>
   `${formatShortDate(startDate)} ~ ${formatShortDate(endDate)}`;
 
 /** "2026-10-20" → "10월 20일" */
-const formatMonthDay = (date: string) => {
+export const formatMonthDay = (date: string) => {
   const [, month, day] = date.split("-").map(Number);
   return `${month}월 ${day}일`;
 };
