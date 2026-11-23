@@ -28,8 +28,8 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
           <LoginError searchParams={searchParams} />
         </Suspense>
         <SocialLoginButton provider="kakao" />
-        {/* TODO: 백엔드가 구글 로그인을 지원하면 활성화한다. */}
-        <SocialLoginButton provider="google" disabled />
+        {/* TODO: 백엔드가 구글 로그인을 지원하면 <SocialLoginButton provider="google" />을 추가한다.
+            동작하지 않는 버튼은 스토어 심사에서 문제가 될 수 있어 그전까지 보이지 않는다. */}
         <Button asChild variant="outline" size="md">
           <Link href="/">
             로그인 없이 둘러보기
