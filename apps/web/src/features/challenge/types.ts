@@ -123,3 +123,15 @@ export type ChallengeView = {
   canApply: boolean;
   coverImageUrl: string | null;
 };
+
+/** POST /challenges/{id}/reschedule 응답 data. 재설정되면 모집 중(RECRUITING)으로 돌아간다. */
+export type RescheduledChallenge = {
+  challengeId: number;
+  status: ChallengeStatus;
+  /** "YYYY-MM-DD" */
+  startDate: string;
+  endDate: string;
+};
+
+/** POST /challenges/{id}/discard 응답 data */
+export type DiscardedChallenge = { challengeId: number; status: ChallengeStatus };

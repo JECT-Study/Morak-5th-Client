@@ -9,11 +9,13 @@ import { Skeleton } from "@/shared/ui/skeleton";
 
 import type { ChallengeView } from "../../types";
 import { useChallenge } from "../../use-challenge";
+import { useStartHeldInfo } from "../../use-start-held";
 import { countDays, formatDDay } from "../../utils";
 import { CATEGORY_META } from "../category-picker";
 import ApplyBar from "./apply-bar";
 import ChallengeDetailTabs from "./challenge-detail-tabs";
 import ChallengeInfo from "./challenge-info";
+import StartHeldNotice from "./start-held-notice";
 
 /** 인증 마감(위키 1. 서비스 요약). 모든 챌린지가 같다. */
 const CERTIFICATION_TIME = "매일 23:59까지";
@@ -75,6 +77,10 @@ const errorMessage = (error: Error) => {
 export default function ChallengeDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: challenge, error, isPending, refetch, isRefetching } = useChallenge(id);
+  // 시작 보류 안내는 참여자에게만 보인다. 인원·기한·역할이 상세 응답에 없어 내 챌린지 목록에서 가져온다.
+  const startHeldVisible =
+    challenge?.status === "START_HELD" && challenge.myParticipationStatus !== null;
+  const { data: myItem } = useStartHeldInfo(id, startHeldVisible);
 
   if (isPending) return <ChallengeDetailSkeleton />;
 
@@ -102,6 +108,13 @@ export default function ChallengeDetail() {
         >
           이미 종료된 챌린지입니다
         </p>
+      )}
+      {startHeldVisible && myItem?.startHeld && (
+        <StartHeldNotice
+          challenge={challenge}
+          startHeld={myItem.startHeld}
+          isHost={myItem.myRole === "HOST"}
+        />
       )}
       <ChallengeInfo
         title={challenge.title}
