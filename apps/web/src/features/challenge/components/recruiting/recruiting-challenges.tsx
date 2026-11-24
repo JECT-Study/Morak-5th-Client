@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 
+import LoginRequiredLink from "@/features/auth/components/login-required-link";
 import { ApiError } from "@/shared/api/client";
 import { Button } from "@/shared/ui/button";
 import { Chip } from "@/shared/ui/chip";
@@ -151,7 +152,7 @@ function RecruitingList({ filter }: { filter: RecruitingFilter }) {
         message={filtered ? "조건에 맞는 챌린지가 없어요." : "지금 모집 중인 챌린지가 없어요."}
       >
         <Button asChild size="md">
-          <Link href="/challenges/new/daily">챌린지 만들기</Link>
+          <LoginRequiredLink href="/challenges/new/daily">챌린지 만들기</LoginRequiredLink>
         </Button>
       </ListMessage>
     );
