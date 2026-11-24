@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import { ApiError } from "@/shared/api/client";
@@ -31,6 +32,9 @@ const NOT_STARTED_STATUSES = ["RECRUITING", "START_HELD"];
 
 /** 종료·폐기된 챌린지(위키 5.3). 신청·합류를 진행하지 않는다. */
 const CLOSED_STATUSES = ["ENDED", "DISCARDED"];
+
+/** 결과 행이 생기는 내 참가 상태(완주·퇴장·조기 종료). 종료된 챌린지에서 결과 보기를 연다. */
+const RESULT_MY_STATUSES = ["COMPLETED", "EXPELLED", "EARLY_ENDED"];
 
 /**
  * 표지 배지 문구(위키 4.1).
@@ -109,6 +113,14 @@ export default function ChallengeDetail() {
           이미 종료된 챌린지입니다
         </p>
       )}
+      {challenge.status === "ENDED" &&
+        RESULT_MY_STATUSES.includes(challenge.myParticipationStatus ?? "") && (
+          <div className="px-4 pt-3">
+            <Button asChild variant="subtle" size="md" fullWidth>
+              <Link href={`/challenges/${challenge.id}/results`}>챌린지 결과 보기</Link>
+            </Button>
+          </div>
+        )}
       {startHeldVisible && myItem?.startHeld && (
         <StartHeldNotice
           challenge={challenge}
