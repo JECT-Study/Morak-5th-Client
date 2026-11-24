@@ -2,6 +2,7 @@ import { Plus, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import LoginRequiredLink from "@/features/auth/components/login-required-link";
 import { Button } from "@/shared/ui/button";
 
 /**
@@ -29,10 +30,10 @@ export default function MyChallengesEmpty() {
         </Button>
         {/* TODO: 챌린지 유형(데일리/프로젝트) 선택 화면이 정해지면 그쪽으로 보낸다. */}
         <Button asChild variant="outline" fullWidth>
-          <Link href="/challenges/new/daily">
+          <LoginRequiredLink href="/challenges/new/daily">
             <Plus aria-hidden />
             직접 만들기
-          </Link>
+          </LoginRequiredLink>
         </Button>
       </div>
     </section>
