@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { Suspense, type ReactNode } from "react";
 
 import { getQueryClient } from "@/shared/api/query-client";
+import LoginRedirect from "@/features/auth/components/login-redirect";
 import OnboardingRedirect from "@/features/auth/components/onboarding-redirect";
 import AppBridgeListener from "@/shared/native/app-bridge-listener";
 import PushTokenSync from "@/shared/native/push-token-sync";
@@ -28,6 +29,7 @@ export default function Providers({ children }: { children: ReactNode }) {
       {/* 경로(usePathname)를 읽어서 Suspense 안에 둔다(cacheComponents 프리렌더 규칙) */}
       <Suspense>
         <OnboardingRedirect />
+        <LoginRedirect />
       </Suspense>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
