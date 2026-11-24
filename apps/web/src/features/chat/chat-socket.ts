@@ -17,6 +17,9 @@ export function createChatSocket(options: CreateChatSocketOptions): Client {
   const client = new Client({
     brokerURL: options.brokerURL,
     webSocketFactory: options.webSocketFactory,
+    // TODO: 핸드셰이크가 계속 실패하면(서버 다운·프록시 설정 오류) 5초마다 티켓을 새로 받으며 끝없이 재시도한다.
+    //  reconnectTimeMode EXPONENTIAL + maxReconnectDelay로 간격을 늘리고, 한 번도 연결되지 못한 채
+    //  연속 N번 실패하면 멈춰 "다시 연결" 버튼을 보인다. 연결에 성공하면 실패 횟수를 0으로 되돌린다.
     reconnectDelay: 5000,
     heartbeatIncoming: 10000,
     heartbeatOutgoing: 10000,
