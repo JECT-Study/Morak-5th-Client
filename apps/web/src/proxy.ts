@@ -2,12 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { SESSION_COOKIE } from "@/shared/api/auth-cookies";
 import { ACCESS_TOKEN_COOKIE } from "@/shared/api/backend";
-
-/** 로그인해야 들어올 수 있는 페이지(/admin은 운영진 검수, ADMIN 여부는 API가 판단). 그 외(홈·챌린지 목록 등)는 비로그인도 볼 수 있다. */
-const PROTECTED_PATHS = ["/challenges/new", "/settings", "/my/points", "/admin"];
-
-const isProtected = (pathname: string) =>
-  PROTECTED_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+import { isProtectedPath } from "@/shared/navigation/protected-paths";
 
 /**
  * 페이지에 들어올 때 로그인 상태를 맞춘다.
@@ -28,7 +23,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(refreshUrl);
   }
 
-  if (isProtected(pathname)) return NextResponse.redirect(new URL("/login", request.url));
+  if (isProtectedPath(pathname)) return NextResponse.redirect(new URL("/login", request.url));
   return NextResponse.next();
 }
 
@@ -38,7 +33,9 @@ export const config = {
       // API·Next 내부 파일·정적 파일(확장자 있는 경로)은 제외한다.
       source: "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)",
       // 링크 미리 불러오기(prefetch)까지 재발급으로 보내면 동시에 여러 번 재발급하게 된다(rotation 충돌).
-      // 실제로 이동할 때의 요청 하나만 처리한다.
+      // 실제로 이동할 때의 요청 하나만 처리한다. proxy 안에서는 미리 불러오기 표시 헤더가 지워져
+      // 요청을 구분할 수 없어서 여기서 뺀다. 그래서 미리 받아 둔 보호 페이지는 이 검사를 거치지 않고
+      // 열릴 수 있고, 그 경우는 화면 쪽 LoginRedirect가 로그인으로 보낸다.
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },
