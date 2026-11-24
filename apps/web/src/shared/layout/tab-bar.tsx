@@ -15,6 +15,9 @@ const TABS = [
   { href: "/my", label: "마이페이지", icon: UserRound },
 ] as const satisfies readonly { href: string; label: string; icon: LucideIcon }[];
 
+/** 탭 주소(왼쪽부터). 탭을 옮길 때 화면이 들어오는 방향을 정하는 데도 쓴다. */
+export const TAB_HREFS: readonly string[] = TABS.map(({ href }) => href);
+
 /** 하단 탭바. 높이는 84px + 하단 안전 영역이고, 탭 레이아웃이 그만큼 아래 여백을 둔다. */
 export default function TabBar() {
   const pathname = usePathname();
