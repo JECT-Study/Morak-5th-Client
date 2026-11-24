@@ -65,7 +65,8 @@ export default function ChallengeMoreMenu() {
         <DropdownMenu.Content
           align="end"
           sideOffset={4}
-          className="bg-surface-primary border-line-subtle rounded-16 shadow-raised z-20 flex w-[216px] flex-col border px-4 py-2"
+          // 누른 버튼 쪽(Radix가 계산한 transform-origin)에서 펼쳐진다.
+          className="bg-surface-primary border-line-subtle rounded-16 shadow-raised motion-safe:data-[state=open]:animate-dropdown-in motion-safe:data-[state=closed]:animate-dropdown-out z-20 flex w-[216px] origin-(--radix-dropdown-menu-content-transform-origin) flex-col border px-4 py-2"
         >
           {/* 채팅은 참여가 확정된(ACTIVE) 뒤부터 들어갈 수 있다(위키 7절) */}
           {myStatus === "ACTIVE" && (
