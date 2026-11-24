@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/shared/lib/utils";
+import { useHaptic } from "@/shared/native/use-haptic";
 
 // Figma "내비게이션 페이지별 탭" 순서
 const TABS = [
@@ -17,6 +18,7 @@ const TABS = [
 /** 하단 탭바. 높이는 84px + 하단 안전 영역이고, 탭 레이아웃이 그만큼 아래 여백을 둔다. */
 export default function TabBar() {
   const pathname = usePathname();
+  const haptic = useHaptic();
 
   return (
     <nav aria-label="주요 메뉴" className="max-w-app fixed inset-x-0 bottom-0 z-10 mx-auto">
@@ -28,6 +30,8 @@ export default function TabBar() {
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
+                // 다른 탭으로 옮길 때만 가볍게 진동한다(앱 네이티브 햅틱, 브라우저는 지원할 때만).
+                onClick={active ? undefined : () => haptic("light")}
                 className={cn(
                   "rounded-12 text-label-xs flex flex-col items-center gap-0.5 px-2 py-1",
                   "focus-visible:ring-line-focus focus-visible:ring-2 focus-visible:outline-none",
