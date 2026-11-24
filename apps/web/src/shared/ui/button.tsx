@@ -14,7 +14,9 @@ import { cn } from "@/shared/lib/utils";
  */
 export const buttonVariants = cva(
   [
-    "inline-flex shrink-0 items-center justify-center gap-1 rounded-8 whitespace-nowrap transition-colors",
+    "inline-flex shrink-0 items-center justify-center gap-1 rounded-8 whitespace-nowrap",
+    // 누르는 동안 살짝 작아져 눌린 느낌을 준다. 비활성이면 pointer-events가 없어 줄어들지 않는다.
+    "transition-[color,background-color,border-color,scale] duration-150 motion-safe:active:scale-98",
     "focus-visible:ring-line-focus focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
     "disabled:pointer-events-none aria-disabled:pointer-events-none",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",

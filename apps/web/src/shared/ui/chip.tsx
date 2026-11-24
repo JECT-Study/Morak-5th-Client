@@ -11,7 +11,8 @@ import { cn } from "@/shared/lib/utils";
  */
 const chipVariants = cva(
   [
-    "inline-flex shrink-0 items-center justify-center gap-1 border border-transparent whitespace-nowrap transition-colors",
+    "inline-flex shrink-0 items-center justify-center gap-1 border border-transparent whitespace-nowrap",
+    "transition-[color,background-color,border-color,scale] duration-150 motion-safe:active:scale-96",
     "bg-surface-secondary text-fg-secondary font-label-normal",
     "hover:bg-surface-secondary-hover hover:text-fg-secondary-hover",
     "active:bg-surface-secondary-pressed active:text-fg-secondary-pressed",

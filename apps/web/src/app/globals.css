@@ -204,6 +204,56 @@
   --shadow-float-nav: 0 16px 48px 0 rgb(27 28 33 / 0.12);
   --shadow-sheet: 0 4px 20px 0 rgb(27 28 33 / 0.32);
 
+  /*
+   * 움직임. 열릴 때는 ease-out으로 가볍게, 닫힐 때는 더 짧게 사라진다.
+   * 쓰는 쪽은 motion-safe:를 붙여 "움직임 줄이기" 설정에서는 꺼지게 한다.
+   * 예) motion-safe:data-[state=open]:animate-dialog-in
+   * TODO: PD 모션 가이드가 나오면 시간·곡선을 맞춘다.
+   * 모달은 위치를 translate로 잡아서, 크기 변화는 겹치지 않게 scale 속성으로 준다.
+   */
+  --animate-fade-in: fade-in 150ms ease-out;
+  --animate-fade-out: fade-out 120ms ease-in forwards;
+  --animate-dialog-in: dialog-in 180ms ease-out;
+  --animate-dialog-out: dialog-out 120ms ease-in forwards;
+  --animate-dropdown-in: dropdown-in 150ms ease-out;
+  --animate-dropdown-out: dropdown-out 100ms ease-in forwards;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      scale: 0.96;
+    }
+  }
+  @keyframes dialog-out {
+    to {
+      opacity: 0;
+      scale: 0.96;
+    }
+  }
+  @keyframes dropdown-in {
+    from {
+      opacity: 0;
+      translate: 0 -4px;
+      scale: 0.98;
+    }
+  }
+  @keyframes dropdown-out {
+    to {
+      opacity: 0;
+      scale: 0.98;
+    }
+  }
+
   /* 챌린지 진행 강조색(Figma theme/lime) */
   --color-lime-assistive: #71b61d;
   --color-lime-subtler: #a5e167;

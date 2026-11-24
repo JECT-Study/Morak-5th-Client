@@ -29,7 +29,7 @@ const PROVIDER_STYLES: Record<
  */
 export default function SocialLoginButton({ provider, disabled = false }: SocialLoginButtonProps) {
   const { label, Logo, background } = PROVIDER_STYLES[provider];
-  const className = `${background} rounded-8 text-label-lg font-label-strong text-fg-primary relative flex h-[42px] w-full items-center justify-center gap-1 overflow-hidden px-5 after:pointer-events-none after:absolute after:inset-0 after:bg-static-black after:opacity-0 after:transition-opacity after:duration-(--environment-semantic-duration-100) hover:after:opacity-8 active:after:opacity-12 disabled:cursor-not-allowed disabled:opacity-40 disabled:after:hidden`;
+  const className = `${background} rounded-8 text-label-lg font-label-strong text-fg-primary relative flex h-[42px] w-full items-center justify-center gap-1 overflow-hidden px-5 after:pointer-events-none after:absolute after:inset-0 after:bg-static-black after:opacity-0 after:transition-opacity after:duration-150 transition-[scale] duration-150 motion-safe:active:scale-98 hover:after:opacity-8 active:after:opacity-12 disabled:cursor-not-allowed disabled:opacity-40 disabled:after:hidden`;
   const content = (
     <>
       <Logo className="text-base" />
