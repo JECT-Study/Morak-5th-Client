@@ -39,6 +39,8 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           value={text}
           onChange={(event) => setText(event.target.value)}
           onKeyDown={preventComposingSubmit}
+          // 연결 전에 눌러 키보드가 뜨면 iOS WebView가 화면을 밀어 올린 채 남아 헤더 뒤로가기가 안 눌린다.
+          disabled={disabled}
           maxLength={1000}
           enterKeyHint="send"
           aria-label="메시지 입력"
