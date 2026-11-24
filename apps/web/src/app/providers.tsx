@@ -10,6 +10,7 @@ import LoginRedirect from "@/features/auth/components/login-redirect";
 import OnboardingRedirect from "@/features/auth/components/onboarding-redirect";
 import AppBridgeListener from "@/shared/native/app-bridge-listener";
 import PushTokenSync from "@/shared/native/push-token-sync";
+import ScrollClamp from "@/shared/navigation/scroll-clamp";
 // 헤더 뒤로가기가 앱 안 기록 위치를 알 수 있도록 첫 이동 전에 history를 감싼다.
 import "@/shared/navigation/history";
 
@@ -30,6 +31,7 @@ export default function Providers({ children }: { children: ReactNode }) {
       <Suspense>
         <OnboardingRedirect />
         <LoginRedirect />
+        <ScrollClamp />
       </Suspense>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
