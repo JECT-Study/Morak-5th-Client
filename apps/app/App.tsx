@@ -193,7 +193,9 @@ export default function App() {
           setSupportMultipleWindows={false}
           sharedCookiesEnabled
           bounces={false}
-          webviewDebuggingEnabled={__DEV__}
+          // TODO: 출시 전 __DEV__로 되돌린다. TestFlight에서 채팅 후 화면이 멈추는 버그를
+          //  맥 Safari 인스펙터로 보려고 배포 빌드에서도 켜 둔다.
+          webviewDebuggingEnabled
         />
       </SafeAreaView>
     </SafeAreaProvider>
