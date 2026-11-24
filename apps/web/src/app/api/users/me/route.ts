@@ -1,4 +1,4 @@
-import type { MyUserInfo } from "@/features/auth/types";
+import type { MyUserInfo, OnboardingRequest } from "@/features/auth/types";
 import { clearAuthCookies } from "@/shared/api/auth-cookies";
 import { backendFetch, toRouteResponse } from "@/shared/api/backend";
 
@@ -6,6 +6,17 @@ import { backendFetch, toRouteResponse } from "@/shared/api/backend";
 export async function GET() {
   const result = await backendFetch<MyUserInfo>("/users/me");
   return toRouteResponse(result);
+}
+
+/**
+ * 프로필 수정(PATCH /users/me). 닉네임·소개·링크·관심 분야를 요청 값으로 바꾼다(소개·링크는 null이면 지운다).
+ * 몸통은 온보딩과 같고, 닉네임이 겹치면 409(USER_004)다. 응답은 갱신된 내 정보.
+ */
+export async function PATCH(request: Request) {
+  const body = (await request.json()) as OnboardingRequest;
+  return toRouteResponse(
+    await backendFetch<MyUserInfo>("/users/me", { method: "PATCH", json: body }),
+  );
 }
 
 /**

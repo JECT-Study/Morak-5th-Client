@@ -15,8 +15,11 @@ import type { UserProfile } from "../types";
 
 const INTEREST_LABEL = Object.fromEntries(INTERESTS.map(({ value, label }) => [value, label]));
 
-/** 사진·닉네임·한 줄 소개·링크·관심 분야. 소개·링크는 입력한 경우에만 보인다. */
-export function ProfileHeader({ profile }: { profile: UserProfile }) {
+/**
+ * 사진·닉네임·한 줄 소개·링크·관심 분야. 소개·링크는 입력한 경우에만 보인다.
+ * action은 본인 화면의 "정보 수정"처럼 프로필 맨 아래에 붙일 버튼이다(타인 프로필은 없음).
+ */
+export function ProfileHeader({ profile, action }: { profile: UserProfile; action?: ReactNode }) {
   return (
     <section aria-label="프로필" className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
@@ -67,6 +70,7 @@ export function ProfileHeader({ profile }: { profile: UserProfile }) {
           ))}
         </ul>
       )}
+      {action}
     </section>
   );
 }

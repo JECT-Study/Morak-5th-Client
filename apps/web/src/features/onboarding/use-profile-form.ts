@@ -5,9 +5,13 @@ import { EMPTY_PROFILE, validateProfile, type ProfileErrors, type ProfileForm } 
 /**
  * 온보딩 정보 입력 폼의 값·에러.
  * @param prefillNickname 가입할 때 받은 닉네임(카카오 등). 처음 한 번만 채워 두고 확인·수정하게 한다.
+ * @param initialForm 처음 채워 둘 값. 마이페이지 정보 수정은 지금 프로필 값으로 시작한다.
  */
-export function useProfileForm(prefillNickname: string | null | undefined) {
-  const [form, setForm] = useState<ProfileForm>(EMPTY_PROFILE);
+export function useProfileForm(
+  prefillNickname: string | null | undefined,
+  initialForm: ProfileForm = EMPTY_PROFILE,
+) {
+  const [form, setForm] = useState<ProfileForm>(initialForm);
   const [errors, setErrors] = useState<ProfileErrors>({});
 
   // 내 정보가 늦게 도착해도 한 번만 채운다(렌더 중 상태 조정 패턴).
