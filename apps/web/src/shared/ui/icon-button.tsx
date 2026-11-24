@@ -10,7 +10,9 @@ import { cn } from "@/shared/lib/utils";
  */
 const iconButtonVariants = cva(
   [
-    "text-fg-primary inline-flex shrink-0 items-center justify-center rounded-max transition-colors",
+    "text-fg-primary inline-flex shrink-0 items-center justify-center rounded-max",
+    // 작은 버튼이라 일반 버튼보다 조금 더 줄여야 눌린 게 보인다.
+    "transition-[color,background-color,scale] duration-150 motion-safe:active:scale-95",
     "hover:bg-surface-secondary active:bg-surface-secondary-pressed",
     "focus-visible:ring-line-focus focus-visible:ring-2 focus-visible:outline-none",
     "disabled:text-fg-disabled disabled:pointer-events-none",
