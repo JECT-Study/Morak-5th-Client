@@ -1,4 +1,7 @@
-import { Client } from "@stomp/stompjs";
+import { Client, ReconnectionTimeMode } from "@stomp/stompjs";
+
+/** 연결에 성공하지 못한 채 연속으로 이만큼 끊기면 재연결을 멈춘다(5·10·20·30·30초, 약 1분 반) */
+export const MAX_CONNECT_FAILURES = 5;
 
 type CreateChatSocketOptions = {
   brokerURL: string;
@@ -11,23 +14,43 @@ type CreateChatSocketOptions = {
    * 다시 연결해도 소용없는 에러(예: 참가자가 아님)면 받는 쪽에서 client.deactivate()로 멈춘다.
    */
   onError?: (error: { code: string | undefined; message: string }, client: Client) => void;
+  /**
+   * 연결하지 못하고 연속으로 MAX_CONNECT_FAILURES번 끊겨 재연결을 멈췄을 때(서버 다운·프록시 설정 오류 등).
+   * 그대로 두면 끊길 때마다 티켓을 새로 받으며 끝없이 재시도한다. 다시 연결하려면 client.activate()를 부른다.
+   */
+  onGiveUp?: () => void;
 };
 
 export function createChatSocket(options: CreateChatSocketOptions): Client {
+  /** 마지막으로 연결에 성공한 뒤 연속으로 끊긴 횟수 */
+  let failures = 0;
+
   const client = new Client({
     brokerURL: options.brokerURL,
     webSocketFactory: options.webSocketFactory,
-    // TODO: 핸드셰이크가 계속 실패하면(서버 다운·프록시 설정 오류) 5초마다 티켓을 새로 받으며 끝없이 재시도한다.
-    //  reconnectTimeMode EXPONENTIAL + maxReconnectDelay로 간격을 늘리고, 한 번도 연결되지 못한 채
-    //  연속 N번 실패하면 멈춰 "다시 연결" 버튼을 보인다. 연결에 성공하면 실패 횟수를 0으로 되돌린다.
+    // 5초부터 두 배씩 늘려 최대 30초 간격으로 다시 연결한다. 연결되면 5초로 돌아간다.
     reconnectDelay: 5000,
+    reconnectTimeMode: ReconnectionTimeMode.EXPONENTIAL,
+    maxReconnectDelay: 30_000,
     heartbeatIncoming: 10000,
     heartbeatOutgoing: 10000,
     beforeConnect: async (c) => {
       c.connectHeaders = await options.getConnectHeaders();
     },
-    onConnect: () => options.onConnect(client),
-    onWebSocketClose: () => options.onDisconnect?.(),
+    onConnect: () => {
+      failures = 0;
+      options.onConnect(client);
+    },
+    onWebSocketClose: () => {
+      options.onDisconnect?.();
+      // 직접 멈춘(deactivate) 경우는 세지 않는다.
+      if (!client.active) return;
+      failures += 1;
+      if (failures < MAX_CONNECT_FAILURES) return;
+      failures = 0; // 다시 activate하면 처음부터 센다
+      void client.deactivate();
+      options.onGiveUp?.();
+    },
     onStompError: (frame) => {
       // 백엔드는 에러 코드를 code 헤더로 보낸다 (예: CHAT_008 티켓 만료)
       options.onError?.(

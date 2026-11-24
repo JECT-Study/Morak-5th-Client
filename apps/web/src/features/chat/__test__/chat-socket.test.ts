@@ -61,6 +61,78 @@ describe("createChatSocket", () => {
   });
 });
 
+describe("createChatSocket 재연결 제한", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    FakeWebSocket.instances = [];
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  const create = () => {
+    const onGiveUp = vi.fn();
+    const client = createChatSocket({
+      brokerURL: "ws://test",
+      webSocketFactory: () => new FakeWebSocket() as unknown as WebSocket,
+      getConnectHeaders: async () => ({ ticket: "abc" }),
+      onConnect: vi.fn(),
+      onGiveUp,
+    });
+    return { client, onGiveUp };
+  };
+
+  /** 가장 최근 소켓을 핸드셰이크 실패처럼 끊고, 다음 재연결 시도까지 시간을 보낸다 */
+  const failLatest = async (wait: number) => {
+    FakeWebSocket.instances.at(-1)!.drop();
+    await vi.advanceTimersByTimeAsync(wait);
+  };
+
+  it("재연결 간격을 5초부터 두 배씩 늘린다", async () => {
+    const { client } = create();
+    client.activate();
+    await vi.advanceTimersByTimeAsync(0);
+
+    await failLatest(5000);
+    expect(FakeWebSocket.instances).toHaveLength(2);
+    await failLatest(9999);
+    expect(FakeWebSocket.instances).toHaveLength(2); // 두 번째는 10초를 기다린다
+    await vi.advanceTimersByTimeAsync(1);
+    expect(FakeWebSocket.instances).toHaveLength(3);
+
+    await client.deactivate({ force: true });
+  });
+
+  it("연결하지 못하고 5번 연속 끊기면 재연결을 멈추고 onGiveUp을 부른다", async () => {
+    const { client, onGiveUp } = create();
+    client.activate();
+    await vi.advanceTimersByTimeAsync(0);
+
+    for (const wait of [5000, 10000, 20000, 30000]) await failLatest(wait);
+    expect(onGiveUp).not.toHaveBeenCalled();
+    await failLatest(60_000);
+
+    expect(onGiveUp).toHaveBeenCalledOnce();
+    expect(client.active).toBe(false);
+    expect(FakeWebSocket.instances).toHaveLength(5); // 더 이상 새 소켓(티켓)을 만들지 않는다
+  });
+
+  it("중간에 한 번 연결되면 실패 횟수를 다시 센다", async () => {
+    const { client, onGiveUp } = create();
+    client.activate();
+    await vi.advanceTimersByTimeAsync(0);
+
+    for (const wait of [5000, 10000, 20000, 30000]) await failLatest(wait);
+    const socket = FakeWebSocket.instances.at(-1)!;
+    socket.open();
+    socket.receive(CONNECTED);
+    await failLatest(5000);
+
+    expect(onGiveUp).not.toHaveBeenCalled();
+    await client.deactivate({ force: true });
+  });
+});
+
 describe("createChatSocket 에러 처리", () => {
   beforeEach(() => {
     vi.useFakeTimers();

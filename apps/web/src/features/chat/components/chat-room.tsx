@@ -9,7 +9,7 @@ import { Spinner } from "@/shared/ui/spinner";
 
 import { chatDateKey } from "../format";
 import type { ChatMessage } from "../type";
-import { useChatRoom } from "../use-chat-room";
+import { CONNECTION_FAILED, useChatRoom } from "../use-chat-room";
 import { ChatInput, ChatReadOnlyNotice, type ReadOnlyReason } from "./chat-input";
 import {
   DateDivider,
@@ -75,7 +75,7 @@ function ChatRoom({ challengeId, readOnly }: { challengeId: number; readOnly?: R
 
   return (
     <div className="bg-background-primary flex flex-1 flex-col">
-      <ConnectionNotice status={room.status} error={room.error} />
+      <ConnectionNotice status={room.status} error={room.error} onReconnect={room.reconnect} />
 
       {connecting ? (
         <div className="flex flex-1 items-center justify-center">
@@ -141,9 +141,11 @@ function ChatRoom({ challengeId, readOnly }: { challengeId: number; readOnly?: R
 function ConnectionNotice({
   status,
   error,
+  onReconnect,
 }: {
   status: ReturnType<typeof useChatRoom>["status"];
   error: { code: string; message: string } | null;
+  onReconnect: () => void;
 }) {
   if (status === "connected") return null;
   if (status === "error") {
@@ -154,6 +156,12 @@ function ConnectionNotice({
           <Link href="/login" className="ml-1 underline">
             로그인
           </Link>
+        )}
+        {/* 여러 번 연결하지 못해 재연결을 멈춘 경우. 사용자가 눌러야 다시 시도한다 */}
+        {error?.code === CONNECTION_FAILED && (
+          <button type="button" onClick={onReconnect} className="ml-1 underline">
+            다시 연결
+          </button>
         )}
       </p>
     );
