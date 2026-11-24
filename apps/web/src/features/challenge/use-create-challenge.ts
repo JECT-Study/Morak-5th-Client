@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import { ApiError } from "@/shared/api/client";
@@ -17,6 +17,7 @@ const FALLBACK_MESSAGE = "챌린지를 만들지 못했어요. 다시 시도해 
  */
 export const useCreateChallenge = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: ({
       values,
@@ -25,7 +26,12 @@ export const useCreateChallenge = () => {
       values: ChallengeCreateForm;
       coverImage: File | null;
     }) => createChallenge(toCreateChallengeRequest(values), coverImage),
-    onSuccess: ({ challengeId }) => router.replace(`/challenges/${challengeId}`),
+    onSuccess: ({ challengeId }) => {
+      // 포인트 챌린지는 개설할 때 방장 포인트를 걸어 두므로 잔액과 내 챌린지 목록을 다시 불러온다.
+      void queryClient.invalidateQueries({ queryKey: ["points", "me"] });
+      void queryClient.invalidateQueries({ queryKey: ["users", "me", "participations"] });
+      router.replace(`/challenges/${challengeId}`);
+    },
     onError: (cause) => {
       if (!(cause instanceof ApiError)) return;
       if (cause.status === 401) router.replace("/login");
@@ -44,6 +50,10 @@ const toErrorMessage = (error: Error | null): string | null => {
   }
   if (error instanceof ApiError && error.status === 413) {
     return "대표 사진은 5MB 이하로 올려 주세요.";
+  }
+  // 대표 사진 저장소를 쓸 수 없을 때(사진을 올린 경우에만 난다).
+  if (error instanceof ApiError && error.status === 503) {
+    return "지금은 대표 사진을 올릴 수 없어요. 사진 없이 만들거나 잠시 후 다시 시도해 주세요.";
   }
   return FALLBACK_MESSAGE;
 };

@@ -17,6 +17,8 @@ const MAX_PAGE_SIZE = 100;
 const MAX_CONTENT_LENGTH = 1000;
 /** 연결 에러 중 새 티켓으로 다시 연결하면 되는 것 (티켓 만료·인증 안 됨). 나머지는 재연결을 멈춘다 */
 const RETRYABLE_CONNECT_ERRORS = new Set(["CHAT_008", "CHAT_009"]);
+/** 재연결을 여러 번 실패해 멈췄을 때의 에러 코드. 화면이 "다시 연결" 버튼을 보인다 */
+export const CONNECTION_FAILED = "CONNECTION_FAILED";
 
 /**
  * 챌린지 채팅방 하나의 실시간 연결과 메시지 상태.
@@ -154,6 +156,10 @@ export function useChatRoom(challengeId: number) {
         setStatus((prev) => (prev === "error" ? prev : "disconnected"));
         failAllSending("연결이 끊겨 보내지 못했어요.");
       },
+      onGiveUp: () => {
+        setError({ code: CONNECTION_FAILED, message: "채팅에 연결하지 못했어요." });
+        setStatus("error");
+      },
       onError: ({ code, message }, c) => {
         if (code && RETRYABLE_CONNECT_ERRORS.has(code)) return; // 재연결하면서 새 티켓을 받는다
         setError({ code: code ?? "UNKNOWN", message });
@@ -223,6 +229,15 @@ export function useChatRoom(challengeId: number) {
     });
   };
 
+  /** 재연결을 멈춘 뒤 사용자가 "다시 연결"을 누르면 처음부터 다시 연결한다 */
+  const reconnect = () => {
+    const client = clientRef.current;
+    if (!client || client.active) return;
+    setError(null);
+    setStatus("connecting");
+    client.activate();
+  };
+
   /** 위로 스크롤했을 때 더 오래된 메시지를 불러온다 */
   const loadOlder = async () => {
     const oldest = messages[0]?.id;
@@ -246,6 +261,7 @@ export function useChatRoom(challengeId: number) {
     send,
     retry,
     discard,
+    reconnect,
     loadOlder,
     hasOlder,
     loadingOlder,
