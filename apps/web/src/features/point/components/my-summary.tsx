@@ -9,6 +9,7 @@ import {
   ProfileHeader,
   RecordSection,
 } from "@/features/profile/components/profile-sections";
+import { useFlash } from "@/features/profile/flash";
 import { useUserProfile } from "@/features/profile/use-user-profile";
 import { ApiError } from "@/shared/api/client";
 import { Button } from "@/shared/ui/button";
@@ -22,12 +23,13 @@ import { usePointLedger } from "../use-point-ledger";
  * 프로필(사진·닉네임·소개·링크·관심 분야) → 모락이·개인 인증률 → 누적 완주·중도 실패 → 메달
  * → 사용 가능한 포인트 + 포인트 내역.
  * 프로필·기록·메달은 타인 프로필과 같은 API(GET /users/{userId})를 내 userId로 부른다.
- * TODO: 정보 수정, 프로필 사진 변경, 메달 상세보기, 종료된 챌린지 전체 보기, 승인 대기 목록을 이 순서대로 추가한다.
+ * TODO: 프로필 사진 변경, 메달 상세보기, 종료된 챌린지 전체 보기, 승인 대기 목록을 이 순서대로 추가한다.
  */
 export default function MySummary() {
   const { data: me, error: meError, refetch: refetchMe } = useMyInfo();
   const { data: profile, error: profileError, refetch, isRefetching } = useUserProfile(me?.userId);
   const error = meError ?? profileError;
+  const flash = useFlash();
 
   if (!error && !profile) {
     return <MySummarySkeleton />;
@@ -61,7 +63,22 @@ export default function MySummary() {
 
   return (
     <main className="flex flex-col gap-6 p-4">
-      <ProfileHeader profile={profile} />
+      {flash && (
+        <p
+          role="status"
+          className="bg-surface-info-subtle text-fg-info text-label-md font-label-normal rounded-12 px-4 py-3"
+        >
+          {flash}
+        </p>
+      )}
+      <ProfileHeader
+        profile={profile}
+        action={
+          <Button asChild variant="outline" size="sm" fullWidth>
+            <Link href="/my/edit">정보 수정</Link>
+          </Button>
+        }
+      />
       <RecordSection profile={profile} />
       <MedalSection profile={profile} />
       <PointSummary />
