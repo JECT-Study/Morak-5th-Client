@@ -261,11 +261,12 @@
   /*
    * 글자 스타일(Figma "Typo"). 크기·줄 높이·자간은 text-*, 굵기는 font-*로 나눠 쓴다.
    * 예) Label/md/Strong → text-label-md font-label-strong, Title/1 → text-title-1 font-title
-   * 자간은 모두 -2.5%, 행간은 160%이고 Caption만 150%다.
-   * Label 계열과 15·13px, 32·40·48px는 파운데이션에 없어 기존 값을 쓴다. TODO: PD 확인
+   * 피그마 파운데이션 글자 스타일 값을 따른다. 자간은 모두 -2.5%,
+   * 행간은 16px 이상 160%, 14px 이하와 42px 제목은 140%다(Body-xs·xxs, Caption, Heading).
+   * 파운데이션에 없는 15·13px는 14·12px로 옮겼다. 40·48px는 쓰는 곳이 없어 그대로 둔다.
    */
   --leading-morak: 1.6;
-  --leading-morak-caption: 1.5;
+  --leading-morak-tight: 1.4;
   --tracking-morak: -0.025em;
   --text-title-1: 1.125rem;
   --text-title-1--line-height: var(--leading-morak);
@@ -279,14 +280,14 @@
   --text-title-4: 1.75rem;
   --text-title-4--line-height: var(--leading-morak);
   --text-title-4--letter-spacing: var(--tracking-morak);
-  --text-title-5: 2rem;
+  --text-title-5: 2.125rem;
   --text-title-5--line-height: var(--leading-morak);
   --text-title-5--letter-spacing: var(--tracking-morak);
   --text-title-6: 2.5rem;
   --text-title-6--line-height: var(--leading-morak);
   --text-title-6--letter-spacing: var(--tracking-morak);
   --text-title-7: 2.625rem;
-  --text-title-7--line-height: var(--leading-morak);
+  --text-title-7--line-height: var(--leading-morak-tight);
   --text-title-7--letter-spacing: var(--tracking-morak);
   --text-title-8: 3rem;
   --text-title-8--line-height: var(--leading-morak);
@@ -294,32 +295,32 @@
   --text-body-lg: 1rem;
   --text-body-lg--line-height: var(--leading-morak);
   --text-body-lg--letter-spacing: var(--tracking-morak);
-  --text-body-md: 0.9375rem;
-  --text-body-md--line-height: var(--leading-morak);
+  --text-body-md: 0.875rem;
+  --text-body-md--line-height: var(--leading-morak-tight);
   --text-body-md--letter-spacing: var(--tracking-morak);
   --text-body-sm: 0.875rem;
-  --text-body-sm--line-height: var(--leading-morak);
+  --text-body-sm--line-height: var(--leading-morak-tight);
   --text-body-sm--letter-spacing: var(--tracking-morak);
-  --text-body-xs: 0.8125rem;
-  --text-body-xs--line-height: var(--leading-morak);
+  --text-body-xs: 0.75rem;
+  --text-body-xs--line-height: var(--leading-morak-tight);
   --text-body-xs--letter-spacing: var(--tracking-morak);
   --text-body-2xs: 0.75rem;
-  --text-body-2xs--line-height: var(--leading-morak);
+  --text-body-2xs--line-height: var(--leading-morak-tight);
   --text-body-2xs--letter-spacing: var(--tracking-morak);
   --text-label-lg: 1rem;
   --text-label-lg--line-height: var(--leading-morak);
   --text-label-lg--letter-spacing: var(--tracking-morak);
   --text-label-md: 0.875rem;
-  --text-label-md--line-height: var(--leading-morak);
+  --text-label-md--line-height: var(--leading-morak-tight);
   --text-label-md--letter-spacing: var(--tracking-morak);
   --text-label-sm: 0.75rem;
-  --text-label-sm--line-height: var(--leading-morak);
+  --text-label-sm--line-height: var(--leading-morak-tight);
   --text-label-sm--letter-spacing: var(--tracking-morak);
   --text-label-xs: 0.6875rem;
-  --text-label-xs--line-height: var(--leading-morak);
+  --text-label-xs--line-height: var(--leading-morak-tight);
   --text-label-xs--letter-spacing: var(--tracking-morak);
   --text-caption: 0.75rem;
-  --text-caption--line-height: var(--leading-morak-caption);
+  --text-caption--line-height: var(--leading-morak-tight);
   --text-caption--letter-spacing: var(--tracking-morak);
 
   /* Title Bold / Label Strong SemiBold · Normal Medium / Body Strong Medium · Normal Regular */
