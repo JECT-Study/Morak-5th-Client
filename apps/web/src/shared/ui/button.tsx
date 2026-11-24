@@ -9,12 +9,12 @@ import { cn } from "@/shared/lib/utils";
  * - primary: 화면에서 가장 중요한 행동(예: 챌린지 참여하기)
  * - subtle: 덜 중요한 강조 행동(예: 포인트 받기)
  * - outline: 보조 행동(예: 인증 내역 보기)
- * 크기 lg 48 / md 40 / sm 32, 좌우 여백 20 / 16 / 12, 모서리 8.
- * TODO: subtle·outline은 Figma에 상태별 시안이 아직 없어 토큰 규칙으로 맞췄다. 시안이 나오면 맞춘다.
+ * 크기 lg 48 / md 40 / sm 32, 좌우 여백 20 / 16 / 12, 모서리 12 / 12 / 8.
+ * Figma 컴포넌트의 Brand(primary), Brand-weak(subtle), Outlined Neutral(outline)에 맞췄다.
  */
 export const buttonVariants = cva(
   [
-    "inline-flex shrink-0 items-center justify-center gap-1 rounded-8 whitespace-nowrap",
+    "inline-flex shrink-0 items-center justify-center gap-1 whitespace-nowrap",
     // 누르는 동안 살짝 작아져 눌린 느낌을 준다. 비활성이면 pointer-events가 없어 줄어들지 않는다.
     "transition-[color,background-color,border-color,scale] duration-150 motion-safe:active:scale-98",
     "focus-visible:ring-line-focus focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
@@ -26,10 +26,11 @@ export const buttonVariants = cva(
       variant: {
         primary: [
           "bg-surface-brand text-fg-inverse hover:bg-surface-brand-hover active:bg-surface-brand-pressed",
-          "disabled:bg-surface-disabled disabled:text-fg-disabled",
+          "disabled:bg-surface-tertiary disabled:text-fg-disabled",
         ],
         subtle: [
-          "bg-surface-brand-subtle text-fg-brand-strong hover:bg-surface-selected active:bg-surface-secondary-pressed",
+          "bg-surface-brand-subtle text-fg-brand-strong hover:bg-surface-brand-subtle-hover",
+          "active:bg-surface-brand-subtle-pressed active:text-fg-brand-pressed",
           "disabled:bg-surface-disabled disabled:text-fg-disabled",
         ],
         outline: [
@@ -38,9 +39,9 @@ export const buttonVariants = cva(
         ],
       },
       size: {
-        lg: "text-label-lg font-label-strong h-12 px-5 [&_svg]:size-5",
-        md: "text-label-md font-label-strong h-10 px-4 [&_svg]:size-5",
-        sm: "text-label-sm font-label-strong h-8 px-3 [&_svg]:size-4",
+        lg: "text-label-lg font-label-strong rounded-12 h-12 gap-2 px-5 [&_svg]:size-5",
+        md: "text-label-md font-label-strong rounded-12 h-10 px-4 [&_svg]:size-5",
+        sm: "text-label-sm font-label-strong rounded-8 h-8 px-3 [&_svg]:size-4",
       },
       fullWidth: { true: "w-full" },
     },
