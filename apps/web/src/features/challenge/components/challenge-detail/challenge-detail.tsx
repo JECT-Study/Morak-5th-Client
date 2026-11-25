@@ -143,6 +143,13 @@ export default function ChallengeDetail() {
       />
       <ChallengeDetailTabs
         notStarted={NOT_STARTED_STATUSES.includes(challenge.status)}
+        certification={{
+          challengeId: id,
+          canCertify:
+            challenge.status === "IN_PROGRESS" && challenge.myParticipationStatus === "ACTIVE",
+          // 포인트를 건 공개 챌린지는 운영진이 판정한다(위키 5.10)
+          reviewedByStaff: challenge.pointAmount > 0 && challenge.visibility === "PUBLIC",
+        }}
         intro={{
           description: challenge.description,
           startDate: challenge.startDate,
