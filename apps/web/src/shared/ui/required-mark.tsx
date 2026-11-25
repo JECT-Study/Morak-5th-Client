@@ -10,7 +10,10 @@ export default function RequiredMark({ children = "필수" }: { children?: strin
   );
 }
 
-/** 라벨 뒤의 "선택" 표시. 비워도 되는 칸이라는 안내라 스크린리더도 읽는다. */
-export function OptionalMark({ children = "선택" }: { children?: string }) {
-  return <span className="text-label-sm font-label-normal text-fg-secondary">{children}</span>;
+/**
+ * 라벨 뒤 보조 문구(예: 복수 선택). 필수 표시(*) 뒤에 옅게 붙고, 안내라 스크린리더도 읽는다.
+ * 비워도 되는 칸이라고 "선택"을 붙이지는 않는다(필수만 *로 표시).
+ */
+export function LabelOption({ children }: { children: string }) {
+  return <span className="text-body-sm font-body-normal text-fg-tertiary ml-1">{children}</span>;
 }
