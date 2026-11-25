@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, ImageIcon } from "lucide-react";
+import { Camera, ImageIcon, ImageOff } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
@@ -41,9 +41,12 @@ const statusText = (status: CertificationStatus, reviewedByStaff: boolean) => {
   return "실패";
 };
 
+/** 서버가 준 실패 문구(업로드 가이드: 상태 코드로 나누고 error.message를 그대로 보인다). 연결 실패 등은 null */
 const submitErrorMessage = (error: Error) => {
-  if (error instanceof ApiError && [400, 413].includes(error.status)) return error.message;
-  return null; // 나머지는 화면 상태로 처리하거나 업로드 실패 안내를 보인다.
+  if (error instanceof ApiError && [400, 403, 409, 413, 503].includes(error.status)) {
+    return error.message || null;
+  }
+  return null;
 };
 
 /**
@@ -105,8 +108,11 @@ export default function CertificationSubmit() {
         onError: (error) => {
           if (!(error instanceof ApiError)) return;
           if (error.code === "CERTIFICATION_DATE_MISMATCH") setClosed(true);
-          // 다른 기기에서 이미 냈으면 피드를 다시 받아 상태 라벨을 보인다.
-          if (error.code === "CERTIFICATION_ALREADY_SUBMITTED") void feed.refetch();
+          // 이미 냈거나(다른 기기) 챌린지가 진행 중이 아니게 됐으면 다시 받아 화면을 맞춘다.
+          if (error.status === 409) {
+            void feed.refetch();
+            void challenge.refetch();
+          }
         },
       },
     );
@@ -128,6 +134,10 @@ export default function CertificationSubmit() {
   // 포인트를 건 공개 챌린지는 운영진이, 나머지는 방장·부방장이 판정한다(위키 5.10).
   const reviewedByStaff = pointAmount > 0 && visibility === "PUBLIC";
   const mine = feed.data?.items.find((item) => item.mine) ?? submit.data ?? null;
+  // 참여 중이 아니면(403) 다시 시도해도 같아서 버튼을 숨기고 서버 문구만 보인다.
+  const forbidden =
+    submit.error instanceof ApiError && submit.error.status === 403 ? submit.error : null;
+  const canSubmit = !mine && status === "IN_PROGRESS" && !closed && !forbidden;
 
   return (
     <main className="flex flex-1 flex-col">
@@ -151,6 +161,8 @@ export default function CertificationSubmit() {
             imageUrl={mine.imageUrl}
             reviewedByStaff={reviewedByStaff}
           />
+        ) : forbidden ? (
+          <Message title={forbidden.message || "참여 중인 챌린지에서만 인증할 수 있어요."} />
         ) : status !== "IN_PROGRESS" ? (
           <Message title="진행 중인 챌린지에서만 인증할 수 있어요." />
         ) : closed ? (
@@ -188,7 +200,7 @@ export default function CertificationSubmit() {
         )}
       </div>
 
-      {!mine && status === "IN_PROGRESS" && !closed && (
+      {canSubmit && (
         <div className="bg-background-primary sticky bottom-0 flex gap-2 px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+16px)]">
           {photo ? (
             <>
@@ -258,15 +270,22 @@ function SubmittedView({
   reviewedByStaff,
 }: {
   status: CertificationStatus;
-  imageUrl: string;
+  imageUrl: string | null;
   reviewedByStaff: boolean;
 }) {
   return (
     <section aria-label="오늘 인증" className="flex flex-col gap-4">
       <div className="bg-surface-secondary rounded-16 relative aspect-square w-full overflow-hidden">
-        {/* 서명 주소(5분 유효)라 최적화하지 않는다 */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={imageUrl} alt="내 오늘 인증 사진" className="size-full object-cover" />
+        {imageUrl ? (
+          // 서명 주소(5분 유효)라 최적화하지 않는다
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imageUrl} alt="내 오늘 인증 사진" className="size-full object-cover" />
+        ) : (
+          <div className="text-fg-tertiary flex size-full flex-col items-center justify-center gap-2">
+            <ImageOff aria-hidden className="size-8" />
+            <p className="text-body-sm font-body-normal">사진을 불러오지 못했어요</p>
+          </div>
+        )}
       </div>
       <div className="flex flex-col gap-1">
         <p className="text-title-2 font-title text-fg-primary">

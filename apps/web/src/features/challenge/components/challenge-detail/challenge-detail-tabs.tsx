@@ -2,6 +2,7 @@
 
 import { Lock } from "lucide-react";
 
+import CertificationFeed from "@/features/certification/components/certification-feed";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
 import IntroTab, { type ChallengeIntroData } from "./intro-tab";
@@ -19,6 +20,14 @@ type ChallengeDetailTabsProps = {
   members?: ChallengeMember[];
   /** 시작 전(모집 중·시작 보류)이면 true. 인증 탭에 시작 후 열린다는 안내를 보여 준다. */
   notStarted?: boolean;
+  /** 시작 후 인증 탭(인증 피드)에 필요한 값 */
+  certification: {
+    challengeId: string;
+    /** 진행 중이고 내가 참여 중이면 true(내 오늘 인증 카드) */
+    canCertify: boolean;
+    /** 포인트를 건 공개 챌린지라 운영진이 판정하면 true */
+    reviewedByStaff: boolean;
+  };
 };
 
 /**
@@ -29,6 +38,7 @@ export default function ChallengeDetailTabs({
   intro,
   members,
   notStarted = false,
+  certification,
 }: ChallengeDetailTabsProps) {
   return (
     <Tabs defaultValue="certification">
@@ -41,11 +51,14 @@ export default function ChallengeDetailTabs({
       </TabsList>
 
       <TabsContent value="certification">
-        {/* TODO: 시작 후 인증 탭(인증 피드)은 인증 API가 나오면 만든다. */}
         {notStarted ? (
           <CertificationLocked startDate={intro.startDate} />
         ) : (
-          <TabPlaceholder name="인증" />
+          <CertificationFeed
+            {...certification}
+            startDate={intro.startDate}
+            endDate={intro.endDate}
+          />
         )}
       </TabsContent>
       <TabsContent value="members">
