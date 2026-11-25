@@ -97,6 +97,8 @@
    * hover·pressed·selected는 Figma state 변수(…Hover, …Pressed, …Selected)와 같다.
    */
   --color-fg-primary: #1b1c21;
+  /* Figma Text-neutral-primary. 입력 라벨처럼 strong(fg-primary)보다 한 단계 옅은 본문 강조 */
+  --color-fg-neutral: #2f3036;
   --color-fg-secondary: #57595f;
   --color-fg-secondary-hover: #47484f;
   --color-fg-secondary-pressed: #2f3036;

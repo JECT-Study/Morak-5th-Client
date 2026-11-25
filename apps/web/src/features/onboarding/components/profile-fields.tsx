@@ -1,6 +1,6 @@
 import type { Interest } from "@/features/auth/types";
 import { Chip } from "@/shared/ui/chip";
-import RequiredMark, { OptionalMark } from "@/shared/ui/required-mark";
+import { LabelOption } from "@/shared/ui/required-mark";
 import { TextField } from "@/shared/ui/text-field";
 
 import { INTERESTS, type ProfileErrors, type ProfileForm } from "../profile";
@@ -42,7 +42,7 @@ export default function ProfileFields({ form, errors, onChange }: ProfileFieldsP
         )}
       </TextField>
 
-      <TextField status={errors.bio ? "error" : "default"} optional>
+      <TextField status={errors.bio ? "error" : "default"}>
         <TextField.Label>한 줄 소개</TextField.Label>
         <TextField.Textarea
           value={form.bio}
@@ -59,7 +59,7 @@ export default function ProfileFields({ form, errors, onChange }: ProfileFieldsP
         )}
       </TextField>
 
-      <TextField status={errors.link ? "error" : "default"} optional>
+      <TextField status={errors.link ? "error" : "default"}>
         <TextField.Label>관련 링크</TextField.Label>
         <TextField.Input
           type="url"
@@ -87,13 +87,16 @@ export default function ProfileFields({ form, errors, onChange }: ProfileFieldsP
         className="flex flex-col gap-3"
       >
         <div className="flex flex-col gap-1">
+          {/* 입력칸 라벨(TextField.Label)과 같은 모양: 16 Bold + 빨간 * */}
           <p
             id="interests-label"
-            className="text-label-md font-label-normal text-fg-primary flex items-center gap-1"
+            className="text-label-lg font-title text-fg-neutral flex items-center gap-0.5 px-0.5 leading-normal"
           >
             관심 분야
-            <RequiredMark>최소 1개 필수</RequiredMark>
-            <OptionalMark>/ 복수 선택</OptionalMark>
+            <span aria-hidden className="text-danger">
+              *
+            </span>
+            <LabelOption>복수 선택</LabelOption>
           </p>
           <p id="interests-description" className="text-body-sm font-body-normal text-fg-secondary">
             관심 있는 도전 주제를 골라 주세요
@@ -114,7 +117,7 @@ export default function ProfileFields({ form, errors, onChange }: ProfileFieldsP
           <p
             id="interests-error"
             role="alert"
-            className="text-label-sm font-label-normal text-danger"
+            className="text-body-sm font-body-normal text-danger"
           >
             {errors.interests}
           </p>

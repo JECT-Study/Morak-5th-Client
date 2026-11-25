@@ -13,7 +13,7 @@ import {
 
 import { cn } from "@/shared/lib/utils";
 
-import RequiredMark, { OptionalMark } from "./required-mark";
+import { LabelOption } from "./required-mark";
 
 /**
  * 라벨 + 입력 + 도움말·글자 수를 묶는 입력칸. JDS TextField·Textarea 자리를 잇는다.
@@ -27,7 +27,8 @@ import RequiredMark, { OptionalMark } from "./required-mark";
  *   </TextField>
  * 라벨은 htmlFor로, 도움말은 aria-describedby로 입력과 이어져 스크린리더가 함께 읽는다.
  * 에러면 aria-invalid가 붙는다.
- * TODO: 입력창은 Figma 시안이 아직 없어 새 토큰 규칙(높이 48, 모서리 8, Line 테두리)으로 맞췄다.
+ * 모양은 Figma 컴포넌트 "TextField"(라벨 16 Bold + 빨간 *, 높이 52·모서리 12·Line 테두리,
+ * 입력·placeholder 16, 글자 수 n/max 14, 안내 14)를 따른다.
  */
 
 type Status = "default" | "error";
@@ -37,7 +38,6 @@ type FieldContextValue = {
   helperId: string;
   status: Status;
   required: boolean;
-  optional: boolean;
   disabled: boolean;
   length: number;
   maxLength: number | undefined;
@@ -55,17 +55,14 @@ function useField() {
 
 type TextFieldProps = ComponentProps<"div"> & {
   status?: Status;
-  /** 라벨 뒤에 "필수"를 붙이고 입력에 aria-required를 준다. */
+  /** 라벨 뒤에 빨간 *를 붙이고 입력에 aria-required를 준다. */
   required?: boolean;
-  /** 라벨 뒤에 "선택"을 붙인다(비워도 되는 칸). */
-  optional?: boolean;
   disabled?: boolean;
 };
 
 function TextFieldRoot({
   status = "default",
   required = false,
-  optional = false,
   disabled = false,
   className,
   ...props
@@ -80,7 +77,6 @@ function TextFieldRoot({
         helperId: `${id}-helper`,
         status,
         required,
-        optional,
         disabled,
         length,
         maxLength,
@@ -97,20 +93,29 @@ function TextFieldRoot({
   );
 }
 
-function Label({ className, children, ...props }: ComponentProps<"label">) {
-  const { inputId, required, optional } = useField();
+type LabelProps = ComponentProps<"label"> & {
+  /** 필수 표시(*) 뒤에 붙는 보조 문구. 예) "복수 선택" */
+  option?: string;
+};
+
+function Label({ className, children, option, ...props }: LabelProps) {
+  const { inputId, required } = useField();
   return (
     <label
       htmlFor={inputId}
       className={cn(
-        "text-label-md font-label-normal text-fg-primary flex items-center gap-1",
+        "text-label-lg font-title text-fg-neutral flex items-center gap-0.5 px-0.5 leading-normal",
         className,
       )}
       {...props}
     >
       {children}
-      {required && <RequiredMark />}
-      {!required && optional && <OptionalMark />}
+      {required && (
+        <span aria-hidden className="text-danger">
+          *
+        </span>
+      )}
+      {option && <LabelOption>{option}</LabelOption>}
     </label>
   );
 }
@@ -144,19 +149,19 @@ function useControl(value: ComponentProps<"input">["value"], maxLength: number |
 
 const boxClassName = (status: Status) =>
   cn(
-    "border-line bg-surface-primary flex w-full rounded-8 border transition-colors",
+    "border-line bg-surface-primary flex w-full rounded-12 border transition-colors",
     "focus-within:border-line-focus",
     "has-[:disabled]:border-line-disabled has-[:disabled]:bg-surface-disabled",
     status === "error" && "border-danger focus-within:border-danger",
   );
 
 const controlClassName =
-  "text-body-md font-body-normal text-fg-primary placeholder:text-fg-quaternary disabled:text-fg-disabled min-w-0 flex-1 bg-transparent outline-none";
+  "text-body-lg font-body-normal text-fg-primary placeholder:text-fg-disabled disabled:text-fg-disabled caret-surface-brand min-w-0 flex-1 bg-transparent outline-none";
 
 type InputProps = ComponentProps<"input"> & {
   /** 입력 오른쪽 아이콘(예: 달력). 꾸밈이면 aria-hidden을 붙여 넘긴다. */
   suffix?: ReactNode;
-  /** true면 글자 수 (n/max)를 칸 안 오른쪽에 보인다(Figma 온보딩 정보 입력). maxLength가 있어야 한다. */
+  /** true면 글자 수(n/max)를 칸 안 오른쪽에 보인다. maxLength가 있어야 한다. */
   counter?: boolean;
 };
 
@@ -172,7 +177,7 @@ function Input({
 }: InputProps) {
   const { status, setLength, ariaProps } = useControl(value, maxLength);
   return (
-    <div className={cn(boxClassName(status), "h-12 items-center gap-2 px-4")}>
+    <div className={cn(boxClassName(status), "h-13 items-center gap-2 px-4")}>
       <input
         {...ariaProps}
         // RHF register처럼 값을 ref로 넣는 경우(비제어)를 위해 처음 붙을 때도 센다.
@@ -189,14 +194,14 @@ function Input({
         className={cn(controlClassName, "h-full", className)}
         {...props}
       />
-      {counter && <Counter className="self-end pb-2" />}
+      {counter && <Counter />}
       {suffix && <span className="text-fg-tertiary flex shrink-0 [&_svg]:size-5">{suffix}</span>}
     </div>
   );
 }
 
 type TextareaProps = ComponentProps<"textarea"> & {
-  /** true면 글자 수 (n/max)를 칸 안 아래 오른쪽에 보인다. maxLength가 있어야 한다. */
+  /** true면 글자 수(n/max)를 칸 안 아래 오른쪽에 보인다. maxLength가 있어야 한다. */
   counter?: boolean;
 };
 
@@ -211,7 +216,7 @@ function Textarea({
 }: TextareaProps) {
   const { status, setLength, ariaProps } = useControl(value, maxLength);
   return (
-    <div className={cn(boxClassName(status), "flex-col px-4 py-2")}>
+    <div className={cn(boxClassName(status), "flex-col gap-0.5 p-4")}>
       <textarea
         {...ariaProps}
         ref={(node) => {
@@ -232,8 +237,9 @@ function Textarea({
   );
 }
 
+/** 입력 아래 안내 줄. 입력과 4px 떨어진다(묶음 간격 8에서 4를 당긴다). */
 function Footer({ className, ...props }: ComponentProps<"div">) {
-  return <div className={cn("flex items-start gap-2", className)} {...props} />;
+  return <div className={cn("-mt-1 flex items-start gap-2 px-0.5", className)} {...props} />;
 }
 
 /** 안내 또는 에러 문구. 입력의 aria-describedby로 연결된다. */
@@ -243,7 +249,7 @@ function Helper({ className, ...props }: ComponentProps<"p">) {
     <p
       id={helperId}
       className={cn(
-        "text-label-sm font-label-normal min-w-0 flex-1",
+        "text-body-sm font-body-normal min-w-0 flex-1",
         status === "error" ? "text-danger" : "text-fg-tertiary",
         className,
       )}
@@ -252,7 +258,7 @@ function Helper({ className, ...props }: ComponentProps<"p">) {
   );
 }
 
-/** 글자 수(예: (3/12)). maxLength가 있는 입력에서만 보인다. 화면용이라 스크린리더는 읽지 않는다. */
+/** 글자 수(예: 3/12). maxLength가 있는 입력에서만 보인다. 화면용이라 스크린리더는 읽지 않는다. */
 function Counter({ className }: { className?: string }) {
   const { length, maxLength } = useField();
   if (maxLength === undefined) return null;
@@ -260,11 +266,11 @@ function Counter({ className }: { className?: string }) {
     <span
       aria-hidden
       className={cn(
-        "text-label-sm font-label-normal text-fg-disabled ml-auto shrink-0 tabular-nums",
+        "text-body-sm font-body-normal text-fg-tertiary ml-auto shrink-0 tabular-nums",
         className,
       )}
     >
-      ({length}/{maxLength})
+      {length}/{maxLength}
     </span>
   );
 }
