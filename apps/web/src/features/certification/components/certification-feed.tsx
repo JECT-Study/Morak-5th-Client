@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
+import { Camera, ChevronLeft, ChevronRight, ImageOff, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -215,14 +215,22 @@ function FeedCard({
           <StatusBadge>{statusLabel(item.status, reviewedByStaff)}</StatusBadge>
         )}
       </header>
-      {/* 300초짜리 서명 주소라 최적화하지 않는다 */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={item.imageUrl}
-        alt={`${name}의 인증 사진`}
-        loading="lazy"
-        className={cn("rounded-8 bg-surface-secondary aspect-[4/3] w-full object-cover")}
-      />
+      {item.imageUrl ? (
+        // 300초짜리 서명 주소라 최적화하지 않는다
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={item.imageUrl}
+          alt={`${name}의 인증 사진`}
+          loading="lazy"
+          className={cn("rounded-8 bg-surface-secondary aspect-[4/3] w-full object-cover")}
+        />
+      ) : (
+        // 서명에 실패하면 주소가 null로 온다
+        <div className="rounded-8 bg-surface-secondary text-fg-tertiary flex aspect-[4/3] w-full flex-col items-center justify-center gap-2">
+          <ImageOff aria-hidden className="size-8" />
+          <p className="text-body-sm font-body-normal">사진을 불러오지 못했어요</p>
+        </div>
+      )}
     </article>
   );
 }

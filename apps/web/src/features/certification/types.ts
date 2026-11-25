@@ -13,7 +13,8 @@ export type SubmittedCertification = {
   status: CertificationStatus;
   /** ISO 8601 */
   submittedAt: string;
-  imageUrl: string;
+  /** 서명 주소. 서명에 실패하면 null */
+  imageUrl: string | null;
 };
 
 /** 인증 피드 한 줄. 다른 팀원은 승인된 것만, 내 것은 대기·거절도 온다. */
@@ -25,8 +26,8 @@ export type CertificationFeedItem = {
   role: string;
   status: CertificationStatus;
   submittedAt: string;
-  /** 300초 동안 유효한 서명 주소 */
-  imageUrl: string;
+  /** 300초 동안 유효한 서명 주소. 서명에 실패하면 null */
+  imageUrl: string | null;
   mine: boolean;
 };
 
