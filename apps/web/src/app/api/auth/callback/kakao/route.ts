@@ -21,7 +21,10 @@ export async function GET(request: NextRequest) {
     json: { code } satisfies SocialLoginRequest,
   });
   if (!result.ok) {
-    return NextResponse.redirect(new URL("/login?error=login_failed", request.url));
+    // 원인을 화면에서 가를 수 있게 백엔드 오류 코드(예: AUTH_003 탈퇴 계정)를 같이 넘긴다.
+    const url = new URL("/login?error=login_failed", request.url);
+    if (result.error.code) url.searchParams.set("reason", result.error.code);
+    return NextResponse.redirect(url);
   }
   const response = NextResponse.redirect(new URL(await afterLoginPath(result.data), request.url));
   setAuthCookies(response, result.data);
