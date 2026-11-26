@@ -43,6 +43,7 @@ export const toMyChallengeCard = (item: MyParticipationItem): MyChallengeCardDat
       })),
     },
     myTodayStatus: item.myTodayStatus,
+    pendingJudgeCount: item.pendingJudgeCount ?? 0,
   };
 };
 

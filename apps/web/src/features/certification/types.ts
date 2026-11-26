@@ -29,6 +29,17 @@ export type CertificationFeedItem = {
   /** 300초 동안 유효한 서명 주소. 서명에 실패하면 null */
   imageUrl: string | null;
   mine: boolean;
+  /** 좋아요 수 */
+  likeCount: number;
+  /** 내가 좋아요를 눌렀는지 */
+  liked: boolean;
+};
+
+/** 좋아요 누름·취소 응답 data. 처리 뒤 상태다 */
+export type CertificationLike = {
+  certificationId: number;
+  liked: boolean;
+  likeCount: number;
 };
 
 /** GET /challenges/{id}/certifications 응답 data */

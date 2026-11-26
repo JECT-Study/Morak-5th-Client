@@ -1,4 +1,4 @@
-import { Camera, MessageSquareMore } from "lucide-react";
+import { Camera, CircleCheck } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/shared/ui/button";
@@ -19,7 +19,9 @@ type ChallengeCardProps = {
  * 홈(내 챌린지)의 챌린지 카드. Figma "챌린지 다이어리" 챌린지 카드(위키 4.1, 5.1).
  * - 시작 전·결과 집계 중에도 같은 배치. 시작 전이면 진행 영역에 D-n과 시작일을 보여 준다.
  * - 오늘 인증한 팀원은 인증 집계가 있을 때만, '지금 인증하기'는 진행 중일 때만 보인다.
- * TODO: '판정하기'(방장·부방장, 비포인트)는 인증 판정 API가 나오면 붙인다.
+ * - '판정하기 N'은 내가 판정할 인증이 있을 때만(방장·부방장, 포인트 없는 챌린지) 인증 관리로 보낸다.
+ *   판정 마감이 다음 날 12:00라 결과 집계 중에도 남아 있을 수 있다.
+ * - 팀 채팅 버튼은 두지 않는다(하단 채팅 탭에서 들어간다).
  */
 export default function ChallengeCard({ challenge, className }: ChallengeCardProps) {
   const today = challenge.todayCertifications;
@@ -51,19 +53,17 @@ export default function ChallengeCard({ challenge, className }: ChallengeCardPro
           <TodayCertifications targetCount={today.targetCount} certifications={today.photos} />
         </>
       )}
-      <div className="mt-auto flex gap-2">
-        <Button
-          asChild
-          variant="outline"
-          className={challenge.phase === "IN_PROGRESS" ? "" : "flex-1"}
-        >
-          <Link href={`/challenges/${challenge.id}/chat`} aria-label="팀 채팅">
-            <MessageSquareMore aria-hidden />
-            {challenge.phase !== "IN_PROGRESS" && "팀 채팅"}
-          </Link>
-        </Button>
+      <div className="mt-auto flex flex-col gap-2">
+        {challenge.pendingJudgeCount > 0 && (
+          <Button asChild variant="subtle" fullWidth>
+            <Link href={`/challenges/${challenge.id}/manage/certifications`}>
+              <CircleCheck aria-hidden />
+              판정할 인증 {challenge.pendingJudgeCount}건 · 판정하기
+            </Link>
+          </Button>
+        )}
         {challenge.phase === "IN_PROGRESS" && (
-          <Button asChild className="flex-1">
+          <Button asChild fullWidth>
             <Link href={`/challenges/${challenge.id}/certifications/new`}>
               <Camera aria-hidden />
               지금 인증하기

@@ -1,4 +1,4 @@
-/** 알림 종류(백엔드 NotificationType, 위키 11절 #1~#12). 새 값이 더해질 수 있어 string도 받는다. */
+/** 알림 종류(백엔드 NotificationType, 위키 11절 #1~#12, #13 참여 신청 접수). 새 값이 더해질 수 있어 string도 받는다. */
 export type NotificationType =
   | "PARTICIPATION_APPROVED"
   | "PARTICIPATION_REJECTED"
@@ -12,6 +12,7 @@ export type NotificationType =
   | "EXPELLED"
   | "EARLY_ENDED"
   | "CERTIFICATION_REJECTED"
+  | "PARTICIPATION_REQUESTED"
   | (string & {});
 
 export type AppNotification = {

@@ -23,7 +23,8 @@ type JudgeInput =
   | { certificationId: number; decision: "reject"; reason: string };
 
 /**
- * 승인·거절. 성공하면 대기 목록에서 바로 빼고(처리한 사진은 사라진다), 그날 인증 피드는 다시 받는다.
+ * 승인·거절. 성공하면 대기 목록에서 바로 빼고(처리한 사진은 사라진다), 그날 인증 피드와
+ * 홈 카드(판정할 인증 수)는 다시 받는다.
  * 이미 판정됐거나 마감이 지났으면(409) 목록을 다시 받아 서버 상태에 맞춘다.
  */
 export function useJudgeCertification(challengeId: string) {
@@ -40,10 +41,13 @@ export function useJudgeCertification(challengeId: string) {
       queryClient.setQueryData<PendingJudgment[]>(pendingKey(challengeId), (list) =>
         list?.filter((item) => item.certificationId !== certificationId),
       );
-      return queryClient.invalidateQueries({
-        queryKey: ["challenges", challengeId, "certifications"],
-        predicate: ({ queryKey }) => queryKey[3] !== "pending-judgments",
-      });
+      return Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["challenges", challengeId, "certifications"],
+          predicate: ({ queryKey }) => queryKey[3] !== "pending-judgments",
+        }),
+        queryClient.invalidateQueries({ queryKey: ["users", "me", "participations"] }),
+      ]);
     },
   });
 }
