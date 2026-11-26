@@ -15,29 +15,38 @@ import type { UserProfile } from "../types";
 
 const INTEREST_LABEL = Object.fromEntries(INTERESTS.map(({ value, label }) => [value, label]));
 
+/** 동그란 프로필 사진(64px). 사진이 없으면 기본 프로필 그림을 보인다. */
+export function ProfileAvatar({ imageUrl }: { imageUrl: string | null }) {
+  return (
+    <span className="bg-surface-tertiary text-fg-quaternary relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full">
+      {imageUrl ? (
+        // TODO: 이미지 저장소 도메인이 정해지면 next.config의 images.remotePatterns에 등록하고 최적화를 켠다.
+        <Image src={imageUrl} alt="" fill sizes="64px" unoptimized className="object-cover" />
+      ) : (
+        <UserRound aria-hidden className="size-8" />
+      )}
+    </span>
+  );
+}
+
 /**
  * 사진·닉네임·한 줄 소개·링크·관심 분야. 소개·링크는 입력한 경우에만 보인다.
  * action은 본인 화면의 "정보 수정"처럼 프로필 맨 아래에 붙일 버튼이다(타인 프로필은 없음).
+ * avatar를 넘기면 사진 자리에 대신 보인다(본인 화면의 사진 변경 버튼).
  */
-export function ProfileHeader({ profile, action }: { profile: UserProfile; action?: ReactNode }) {
+export function ProfileHeader({
+  profile,
+  action,
+  avatar,
+}: {
+  profile: UserProfile;
+  action?: ReactNode;
+  avatar?: ReactNode;
+}) {
   return (
     <section aria-label="프로필" className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
-        <span className="bg-surface-tertiary text-fg-quaternary relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full">
-          {profile.profileImageUrl ? (
-            // TODO: 이미지 저장소 도메인이 정해지면 next.config의 images.remotePatterns에 등록하고 최적화를 켠다.
-            <Image
-              src={profile.profileImageUrl}
-              alt=""
-              fill
-              sizes="64px"
-              unoptimized
-              className="object-cover"
-            />
-          ) : (
-            <UserRound aria-hidden className="size-8" />
-          )}
-        </span>
+        {avatar ?? <ProfileAvatar imageUrl={profile.profileImageUrl} />}
         <div className="flex min-w-0 flex-col gap-0.5">
           <p className="text-title-2 font-title text-fg-primary truncate">{profile.nickname}</p>
           {profile.bio && (

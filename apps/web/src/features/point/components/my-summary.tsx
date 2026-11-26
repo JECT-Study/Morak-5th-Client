@@ -9,6 +9,7 @@ import {
   ProfileHeader,
   RecordSection,
 } from "@/features/profile/components/profile-sections";
+import ProfilePhotoEditor from "@/features/profile/components/profile-photo-editor";
 import { useFlash } from "@/features/profile/flash";
 import { useUserProfile } from "@/features/profile/use-user-profile";
 import { ApiError } from "@/shared/api/client";
@@ -23,7 +24,7 @@ import { usePointLedger } from "../use-point-ledger";
  * 프로필(사진·닉네임·소개·링크·관심 분야) → 모락이·개인 인증률 → 누적 완주·중도 실패 → 메달
  * → 사용 가능한 포인트 + 포인트 내역.
  * 프로필·기록·메달은 타인 프로필과 같은 API(GET /users/{userId})를 내 userId로 부른다.
- * TODO: 프로필 사진 변경, 메달 상세보기, 종료된 챌린지 전체 보기, 승인 대기 목록을 이 순서대로 추가한다.
+ * TODO: 메달 상세보기, 종료된 챌린지 전체 보기, 승인 대기 목록을 이 순서대로 추가한다.
  */
 export default function MySummary() {
   const { data: me, error: meError, refetch: refetchMe } = useMyInfo();
@@ -73,6 +74,7 @@ export default function MySummary() {
       )}
       <ProfileHeader
         profile={profile}
+        avatar={<ProfilePhotoEditor userId={profile.userId} imageUrl={profile.profileImageUrl} />}
         action={
           <Button asChild variant="outline" size="sm" fullWidth>
             <Link href="/my/edit">정보 수정</Link>

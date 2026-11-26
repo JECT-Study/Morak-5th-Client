@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { request } from "@/shared/api/client";
+import { compressImage } from "@/shared/lib/compress-image";
 
-import { compressImage } from "./compress-image";
 import type { CertificationFeed, SubmittedCertification } from "./types";
 
 const feedKey = (challengeId: string, date: string) =>
