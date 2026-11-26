@@ -17,6 +17,7 @@ export const myChallengesMock: MyChallengeCardData[] = [
     successRate: 60,
     depositAmount: 5000,
     myTodayStatus: null,
+    pendingJudgeCount: 0,
     todayCertifications: {
       targetCount: 4,
       photos: [
@@ -48,6 +49,7 @@ export const myChallengesMock: MyChallengeCardData[] = [
     successRate: 82,
     depositAmount: 10000,
     myTodayStatus: null,
+    pendingJudgeCount: 0,
     todayCertifications: {
       targetCount: 5,
       photos: [

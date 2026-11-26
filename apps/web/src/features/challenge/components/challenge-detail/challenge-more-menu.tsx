@@ -36,6 +36,8 @@ export default function ChallengeMoreMenu() {
   const myStatus = challenge?.myParticipationStatus ?? null;
   const { data: myRole } = useMyRole(id, myStatus !== null);
   const isHost = myRole === "HOST";
+  // 인증 판정은 방장·부방장 둘 다 한다(위키 5.10). 참여 신청 관리·설정은 방장만.
+  const canJudge = isHost || myRole === "DEPUTY";
   // 무효 신청도 방장이 확인해야 해서 대기 건수에 넣는다.
   const { data: pendingRequests } = useParticipationRequests(id, "PENDING", isHost);
   const pendingCount = pendingRequests?.items.length ?? 0;
@@ -77,22 +79,26 @@ export default function ChallengeMoreMenu() {
           <MenuItem icon={Share2} onSelect={share}>
             공유하기
           </MenuItem>
-          {isHost && (
+          {canJudge && (
             <DropdownMenu.Group>
               <DropdownMenu.Label className="text-label-xs font-label-normal text-fg-tertiary">
                 관리자 메뉴
               </DropdownMenu.Label>
-              {/* TODO: 챌린지 설정 화면이 정해지면 연결한다 */}
-              <MenuItem icon={Settings} disabled>
-                챌린지 설정
-              </MenuItem>
-              <MenuLink
-                icon={UserPlus}
-                href={`/challenges/${id}/manage/requests`}
-                count={pendingCount}
-              >
-                참여 신청 관리
-              </MenuLink>
+              {isHost && (
+                <>
+                  {/* TODO: 챌린지 설정 화면이 정해지면 연결한다 */}
+                  <MenuItem icon={Settings} disabled>
+                    챌린지 설정
+                  </MenuItem>
+                  <MenuLink
+                    icon={UserPlus}
+                    href={`/challenges/${id}/manage/requests`}
+                    count={pendingCount}
+                  >
+                    참여 신청 관리
+                  </MenuLink>
+                </>
+              )}
               <MenuLink icon={CircleCheck} href={`/challenges/${id}/manage/certifications`}>
                 인증 관리
               </MenuLink>

@@ -34,6 +34,8 @@ export type MyChallengeCardData = {
   todayCertifications: { targetCount: number; photos: TodayCertification[] } | null;
   /** 오늘 내 인증 상태. 제출 전이면 null */
   myTodayStatus: string | null;
+  /** 내가 판정할 인증 수(방장·부방장, 포인트 없는 챌린지). 판정 권한이 없으면 0 */
+  pendingJudgeCount: number;
 };
 
 /** 챌린지 카테고리 (백엔드 Category enum) */

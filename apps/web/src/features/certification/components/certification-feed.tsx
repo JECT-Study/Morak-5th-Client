@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, ChevronLeft, ChevronRight, ImageOff, UserRound } from "lucide-react";
+import { Camera, ChevronLeft, ChevronRight, Heart, ImageOff, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -12,7 +12,7 @@ import { IconButton } from "@/shared/ui/icon-button";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 import type { CertificationFeedItem, CertificationStatus } from "../types";
-import { useCertificationFeed } from "../use-certification";
+import { useCertificationFeed, useToggleLike } from "../use-certification";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -63,7 +63,8 @@ type CertificationFeedProps = {
  * 챌린지 상세 인증 탭(Figma "일반 참가자 · 인증 탭", 위키 5.8).
  * 날짜 이동(시작일~오늘) → (오늘이면) 내 오늘 인증 상태 → 그날 팀 인증 카드(제출 순).
  * 다른 팀원 인증은 승인된 것만, 내 인증은 판정 대기·거절도 상태 라벨과 함께 온다(서버가 거른다).
- * TODO: 좋아요·한마디는 API가 없어 넣지 않았다. 날짜를 달력으로 고르는 것도 시안이 정해지면 붙인다.
+ * 승인된 인증에는 좋아요를 누를 수 있다(인증 성공 여부와 무관, 위키 4.3).
+ * TODO: 한마디(답글)는 API가 없어 넣지 않았다. 날짜를 달력으로 고르는 것도 시안이 정해지면 붙인다.
  */
 export default function CertificationFeed({
   challengeId,
@@ -77,6 +78,7 @@ export default function CertificationFeed({
   const lastDate = today < endDate ? today : endDate;
   const [date, setDate] = useState(lastDate);
   const feed = useCertificationFeed(challengeId, date);
+  const toggleLike = useToggleLike(challengeId, date);
   const isToday = date === today;
 
   return (
@@ -132,7 +134,14 @@ export default function CertificationFeed({
           <ul aria-label={`${formatDate(date)} 인증`} className="flex flex-col gap-3">
             {feed.data.items.map((item) => (
               <li key={item.certificationId}>
-                <FeedCard item={item} isToday={isToday} reviewedByStaff={reviewedByStaff} />
+                <FeedCard
+                  item={item}
+                  isToday={isToday}
+                  reviewedByStaff={reviewedByStaff}
+                  onToggleLike={() =>
+                    toggleLike.mutate({ certificationId: item.certificationId, like: !item.liked })
+                  }
+                />
               </li>
             ))}
           </ul>
@@ -181,10 +190,12 @@ function FeedCard({
   item,
   isToday,
   reviewedByStaff,
+  onToggleLike,
 }: {
   item: CertificationFeedItem;
   isToday: boolean;
   reviewedByStaff: boolean;
+  onToggleLike: () => void;
 }) {
   const name = item.nickname ?? "알 수 없음";
   const approved = item.status === "APPROVED" || item.status === "AUTO_APPROVED";
@@ -230,6 +241,19 @@ function FeedCard({
           <ImageOff aria-hidden className="size-8" />
           <p className="text-body-sm font-body-normal">사진을 불러오지 못했어요</p>
         </div>
+      )}
+      {/* 좋아요는 승인된 인증에만 누를 수 있다 */}
+      {approved && (
+        <button
+          type="button"
+          aria-pressed={item.liked}
+          aria-label={item.liked ? "좋아요 취소" : "좋아요"}
+          onClick={onToggleLike}
+          className="text-label-md font-label-normal text-fg-secondary focus-visible:ring-line-focus rounded-8 -ml-1 flex items-center gap-1 self-start px-1 py-0.5 focus-visible:ring-2 focus-visible:outline-none"
+        >
+          <Heart aria-hidden className={cn("size-5", item.liked && "fill-danger text-danger")} />
+          {item.likeCount}
+        </button>
       )}
     </article>
   );
