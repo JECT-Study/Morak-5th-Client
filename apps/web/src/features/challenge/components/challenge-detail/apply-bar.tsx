@@ -12,6 +12,7 @@ import { Button } from "@/shared/ui/button";
 import FormTextarea from "@/shared/ui/form-textarea";
 
 import type { ChallengeView } from "../../types";
+import { getInviteCode } from "../../invite-code";
 import { useApplyChallenge } from "../../use-apply-challenge";
 
 /** 지원서(각오 한마디) 최대 글자 수. 백엔드 ApplyRequest @Size(max = 200) */
@@ -94,7 +95,12 @@ function ApplySheet({ open, onOpenChange, challenge }: ApplySheetProps) {
 
   const submit = () => {
     const trimmed = message.trim();
-    apply.mutate(trimmed ? { message: trimmed } : {}, { onSuccess: () => onOpenChange(false) });
+    // 초대 코드로 들어왔으면 함께 보낸다(비공개 챌린지는 코드가 있어야 신청된다).
+    const inviteCode = getInviteCode(String(challenge.id));
+    apply.mutate(
+      { ...(trimmed && { message: trimmed }), ...(inviteCode && { inviteCode }) },
+      { onSuccess: () => onOpenChange(false) },
+    );
   };
 
   return (
