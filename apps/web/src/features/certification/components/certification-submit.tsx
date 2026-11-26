@@ -51,7 +51,7 @@ const submitErrorMessage = (error: Error) => {
 
 /**
  * 오늘 인증 제출(위키 5.9, 피그마 "03_인증_제출" 와이어프레임).
- * 미션·마감까지 남은 시간 → 앨범·촬영 → 같은 화면에서 사진 확인(다시 찍기 / 제출하기) → 확인 모달 → 제출 완료.
+ * 미션·마감까지 남은 시간 → 앨범·촬영 → 같은 화면에서 사진 확인(앨범에서 다시 고르기 / 다시 찍기 / 제출하기) → 확인 모달 → 제출 완료.
  * 하루 1번이고 제출 후 수정·재제출이 없어, 이미 냈으면 상태 라벨만 보인다.
  * 자정이 지나면(누른 날짜와 오늘이 달라지면) 제출을 막는다. 서버도 같은 경우 DATE_MISMATCH로 거절한다.
  */
@@ -201,19 +201,32 @@ export default function CertificationSubmit() {
       </div>
 
       {canSubmit && (
-        <div className="bg-background-primary sticky bottom-0 flex gap-2 px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+        <div className="bg-background-primary sticky bottom-0 flex flex-wrap gap-2 px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+16px)]">
           {photo ? (
             <>
+              {/* 잘못 골랐으면 앨범에서 다시 고르거나 다시 찍는다 */}
               <Button
                 variant="outline"
+                size="md"
+                className="flex-1"
+                disabled={submit.isPending}
+                onClick={() => albumRef.current?.click()}
+              >
+                <ImageIcon aria-hidden />
+                앨범에서 다시 고르기
+              </Button>
+              <Button
+                variant="outline"
+                size="md"
                 className="flex-1"
                 disabled={submit.isPending}
                 onClick={() => cameraRef.current?.click()}
               >
+                <Camera aria-hidden />
                 다시 찍기
               </Button>
               <Button
-                className="flex-1"
+                className="basis-full"
                 disabled={submit.isPending}
                 onClick={() => setConfirming(true)}
               >
