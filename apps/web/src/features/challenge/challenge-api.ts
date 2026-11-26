@@ -53,9 +53,9 @@ export const fetchChallenge = (id: string) => {
  * 내 챌린지 목록. HOME(기본)은 참여 중인 챌린지 전체를 한 번에,
  * ARCHIVE(보관함)는 퇴장·완주·조기 종료·폐기된 챌린지를 최근 순으로 준다(기본 20개).
  */
-export const fetchMyParticipations = (status: "HOME" | "ARCHIVE" = "HOME") =>
-  request<MyParticipationPage>(
-    status === "HOME"
-      ? "/api/users/me/participations"
-      : `/api/users/me/participations?status=${status}`,
-  );
+export const fetchMyParticipations = (status: "HOME" | "ARCHIVE" = "HOME", cursor?: number) => {
+  if (status === "HOME") return request<MyParticipationPage>("/api/users/me/participations");
+  const query = new URLSearchParams({ status });
+  if (cursor !== undefined) query.set("cursor", String(cursor));
+  return request<MyParticipationPage>(`/api/users/me/participations?${query}`);
+};

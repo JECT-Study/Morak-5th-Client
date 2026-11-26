@@ -24,7 +24,8 @@ import { usePointLedger } from "../use-point-ledger";
  * 프로필(사진·닉네임·소개·링크·관심 분야) → 모락이·개인 인증률 → 누적 완주·중도 실패 → 메달
  * → 사용 가능한 포인트 + 포인트 내역.
  * 프로필·기록·메달은 타인 프로필과 같은 API(GET /users/{userId})를 내 userId로 부른다.
- * TODO: 메달 상세보기, 종료된 챌린지 전체 보기, 승인 대기 목록을 이 순서대로 추가한다.
+ * → 종료된 챌린지 전체 보기.
+ * TODO: 메달 상세보기(메달 목록 API·시안 필요), 승인 대기 목록(대기 중 신청 목록 API 필요)은 BE가 생기면 붙인다.
  */
 export default function MySummary() {
   const { data: me, error: meError, refetch: refetchMe } = useMyInfo();
@@ -84,6 +85,13 @@ export default function MySummary() {
       <RecordSection profile={profile} />
       <MedalSection profile={profile} />
       <PointSummary />
+      <Link
+        href="/my/challenges"
+        className="bg-surface-primary rounded-12 text-label-lg font-label-normal text-fg-primary focus-visible:ring-line-focus flex items-center justify-between gap-3 p-4 focus-visible:ring-2 focus-visible:outline-none"
+      >
+        종료된 챌린지 전체 보기
+        <ChevronRight aria-hidden className="text-fg-tertiary size-5" />
+      </Link>
     </main>
   );
 }
