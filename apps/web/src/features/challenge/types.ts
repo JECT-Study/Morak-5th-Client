@@ -1,7 +1,8 @@
 /** 오늘 인증을 마친 팀원 한 명 */
 export type TodayCertification = {
   memberId: number;
-  imageUrl: string;
+  /** 서명 주소(5분 유효). 서명에 실패하면 null */
+  imageUrl: string | null;
   /** ISO 8601, 서버 기준 시각(KST) 예) "2026-10-05T06:02:00+09:00" */
   certifiedAt: string;
 };

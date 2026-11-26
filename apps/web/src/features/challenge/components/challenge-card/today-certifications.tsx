@@ -35,7 +35,10 @@ export default function TodayCertifications({
             key={memberId}
             className="rounded-10 bg-surface-secondary relative h-18 max-w-16 min-w-15 flex-1 overflow-hidden"
           >
-            <Image src={imageUrl} alt="" fill sizes="64px" className="object-cover" />
+            {/* 5분짜리 서명 주소라 Next 이미지 최적화를 거치지 않는다(허용 도메인이 아니라 400이 난다). 서명에 실패하면 null */}
+            {imageUrl && (
+              <Image src={imageUrl} alt="" fill sizes="64px" unoptimized className="object-cover" />
+            )}
             <span className="text-label-xs font-label-normal text-fg-primary bg-surface-primary absolute bottom-1 left-1 rounded-full px-1.5">
               {formatCertifiedTime(certifiedAt)}
             </span>
