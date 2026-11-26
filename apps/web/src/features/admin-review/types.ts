@@ -27,6 +27,8 @@ export type ReviewItem = {
   /** UTC ISO 8601 */
   submittedAt: string;
   status: ReviewStatus;
+  /** 검수 마감 시각(UTC ISO 8601). 미검수인 건이 이 시각을 넘기면 "마감 지남" */
+  reviewDueAt: string;
 };
 
 /** GET /admin/certification-reviews 응답 data. 목록은 서버에서 최대 100건이다. */
@@ -36,12 +38,19 @@ export type ReviewPage = {
   totalCount: number;
   /** 조건과 무관한 전체 미검수 건수 */
   pendingCount: number;
+  /** 그중 검수 마감(인증 다음 날 12:00 KST)이 지난 건수 */
+  overdueCount: number;
 };
 
-/** GET /admin/certification-reviews/challenges 응답의 한 줄 */
-export type ReviewChallengeOption = {
+/** GET /admin/certification-reviews/challenges 응답의 한 줄. 챌린지별 검수 현황이자 필터 선택지다. */
+export type ReviewChallengeSummary = {
   challengeId: number;
   title: string;
+  pendingCount: number;
+  approvedCount: number;
+  rejectedCount: number;
+  /** 미검수 중 검수 마감이 지난 건수 */
+  overdueCount: number;
 };
 
 /** 처리된 인증의 판정 정보 */
@@ -63,6 +72,8 @@ export type ReviewDetail = {
   certDate: string;
   submittedAt: string;
   status: ReviewStatus;
+  /** 검수 마감 시각(인증 다음 날 12:00 KST) */
+  reviewDueAt: string;
   /** 챌린지 공통 미션 */
   commonMission: string | null;
   /** 개설 시 정한 인증 방법·규칙 */

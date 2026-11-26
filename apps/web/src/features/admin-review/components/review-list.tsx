@@ -12,6 +12,7 @@ import type { ReviewStatusFilter } from "../types";
 import {
   formatCertDate,
   formatDateTime,
+  isOverdue,
   nicknameLabel,
   parseFilters,
   STATUS_FILTER_OPTIONS,
@@ -19,6 +20,8 @@ import {
 } from "../utils";
 import AccessDenied from "./access-denied";
 import AdminCard from "./admin-card";
+import ChallengeSummary from "./challenge-summary";
+import OverdueBadge from "./overdue-badge";
 
 const controlClass =
   "border-line bg-surface-primary text-body-md font-body-normal text-fg-primary rounded-6 h-10 border px-3";
@@ -54,6 +57,8 @@ export default function ReviewList() {
         포인트 공개 챌린지에 제출된 인증을 확인해 주세요.
       </p>
 
+      <SummaryPanel />
+
       {/* URL이 바뀌면 폼 입력값도 그 값으로 다시 시작한다. */}
       <FilterForm key={query} initial={filters} />
 
@@ -71,19 +76,25 @@ export default function ReviewList() {
           <table className="text-body-md font-body-normal text-fg-primary w-full border-collapse">
             <thead>
               <tr className="bg-surface-secondary">
-                {["챌린지", "제출자", "인증 날짜", "제출 시각", "검수 상태", "확인"].map(
-                  (title) => (
-                    <th key={title} scope="col" className={`${cellClass} font-body-strong`}>
-                      {title}
-                    </th>
-                  ),
-                )}
+                {[
+                  "챌린지",
+                  "제출자",
+                  "인증 날짜",
+                  "제출 시각",
+                  "검수 마감",
+                  "검수 상태",
+                  "확인",
+                ].map((title) => (
+                  <th key={title} scope="col" className={`${cellClass} font-body-strong`}>
+                    {title}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {list.data.items.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className={`${cellClass} text-fg-tertiary text-center`}>
+                  <td colSpan={7} className={`${cellClass} text-fg-tertiary text-center`}>
                     조건에 맞는 인증이 없어요.
                   </td>
                 </tr>
@@ -94,7 +105,11 @@ export default function ReviewList() {
                     <td className={cellClass}>{nicknameLabel(item.submitterNickname)}</td>
                     <td className={cellClass}>{formatCertDate(item.certDate)}</td>
                     <td className={cellClass}>{formatDateTime(item.submittedAt)}</td>
-                    <td className={cellClass}>{statusLabel(item.status)}</td>
+                    <td className={cellClass}>{formatDateTime(item.reviewDueAt)}</td>
+                    <td className={cellClass}>
+                      {statusLabel(item.status)}
+                      {isOverdue(item.status, item.reviewDueAt) && <OverdueBadge />}
+                    </td>
                     <td className={cellClass}>
                       <Button asChild size="sm" variant="outline">
                         <Link href={`/admin/${item.certificationId}${detailQuery}`}>
@@ -110,6 +125,9 @@ export default function ReviewList() {
 
           <p className="text-body-md font-body-normal text-fg-secondary">
             조회 {list.data.totalCount}건 / 전체 미검수 {list.data.pendingCount}건
+            {list.data.overdueCount > 0 && (
+              <span className="text-danger"> (마감 지난 미검수 {list.data.overdueCount}건)</span>
+            )}
             {list.data.totalCount > list.data.items.length &&
               ` (앞의 ${list.data.items.length}건만 보여요)`}
           </p>
@@ -121,6 +139,12 @@ export default function ReviewList() {
       </p>
     </AdminCard>
   );
+}
+
+/** 챌린지별 검수 현황. 필터 선택지와 같은 응답이라 한 번만 받는다. */
+function SummaryPanel() {
+  const summaries = useReviewChallenges();
+  return summaries.data ? <ChallengeSummary summaries={summaries.data} /> : null;
 }
 
 function FilterForm({ initial }: { initial: ReturnType<typeof parseFilters> }) {
