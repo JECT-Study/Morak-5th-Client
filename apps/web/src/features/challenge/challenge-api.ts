@@ -2,6 +2,8 @@ import { type ChallengeCreateForm } from "@/features/challenge/create-schema";
 import type { ChallengeView, MyParticipationPage } from "@/features/challenge/types";
 import { request } from "@/shared/api/client";
 
+import { getInviteCode } from "./invite-code";
+
 /** 챌린지 개설 결과. 백엔드 CreatedChallenge */
 export type CreatedChallenge = { challengeId: number; inviteCode: string };
 
@@ -36,8 +38,16 @@ export const toCreateChallengeRequest = (values: ChallengeCreateForm) => ({
   expectations: values.message || undefined,
 });
 
-export const fetchChallenge = (id: string) =>
-  request<ChallengeView>(`/api/challenges/${encodeURIComponent(id)}`);
+/** 초대 코드로 챌린지 상세 조회. 합류하지 않는다(404 없는 코드, 410 종료, 429 여러 번 틀림) */
+export const fetchChallengeByCode = (code: string) =>
+  request<ChallengeView>(`/api/challenges/by-code/${encodeURIComponent(code)}`);
+
+/** 챌린지 상세. 초대 코드로 들어온 챌린지면 코드로 받는다(비공개는 참여 전 일반 조회가 403이다). */
+export const fetchChallenge = (id: string) => {
+  const code = getInviteCode(id);
+  if (code) return fetchChallengeByCode(code);
+  return request<ChallengeView>(`/api/challenges/${encodeURIComponent(id)}`);
+};
 
 /**
  * 내 챌린지 목록. HOME(기본)은 참여 중인 챌린지 전체를 한 번에,

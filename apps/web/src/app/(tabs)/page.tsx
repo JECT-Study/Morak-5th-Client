@@ -1,4 +1,5 @@
 import { BookKey } from "lucide-react";
+import Link from "next/link";
 
 import MyChallengesSection from "@/features/challenge/components/my-challenges-section";
 import NotificationBell from "@/features/notification/components/notification-bell";
@@ -12,9 +13,10 @@ export default function MyChallengesPage() {
         title="챌린지 다이어리"
         suffixAction={
           <div className="flex gap-1">
-            {/* TODO: 이동할 화면 미정 */}
-            <IconButton aria-label="초대코드 입력">
-              <BookKey aria-hidden />
+            <IconButton asChild aria-label="초대코드 입력">
+              <Link href="/invite">
+                <BookKey aria-hidden />
+              </Link>
             </IconButton>
             <NotificationBell />
           </div>
