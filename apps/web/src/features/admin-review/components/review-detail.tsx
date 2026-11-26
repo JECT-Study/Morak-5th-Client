@@ -3,7 +3,7 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 import { ApiError } from "@/shared/api/client";
 import { Button } from "@/shared/ui/button";
@@ -15,8 +15,17 @@ import {
   useRejectReview,
   useReviewDetail,
 } from "../api";
-import { formatCertDate, formatDateTime, nicknameLabel, roleLabel, statusLabel } from "../utils";
+import {
+  formatCertDate,
+  formatDateTime,
+  isOverdue,
+  nicknameLabel,
+  roleLabel,
+  statusLabel,
+} from "../utils";
 import AccessDenied from "./access-denied";
+import OverdueBadge from "./overdue-badge";
+import PhotoViewer from "./photo-viewer";
 import AdminCard from "./admin-card";
 import { JudgeDoneCard, JudgeHistory } from "./judge-result";
 import RejectDialog from "./reject-dialog";
@@ -131,10 +140,13 @@ export default function ReviewDetail({ certificationId }: { certificationId: num
     if (latest.data) setSaveFailed(false);
   };
 
-  const field = (term: string, value: string) => (
+  const field = (term: string, value: string, extra?: ReactNode) => (
     <div key={term} className="flex flex-col">
       <dt className="text-label-md font-label-normal text-fg-tertiary">{term}</dt>
-      <dd className="text-body-md font-body-normal text-fg-primary">{value}</dd>
+      <dd className="text-body-md font-body-normal text-fg-primary">
+        {value}
+        {extra}
+      </dd>
     </div>
   );
 
@@ -142,7 +154,7 @@ export default function ReviewDetail({ certificationId }: { certificationId: num
     <AdminCard header={header}>
       <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="flex flex-col gap-2">
-          <Photos urls={data.imageUrls} />
+          <PhotoViewer urls={data.imageUrls} />
           <p className="text-label-md font-label-normal text-fg-tertiary">
             원본 사진을 확인한 뒤 오른쪽 인증 규칙과 비교해 주세요.
           </p>
@@ -158,6 +170,11 @@ export default function ReviewDetail({ certificationId }: { certificationId: num
             {field("인증 날짜", formatCertDate(data.certDate))}
             {field("제출 시각", formatDateTime(data.submittedAt))}
             {field("검수 상태", statusLabel(data.status))}
+            {field(
+              "검수 마감",
+              formatDateTime(data.reviewDueAt),
+              isOverdue(data.status, data.reviewDueAt) && <OverdueBadge />,
+            )}
           </dl>
           <section className="border-line-subtle rounded-6 flex flex-col gap-1 border p-3">
             <h2 className="text-label-lg font-label-strong text-fg-primary">공통 미션</h2>
@@ -254,31 +271,5 @@ export default function ReviewDetail({ certificationId }: { certificationId: num
         onCancel={() => setRejectOpen(false)}
       />
     </AdminCard>
-  );
-}
-
-/** 원본 사진 열람 영역. 사진을 누르면 새 탭에서 원본을 크게 본다. */
-function Photos({ urls }: { urls: string[] }) {
-  if (urls.length === 0) {
-    return (
-      <div className="border-line rounded-6 text-body-md text-fg-tertiary flex min-h-64 items-center justify-center border border-dashed p-6 text-center">
-        표시할 원본 사진이 없어요.
-      </div>
-    );
-  }
-  return (
-    <div className="flex flex-col gap-2">
-      {urls.map((url, index) => (
-        <a key={url} href={url} target="_blank" rel="noreferrer" className="block">
-          {/* 사진 저장소 주소가 설정에 따라 달라 next/image 대신 원본 img를 쓴다. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={url}
-            alt={`인증 사진 ${index + 1}`}
-            className="border-line-subtle rounded-6 max-h-[480px] w-full border object-contain"
-          />
-        </a>
-      ))}
-    </div>
   );
 }

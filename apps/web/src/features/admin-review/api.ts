@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tansta
 
 import { ApiError, request } from "@/shared/api/client";
 
-import type { ReviewChallengeOption, ReviewDetail, ReviewListFilters, ReviewPage } from "./types";
+import type { ReviewChallengeSummary, ReviewDetail, ReviewListFilters, ReviewPage } from "./types";
 
 /**
  * 운영진 인증 검수 API(위키 §4.10, D-31). 브라우저는 BFF(`/api/admin/*`)만 부르고,
@@ -35,7 +35,7 @@ export const useReviewList = (filters: ReviewListFilters) =>
 export const useReviewChallenges = () =>
   useQuery({
     queryKey: reviewKeys.challenges(),
-    queryFn: () => request<ReviewChallengeOption[]>(`${BASE}/challenges`),
+    queryFn: () => request<ReviewChallengeSummary[]>(`${BASE}/challenges`),
   });
 
 export const useReviewDetail = (id: number) =>

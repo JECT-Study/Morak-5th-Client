@@ -63,3 +63,7 @@ export const parseFilters = (params: URLSearchParams): ReviewListFilters => {
     status: status && STATUS_FILTERS.has(status) ? (status as ReviewStatusFilter) : "PENDING",
   };
 };
+
+/** 미검수인 인증이 검수 마감(인증 다음 날 12:00 KST)을 넘겼는지. 마감이 지나도 자동 승인되지 않고 계속 검수 대상이다. */
+export const isOverdue = (status: ReviewStatus, reviewDueAt: string, now: number = Date.now()) =>
+  status === "PENDING" && new Date(reviewDueAt).getTime() < now;
