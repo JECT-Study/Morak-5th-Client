@@ -36,3 +36,27 @@ export type CertificationFeed = {
   certDate: string;
   items: CertificationFeedItem[];
 };
+
+/** GET /challenges/{id}/certifications/pending-judgments 한 줄. 내가 판정할 인증(판정 대기, 마감 전) */
+export type PendingJudgment = {
+  certificationId: number;
+  userId: number;
+  nickname: string | null;
+  profileImageUrl: string | null;
+  /** 제출자의 HOST / DEPUTY / MEMBER */
+  role: string;
+  /** YYYY-MM-DD */
+  certDate: string;
+  /** ISO 8601 */
+  submittedAt: string;
+  /** 판정 마감(인증 다음 날 12:00 KST). 지나면 자동 승인된다 */
+  judgeDueAt: string;
+  /** 300초 동안 유효한 서명 주소. 서명에 실패하면 null */
+  imageUrl: string | null;
+};
+
+/** 승인·거절 응답 data */
+export type JudgedCertification = {
+  certificationId: number;
+  status: "APPROVED" | "REJECTED";
+};
