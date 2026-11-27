@@ -21,8 +21,8 @@ const TABS = [
 export const TAB_HREFS: readonly string[] = TABS.map(({ href }) => href);
 
 /**
- * 하단 탭바(Figma "bottom nevibar"). 흰 바탕 + 위쪽 옅은 구분선, 탭 높이 70px + 하단 안전 영역.
- * 탭 레이아웃이 그만큼 아래 여백을 둔다. 지금 탭은 아이콘·글자가 진하고(#2f3036), 나머지는 옅다.
+ * 하단 탭바(Figma "Bottom Navigation"). 흰 바탕 + 위쪽 구분선(#ececec), 탭 높이 70px + 하단 안전 영역.
+ * 탭 레이아웃이 그만큼 아래 여백을 둔다. 지금 탭은 아이콘·글자가 진하고(#2f3036), 나머지 글자는 #76767a다.
  */
 export default function TabBar() {
   const pathname = usePathname();
@@ -31,7 +31,7 @@ export default function TabBar() {
   return (
     <nav
       aria-label="주요 메뉴"
-      className="max-w-app border-surface-secondary bg-background-primary fixed inset-x-0 bottom-0 z-10 mx-auto border-t pb-[env(safe-area-inset-bottom)]"
+      className="max-w-app border-line-subtle bg-background-primary fixed inset-x-0 bottom-0 z-10 mx-auto border-t pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="flex">
         {TABS.map(({ href, label, icon }) => {
@@ -46,7 +46,7 @@ export default function TabBar() {
                 className={cn(
                   "text-label-xs font-body-normal flex h-[70px] flex-col items-center justify-center gap-1 leading-[1.3]",
                   "focus-visible:ring-line-focus focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
-                  active ? "text-fg-neutral" : "text-fg-secondary",
+                  active ? "text-fg-neutral" : "text-fg-tertiary",
                 )}
               >
                 <Image

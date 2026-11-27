@@ -1,4 +1,4 @@
-import { BookKey } from "lucide-react";
+import { Mail } from "lucide-react";
 import Link from "next/link";
 
 import MyChallengesSection from "@/features/challenge/components/my-challenges-section";
@@ -12,10 +12,10 @@ export default function MyChallengesPage() {
       <AppHeader
         title="챌린지 다이어리"
         suffixAction={
-          <div className="flex gap-1">
+          <div className="flex">
             <IconButton asChild aria-label="초대코드 입력">
               <Link href="/invite">
-                <BookKey aria-hidden />
+                <Mail aria-hidden />
               </Link>
             </IconButton>
             <NotificationBell />
