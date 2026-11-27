@@ -24,7 +24,7 @@ export default function NotificationBell() {
       {hasUnread && (
         <span
           aria-hidden
-          className="bg-surface-brand rounded-max pointer-events-none absolute top-2 right-2 size-2"
+          className="bg-surface-brand rounded-max pointer-events-none absolute top-3 right-3 size-2"
         />
       )}
     </span>

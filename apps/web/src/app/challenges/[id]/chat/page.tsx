@@ -7,7 +7,7 @@ import AppHeader from "@/shared/layout/app-header";
 export default function ChallengeChatPage() {
   return (
     <div className="bg-background-primary flex flex-1 flex-col">
-      <AppHeader nested centered divider={false} title="채팅" />
+      <AppHeader nested centered title="채팅" />
       {/* 경로의 [id]를 읽는 부분은 요청마다 달라서 Suspense 안에서 렌더링한다 */}
       <Suspense>
         <ChatRoomScreen />
