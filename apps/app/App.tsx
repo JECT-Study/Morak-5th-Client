@@ -18,6 +18,7 @@ import {
 import * as Haptics from "expo-haptics";
 import * as Notifications from "expo-notifications";
 
+import { hasRewardedAdUnit, initializeAds, showRewardedAd } from "./ads";
 import { getNotificationPath, getPushToken } from "./push";
 
 // react-native-webview의 기본 제네릭(P = undefined) 때문에 최신 TS에서 props가 never로 계산된다.
@@ -46,6 +47,17 @@ export default function App() {
     webRef.current?.injectJavaScript(toInjectedScript(message));
   }, []);
 
+  // 광고 SDK 초기화가 끝났는지. 초기화는 READY보다 늦을 수 있어서 끝나면 APP_INFO를 한 번 더 보낸다.
+  const adsReady = useRef(false);
+  const sendAppInfo = useCallback(() => {
+    sendToWeb({
+      type: "APP_INFO",
+      bridgeVersion: BRIDGE_VERSION,
+      appVersion: APP_VERSION,
+      features: adsReady.current ? ["share", "push", "ad"] : ["share", "push"],
+    });
+  }, [sendToWeb]);
+
   const openPath = useCallback(
     (path: string) => {
       if (webReady.current) sendToWeb({ type: "OPEN_URL", path });
@@ -60,12 +72,7 @@ export default function App() {
         case "READY": {
           SplashScreen.hideAsync();
           webReady.current = true;
-          sendToWeb({
-            type: "APP_INFO",
-            bridgeVersion: BRIDGE_VERSION,
-            appVersion: APP_VERSION,
-            features: ["share", "push"],
-          });
+          sendAppInfo();
           // 앱이 꺼져 있다가 알림을 눌러 켜진 경우, 그 알림의 경로로 보낸다.
           const lastResponse = Notifications.getLastNotificationResponse();
           const path = pendingPath.current ?? (lastResponse && getNotificationPath(lastResponse));
@@ -82,12 +89,17 @@ export default function App() {
             sendToWeb({ type: "PUSH_TOKEN", id: message.id, status, token }),
           );
           break;
+        case "SHOW_REWARDED_AD":
+          showRewardedAd({ userId: message.userId, token: message.token }).then((status) =>
+            sendToWeb({ type: "AD_RESULT", id: message.id, status }),
+          );
+          break;
         case "HAPTIC":
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           break;
       }
     },
-    [sendToWeb],
+    [sendToWeb, sendAppInfo],
   );
 
   const onMessage = (event: WebViewMessageEvent) => {
@@ -96,6 +108,15 @@ export default function App() {
     const message = parseWebToApp(event.nativeEvent.data);
     if (message) handleWebMessage(message);
   };
+
+  // 광고 SDK는 앱 시작 때 한 번 초기화한다. 초기화에 성공하고 광고 단위 ID가 있어야 웹에 "ad" 기능을 알린다.
+  useEffect(() => {
+    initializeAds().then((ok) => {
+      if (!ok || !hasRewardedAdUnit()) return;
+      adsReady.current = true;
+      if (webReady.current) sendAppInfo();
+    });
+  }, [sendAppInfo]);
 
   // 앱을 보고 있을 때 푸시가 오면 웹에 알려 알림 목록·종 아이콘을 바로 갱신하게 한다.
   useEffect(() => {
