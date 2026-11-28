@@ -86,12 +86,15 @@ RN → 웹에 `postMessage`를 쓰면 웹에서 받는 위치가 iOS(`window`)�
 
 ### 메시지 타입 (초안)
 
+아래는 흐름을 보여주는 요약이다. 실제 정의는 `packages/bridge`가 기준이다.
+
 ```ts
 type WebToApp =
   | { type: "READY" }
   | { type: "HAPTIC"; style: "light" | "success" }
   | { type: "SHARE"; url: string; title?: string }
-  | { type: "REQUEST_PUSH_TOKEN"; id: string };
+  | { type: "REQUEST_PUSH_TOKEN"; id: string }
+  | { type: "SHOW_REWARDED_AD"; id: string; userId: string; token: string };
 
 type AppToWeb =
   | { type: "APP_INFO"; version: string; features: string[] }
@@ -101,7 +104,8 @@ type AppToWeb =
       status: "granted" | "denied" | "unavailable";
       token: string | null;
     }
-  | { type: "OPEN_URL"; path: string };
+  | { type: "OPEN_URL"; path: string }
+  | { type: "AD_RESULT"; id: string; status: "rewarded" | "closed" | "failed" | "unavailable" };
 ```
 
 - 응답이 필요한 요청은 `id`로 짝을 맞추고 웹에서 Promise로 감싼다(`pending` Map).
@@ -109,6 +113,30 @@ type AppToWeb =
 - 브라우저에서는 `window.ReactNativeWebView`가 없으므로 `isApp()`으로 확인하고 대체 동작을 한다(공유 → 링크 복사 등).
 - 타입 정의는 `packages/bridge`(`@morak/bridge`)에 두고 웹(`apps/web/src/shared/native`)과 앱(`apps/app/App.tsx`)이 함께 import한다. 메시지 검증(`parseWebToApp`, `parseAppToWeb`)과 주입 코드 생성(`toInjectedScript`)도 이 패키지에 있다.
 - 브릿지 메시지 구조를 바꾸면 `BRIDGE_VERSION`을 올린다. 사용자 폰의 예전 앱은 이전 버전을 보낸다.
+
+### 보상형 광고 (AdMob)
+
+광고 SDK는 네이티브라 앱에서만 재생한다. 웹은 브릿지로 요청하고, **포인트는 서버가 구글의 서버 측 확인(SSV)으로만 지급한다.** 웹·앱이 "봤다"고 알려도 지급하지 않는다.
+
+```
+웹                         앱(RN)                    구글            Next BFF → Spring
+ │ POST /api/ads/reward-sessions ─────────────────────────────────────▶ 시청 토큰 발급
+ │ ◀──────────────────────────────────────────────────────── token ───┤
+ │ SHOW_REWARDED_AD(id, userId, token) ▶ │
+ │                            │ 광고 로드·재생 (SSV 옵션: userId, customData=token)
+ │                            │ ──────────────▶ │
+ │                            │                 │ GET /api/ads/ssv?… ─▶ 서명·주인·토큰 확인 → 500P 지급
+ │ ◀ AD_RESULT(id, status) ───┤
+ │ 잔액 다시 조회 (1초 간격, 최대 5번) → 포인트 화면 갱신
+```
+
+- `SHOW_REWARDED_AD`의 `userId`는 Spring 사용자 ID 문자열, `token`은 시청 시작 API가 준 시청 토큰이다. 앱은 둘을 SSV 옵션(`userId`, `customData`)에 그대로 넣는다.
+- `AD_RESULT.status`: `rewarded`(구글이 보상 인정) · `closed`(보상 전에 닫음) · `failed`(로드·표시 오류) · `unavailable`(광고를 쓸 수 없는 앱·환경). 같은 `id`에 한 번만 보낸다.
+- `rewarded`여도 구글 알림이 서버에 닿는 데 몇 초 걸릴 수 있다. 웹은 잔액이 늘 때까지 짧게 다시 조회하고, 안 늘면 "잠시 후 반영돼요"로 안내한다.
+- 앱은 광고 SDK 초기화에 성공하고 이 빌드에 광고 단위 ID가 있을 때만 `APP_INFO.features`에 `"ad"`를 넣는다. 웹은 `useRewardedAd().available`로 버튼 노출을 정한다(브라우저·예전 앱에서는 숨김).
+- `/api/ads/ssv`는 구글이 로그인 없이 호출하는 BFF 중계다. 서명이 **디코딩 전 원문 쿼리**에 대해 계산되므로 쿼리를 파싱·재조립하지 않고 그대로 Spring `/ads/ssv`에 전달한다.
+- 설정: 개발 중(`__DEV__`)에는 구글 테스트 광고 단위를 쓴다. 운영 광고 단위는 `EXPO_PUBLIC_ADMOB_REWARDED_ANDROID`·`_IOS`, AdMob 앱 ID는 빌드 환경변수 `ADMOB_ANDROID_APP_ID`·`ADMOB_IOS_APP_ID`로 넣는다(저장소에는 테스트 ID만 둔다).
+- 네이티브 모듈이라 Expo Go에서는 동작하지 않는다. 개발 빌드(`expo-dev-client`)가 필요하다.
 
 ## 4. 딥링크
 

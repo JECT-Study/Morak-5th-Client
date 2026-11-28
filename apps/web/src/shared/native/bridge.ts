@@ -1,4 +1,4 @@
-import { parseAppToWeb, type AppToWeb, type WebToApp } from "@morak/bridge";
+import { parseAppToWeb, type AppFeature, type AppToWeb, type WebToApp } from "@morak/bridge";
 
 /**
  * 웹 쪽 브릿지. 브라우저에서 열리면 앱 기능을 쓰지 않고 false를 돌려준다.
@@ -30,10 +30,36 @@ export const onAppMessage = (listener: Listener) => {
   };
 };
 
+export type AppInfo = Extract<AppToWeb, { type: "APP_INFO" }>;
+
+/**
+ * 앱이 READY에 답해 알려준 버전·지원 기능. 브라우저이거나 아직 답이 없으면 null.
+ * 앱은 기능 준비가 늦어지면(광고 SDK 초기화 등) APP_INFO를 다시 보내므로 항상 마지막 값을 쓴다.
+ */
+let appInfo: AppInfo | null = null;
+const appInfoListeners = new Set<() => void>();
+
+export const getAppInfo = () => appInfo;
+
+/** 앱 정보가 바뀔 때 알림을 받는다. useSyncExternalStore용. */
+export const subscribeAppInfo = (listener: () => void) => {
+  appInfoListeners.add(listener);
+  return () => {
+    appInfoListeners.delete(listener);
+  };
+};
+
+/** 앱이 이 기능을 지원하는지. 예전 앱이거나 아직 APP_INFO가 오지 않았으면 false. */
+export const hasAppFeature = (feature: AppFeature) => !!appInfo?.features.includes(feature);
+
 if (typeof window !== "undefined") {
   window.__onAppMessage = (raw: string) => {
     const message = parseAppToWeb(raw);
     if (!message) return;
+    if (message.type === "APP_INFO") {
+      appInfo = message;
+      appInfoListeners.forEach((listener) => listener());
+    }
     listeners.forEach((listener) => listener(message));
   };
 }
