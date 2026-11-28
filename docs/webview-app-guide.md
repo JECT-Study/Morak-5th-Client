@@ -125,7 +125,7 @@ type AppToWeb =
  │ SHOW_REWARDED_AD(id, userId, token) ▶ │
  │                            │ 광고 로드·재생 (SSV 옵션: userId, customData=token)
  │                            │ ──────────────▶ │
- │                            │                 │ GET /api/ads/ssv?… ─▶ 서명·주인·토큰 확인 → 500P 지급
+ │                            │                 │ GET /ads/ssv?… ─▶ 서명·주인·토큰 확인 → 500P 지급
  │ ◀ AD_RESULT(id, status) ───┤
  │ 잔액 다시 조회 (1초 간격, 최대 5번) → 포인트 화면 갱신
 ```
@@ -134,7 +134,7 @@ type AppToWeb =
 - `AD_RESULT.status`: `rewarded`(구글이 보상 인정) · `closed`(보상 전에 닫음) · `failed`(로드·표시 오류) · `unavailable`(광고를 쓸 수 없는 앱·환경). 같은 `id`에 한 번만 보낸다.
 - `rewarded`여도 구글 알림이 서버에 닿는 데 몇 초 걸릴 수 있다. 웹은 잔액이 늘 때까지 짧게 다시 조회하고, 안 늘면 "잠시 후 반영돼요"로 안내한다.
 - 앱은 광고 SDK 초기화에 성공하고 이 빌드에 광고 단위 ID가 있을 때만 `APP_INFO.features`에 `"ad"`를 넣는다. 웹은 `useRewardedAd().available`로 버튼 노출을 정한다(브라우저·예전 앱에서는 숨김).
-- `/api/ads/ssv`는 구글이 로그인 없이 호출하는 BFF 중계다. 서명이 **디코딩 전 원문 쿼리**에 대해 계산되므로 쿼리를 파싱·재조립하지 않고 그대로 Spring `/ads/ssv`에 전달한다.
+- 구글의 SSV 알림은 BFF를 거치지 않고 Spring `/ads/ssv`로 바로 간다. AdMob 콘솔의 SSV 콜백 URL에는 Spring의 공개 HTTPS 주소를 넣는다(서명이 디코딩 전 원문 쿼리에 대해 계산되고, 로그인 없이 호출되는 경로라 중계하지 않는다).
 - 설정: 개발 중(`__DEV__`)에는 구글 테스트 광고 단위를 쓴다. 운영 광고 단위는 `EXPO_PUBLIC_ADMOB_REWARDED_ANDROID`·`_IOS`, AdMob 앱 ID는 빌드 환경변수 `ADMOB_ANDROID_APP_ID`·`ADMOB_IOS_APP_ID`로 넣는다(저장소에는 테스트 ID만 둔다).
 - 네이티브 모듈이라 Expo Go에서는 동작하지 않는다. 개발 빌드(`expo-dev-client`)가 필요하다.
 
